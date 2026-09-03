@@ -1,0 +1,14 @@
+{
+  "projectId": "a21b5016-9765-4804-8690-138b873a9ee8",
+  "shape": "package",
+  "pkg": "cv-butler",
+  "entry": "./dist/index.js",
+  "srcDir": "src/components/ui",
+  "tsconfig": "tsconfig.json",
+  "cssEntry": ".design-sync/.cache/next-static/chunks/compiled-globals.css",
+  "buildCmd": "npm run build",
+  "readmeHeader": ".design-sync/conventions.md",
+  "overrides": {
+    "Toaster": { "skip": ["SuccessToast"] }
+  }
+}
