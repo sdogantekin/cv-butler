@@ -1,0 +1,107 @@
+"use client";
+
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { MatchDisplay } from "@/components/analyze/match-display";
+import type { JdMatchResult, Recommendation } from "@/lib/schemas/analysis";
+
+export type JobMatchResult = {
+  jdMatch: JdMatchResult;
+  recommendations: Recommendation[];
+  remaining: number;
+};
+
+export function JobMatchTab({
+  matchResult,
+  onMatched,
+  onReset,
+}: {
+  matchResult: JobMatchResult | null;
+  onMatched: (result: JobMatchResult) => void;
+  onReset: () => void;
+}) {
+  const [file, setFile] = useState<File | null>(null);
+  const [jobDescriptionText, setJobDescriptionText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    if (!file || !jobDescriptionText.trim()) return;
+
+    setIsSubmitting(true);
+    try {
+      const formData = new FormData();
+      formData.append("resume", file);
+      formData.append("jobDescriptionText", jobDescriptionText);
+      const response = await fetch("/api/analyze/match-upload", { method: "POST", body: formData });
+      const data = await response.json();
+      if (!response.ok) {
+        toast.error(data.error ?? "Failed to match job description");
+        return;
+      }
+      onMatched(data as JobMatchResult);
+      toast.success(`Match ready. ${data.remaining} action(s) left today.`);
+    } catch {
+      toast.error("Something went wrong while matching the job description.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="max-w-2xl">
+      <h1 className="mb-1.5 text-2xl font-extrabold">Job Matching</h1>
+      <p className="mb-7 max-w-lg text-sm text-muted-foreground">
+        Upload your resume and paste a job description to see how well it matches and what to
+        adjust.
+      </p>
+
+      {matchResult ? (
+        <div className="flex flex-col gap-5">
+          <MatchDisplay jdMatch={matchResult.jdMatch} recommendations={matchResult.recommendations} />
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-xs text-muted-foreground">
+              {matchResult.remaining} action(s) remaining today
+            </p>
+            <Button variant="outline" onClick={onReset}>
+              Start new match
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+          <div className="flex flex-col gap-3">
+            <Label htmlFor="job-match-resume">Resume (PDF or .docx)</Label>
+            <Input
+              id="job-match-resume"
+              type="file"
+              accept=".pdf,.docx"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            />
+          </div>
+          <div className="flex flex-col gap-3">
+            <Label htmlFor="job-match-jd">Job description</Label>
+            <Textarea
+              id="job-match-jd"
+              rows={8}
+              placeholder="Paste the job description here"
+              value={jobDescriptionText}
+              onChange={(e) => setJobDescriptionText(e.target.value)}
+            />
+          </div>
+          <Button
+            type="submit"
+            disabled={!file || !jobDescriptionText.trim() || isSubmitting}
+            className="w-fit"
+          >
+            {isSubmitting ? "Matching..." : "Start matching"}
+          </Button>
+        </form>
+      )}
+    </div>
+  );
+}

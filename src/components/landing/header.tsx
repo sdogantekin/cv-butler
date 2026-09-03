@@ -1,9 +1,7 @@
-"use client";
-
 import Link from "next/link";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { LogoIcon } from "@/components/landing/logo-icon";
+import { LogoIcon } from "@/components/logo-icon";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 const NAV_LINKS = [
   { href: "#features", label: "Features" },
@@ -12,10 +10,6 @@ const NAV_LINKS = [
   { href: "#learning-hub", label: "Learning Hub" },
   { href: "#faq", label: "FAQ" },
 ];
-
-function notifyLanguageComingSoon(language: string) {
-  toast.info(`${language} support is coming in a future iteration — staying in English for now.`);
-}
 
 export function Header() {
   return (
@@ -35,29 +29,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2.5">
-          <div className="flex overflow-hidden rounded-lg border">
-            <button
-              type="button"
-              aria-pressed="true"
-              className="bg-primary px-2.5 py-1.5 text-xs font-bold text-primary-foreground"
-            >
-              EN
-            </button>
-            <button
-              type="button"
-              onClick={() => notifyLanguageComingSoon("Turkish")}
-              className="px-2.5 py-1.5 text-xs font-bold hover:bg-muted"
-            >
-              TR
-            </button>
-            <button
-              type="button"
-              onClick={() => notifyLanguageComingSoon("German")}
-              className="px-2.5 py-1.5 text-xs font-bold hover:bg-muted"
-            >
-              DE
-            </button>
-          </div>
+          <LanguageSwitcher />
           <Button asChild variant="outline" size="sm">
             <Link href="/auth/signin">Log in</Link>
           </Button>

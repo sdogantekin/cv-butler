@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import { LogoIcon } from "@/components/landing/logo-icon";
+import { LogoIcon } from "@/components/logo-icon";
 
 const PRODUCT_LINKS = [
   { href: "#features", label: "Features" },

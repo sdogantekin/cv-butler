@@ -3,7 +3,13 @@ import { ParsedResumeSchema } from "@/lib/schemas/resume";
 import type { GraphStateType } from "../state";
 
 // Data Extraction Node (v1). Structures raw resume text into ParsedResume.
-export async function extractNode(state: GraphStateType): Promise<Partial<GraphStateType>> {
+// Parameter type is narrowed to just the field this node reads (rather than
+// the full GraphStateType) so it can also be called standalone, outside the
+// compiled graph, wherever only extraction (no scoring) is needed — see
+// /api/analyze/match-upload.
+export async function extractNode(
+  state: Pick<GraphStateType, "resumeText">,
+): Promise<Partial<GraphStateType>> {
   if (!state.resumeText) {
     return { errors: ["extract: resumeText is required"] };
   }
