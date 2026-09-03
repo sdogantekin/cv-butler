@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      AUTH_SECRET: ci-placeholder-secret
+      AUTH_GOOGLE_ID: ci-placeholder
+      AUTH_GOOGLE_SECRET: ci-placeholder
+      LLM_PROVIDER: anthropic
+      ANTHROPIC_API_KEY: ci-placeholder
+      SQLITE_DB_PATH: ./ci.db
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run db:push
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run secrets:scan
+      - run: npm test
+      - run: npm run build

@@ -1,0 +1,40 @@
+# Environment variables
+.env*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+
+# Local SQLite database (includes WAL-mode companion files: *.db-shm, *.db-wal)
+*.db*
+
+# Testing
+coverage/
+
+# Misc
+.DS_Store
+*.pem
+npm-debug.log*
+
+# Design references
+design-refs/
+
+# Private product spec — kept local only
+requirements.md
+
+# Claude Design sync — staged scripts, build output, and machine state
+# (config.json, NOTES.md, conventions.md, previews/, overrides/ ARE committed)
+.ds-sync/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules
