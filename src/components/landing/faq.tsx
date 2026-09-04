@@ -7,7 +7,7 @@ const FAQS = [
   {
     question: "What happens to my resume data?",
     answer:
-      "Being open source, the code handling your data is public and auditable, and you can self-host your own instance. Local-model support that keeps everything on your own machine is planned for v2, via Ollama.",
+      "Being open source, the code handling your data is public and auditable, and you can self-host your own instance. Local-model support that keeps everything on your own machine is planned for v3, via Ollama.",
   },
   {
     question: "Do I need to install anything to try it?",
@@ -16,7 +16,7 @@ const FAQS = [
   {
     question: "What's next on the roadmap?",
     answer:
-      "v2 adds local-model support through Ollama, so scoring and matching can run against a model you host yourself, instead of a hosted API.",
+      "Cover letter generation is next, coming in v2. After that, v3 adds local-model support through Ollama, so scoring and matching can run against a model you host yourself instead of a hosted API — see the roadmap above for what's coming.",
   },
 ];
 

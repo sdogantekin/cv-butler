@@ -8,7 +8,7 @@ import { env } from "@/lib/env";
 // never a code change. v1 default is Claude. Qwen and DeepSeek are wired via
 // an OpenAI-compatible endpoint (no first-party SDK exists for either);
 // OpenAI and Gemini use their own first-party LangChain packages. Adding
-// local Ollama in v2 is one more case here.
+// local Ollama in v3 is one more case here.
 export function getChatModel(): BaseChatModel {
   switch (env.LLM_PROVIDER) {
     case "anthropic":

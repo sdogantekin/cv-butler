@@ -14,10 +14,10 @@ CV BUTLER is an open-source, AI-powered career assistant providing ATS scoring, 
    - Define multi-agent workflows using `StateGraph` with explicit typing for the shared state schema.
    - Keep Server Actions and API routes thin; they should invoke the compiled LangGraph workflow.
    - **Orchestration decision (locked):** LangGraph.js was deliberately chosen over CrewAI or any other Python-based agent framework, specifically to preserve a single TypeScript codebase and avoid a second backend service. The workflow (Extract → Score → Match → Recommend → Copywrite) is a deterministic pipeline, which fits LangGraph's explicit graph model. Do not introduce CrewAI, a Python microservice, or any other agent framework to run this workflow, even for a single node or an isolated feature.
-3. **Provider-Agnostic LLM Interface (v1: cloud default, v2: local):** 
+3. **Provider-Agnostic LLM Interface (v1: cloud default, v3: local):** 
    - All LLM initializations must use LangChain provider wrappers configured via environment variables, so switching providers is a `.env` change, not a code change.
    - **v1 default is Claude (Anthropic)**, with Qwen, OpenAI, DeepSeek, and Gemini available as alternative cloud providers via the same `LLM_PROVIDER` env-var switch. This is deliberate: local Ollama inference on typical consumer hardware (e.g., 16GB Apple Silicon) is too slow for a fast dev/iteration loop, and smaller local models need their own output-quality validation pass, not because local support has been dropped.
-   - **Local Ollama endpoints (`http://localhost:11434`) become the default in v2**, once validated against realistic consumer hardware and a right-sized model (see requirements.md Section 2).
+   - **Local Ollama endpoints (`http://localhost:11434`) become the default in v3** (moved one phase later from the original v2 plan), once validated against realistic consumer hardware and a right-sized model (see requirements.md Section 2).
 4. **Environment Management:** 
    - Manage dependencies exclusively via `npm` / `pnpm`.
 5. **Routing & Access Control:** 
