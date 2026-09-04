@@ -3,10 +3,9 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ProcessingIndicator } from "@/components/dashboard/processing-indicator";
+import { ResumeDropzone } from "@/components/dashboard/resume-dropzone";
 import { MatchDisplay } from "@/components/analyze/match-display";
 import type { JdMatchResult, Recommendation } from "@/lib/schemas/analysis";
 
@@ -76,27 +75,21 @@ export function JobMatchTab({
       ) : isSubmitting ? (
         <ProcessingIndicator title="Comparing your resume to the job description…" />
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-          <div className="flex flex-col gap-3">
-            <Label htmlFor="job-match-resume">Resume (PDF or .docx)</Label>
-            <Input
-              id="job-match-resume"
-              type="file"
-              accept=".pdf,.docx"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            />
-          </div>
-          <div className="flex flex-col gap-3">
-            <Label htmlFor="job-match-jd">Job description</Label>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-9">
+          <ResumeDropzone file={file} onFileChange={setFile} />
+          <div className="rounded-xl border border-dashed p-8">
+            <div className="mb-2 text-sm font-semibold">
+              Job description{" "}
+              <span className="text-xs font-medium text-muted-foreground">(required)</span>
+            </div>
             <Textarea
-              id="job-match-jd"
-              rows={8}
+              rows={5}
               placeholder="Paste the job description here"
               value={jobDescriptionText}
               onChange={(e) => setJobDescriptionText(e.target.value)}
             />
           </div>
-          <Button type="submit" disabled={!file || !jobDescriptionText.trim()} className="w-fit">
+          <Button type="submit" size="lg" disabled={!file || !jobDescriptionText.trim()}>
             Start matching
           </Button>
         </form>

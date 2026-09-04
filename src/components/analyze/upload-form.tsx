@@ -3,9 +3,8 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ProcessingIndicator } from "@/components/dashboard/processing-indicator";
+import { ResumeDropzone } from "@/components/dashboard/resume-dropzone";
 import type { ParsedResume } from "@/lib/schemas/resume";
 import type { AtsScoreResult, Recommendation } from "@/lib/schemas/analysis";
 
@@ -49,16 +48,10 @@ export function UploadForm({ onScored }: { onScored: (result: ScoreResult) => vo
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <Label htmlFor="resume">Resume (PDF or .docx)</Label>
-      <Input
-        id="resume"
-        type="file"
-        accept=".pdf,.docx"
-        onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-      />
-      <Button type="submit" disabled={!file} className="w-fit">
-        Get ATS Score
+    <form onSubmit={handleSubmit} className="flex flex-col gap-9">
+      <ResumeDropzone file={file} onFileChange={setFile} />
+      <Button type="submit" size="lg" disabled={!file}>
+        Start ATS Review
       </Button>
     </form>
   );
