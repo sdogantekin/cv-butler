@@ -17,7 +17,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="mx-auto max-w-6xl px-6 py-14">
+    <section id="how-it-works" className="mx-auto w-full max-w-6xl px-6 py-14">
       <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">How it works</h2>
       <p className="mt-2 max-w-xl text-muted-foreground">
         Pick the tool you need — each one works with just your resume.

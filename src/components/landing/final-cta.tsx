@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export function FinalCta() {
   return (
-    <section className="mx-auto max-w-6xl px-6 pt-6 pb-20 text-center">
+    <section className="mx-auto w-full max-w-6xl px-6 pt-6 pb-20 text-center">
       <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Ready to fix your resume?</h2>
       <div className="mt-6 flex flex-wrap justify-center gap-3">
         <Button asChild size="lg">

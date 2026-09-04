@@ -22,7 +22,7 @@ const FAQS = [
 
 export function Faq() {
   return (
-    <section id="faq" className="mx-auto max-w-3xl px-6 py-16">
+    <section id="faq" className="mx-auto w-full max-w-3xl px-6 py-16">
       <h2 className="mb-8 text-3xl font-extrabold tracking-tight sm:text-4xl">
         Frequently asked questions
       </h2>

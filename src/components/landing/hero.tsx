@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 
 export function Hero() {
   return (
-    <section className="mx-auto grid max-w-6xl items-center gap-14 px-6 py-16 sm:py-24 lg:grid-cols-2">
+    <section className="mx-auto grid w-full max-w-6xl items-center gap-14 px-6 py-16 sm:py-24 lg:grid-cols-2">
       <div>
         <Badge variant="secondary">Open source · Free to use today</Badge>
         <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl">
