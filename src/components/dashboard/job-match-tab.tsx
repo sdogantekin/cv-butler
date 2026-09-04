@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ProcessingIndicator } from "@/components/dashboard/processing-indicator";
 import { MatchDisplay } from "@/components/analyze/match-display";
 import type { JdMatchResult, Recommendation } from "@/lib/schemas/analysis";
 
@@ -72,6 +73,8 @@ export function JobMatchTab({
             </Button>
           </div>
         </div>
+      ) : isSubmitting ? (
+        <ProcessingIndicator title="Comparing your resume to the job description…" />
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
           <div className="flex flex-col gap-3">
@@ -93,12 +96,8 @@ export function JobMatchTab({
               onChange={(e) => setJobDescriptionText(e.target.value)}
             />
           </div>
-          <Button
-            type="submit"
-            disabled={!file || !jobDescriptionText.trim() || isSubmitting}
-            className="w-fit"
-          >
-            {isSubmitting ? "Matching..." : "Start matching"}
+          <Button type="submit" disabled={!file || !jobDescriptionText.trim()} className="w-fit">
+            Start matching
           </Button>
         </form>
       )}

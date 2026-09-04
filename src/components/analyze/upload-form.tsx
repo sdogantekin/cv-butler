@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ProcessingIndicator } from "@/components/dashboard/processing-indicator";
 import type { ParsedResume } from "@/lib/schemas/resume";
 import type { AtsScoreResult, Recommendation } from "@/lib/schemas/analysis";
 
@@ -43,6 +44,10 @@ export function UploadForm({ onScored }: { onScored: (result: ScoreResult) => vo
     }
   }
 
+  if (isSubmitting) {
+    return <ProcessingIndicator title="Analyzing your resume against ATS systems…" />;
+  }
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <Label htmlFor="resume">Resume (PDF or .docx)</Label>
@@ -52,8 +57,8 @@ export function UploadForm({ onScored }: { onScored: (result: ScoreResult) => vo
         accept=".pdf,.docx"
         onChange={(e) => setFile(e.target.files?.[0] ?? null)}
       />
-      <Button type="submit" disabled={!file || isSubmitting} className="w-fit">
-        {isSubmitting ? "Analyzing..." : "Get ATS Score"}
+      <Button type="submit" disabled={!file} className="w-fit">
+        Get ATS Score
       </Button>
     </form>
   );
