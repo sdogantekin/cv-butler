@@ -5,8 +5,10 @@ import { db } from "@/db";
 import { env } from "@/lib/env";
 import { authConfig } from "./auth.config";
 
-// Full config: imports the Drizzle adapter/db client (Node-only, via
-// better-sqlite3), used by Server Components, Route Handlers, and Server
+// Full config: imports the Drizzle adapter/db client (Node-only — SQLite via
+// better-sqlite3 locally, or Postgres when DATABASE_URL is set, see
+// src/db/dialect.ts; DrizzleAdapter auto-detects the dialect from the client
+// it's given), used by Server Components, Route Handlers, and Server
 // Actions. proxy.ts intentionally imports only the lighter auth.config.ts —
 // see the comment there for why.
 // v1 ships Google login only; Facebook/Apple are deferred to v4+, but the

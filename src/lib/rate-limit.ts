@@ -20,10 +20,13 @@ export async function checkAndConsumeAction(
   userId: string,
   actionType: ActionType,
 ): Promise<RateLimitResult> {
-  const [{ count }] = await db
+  const [{ count: rawCount }] = await db
     .select({ count: sql<number>`count(*)` })
     .from(actionUsage)
     .where(and(eq(actionUsage.userId, userId), gte(actionUsage.createdAt, startOfTodayUTC())));
+  // Postgres drivers return count(*) as a numeric string; SQLite returns a
+  // real number. Number(...) normalizes both (no-op on the SQLite path).
+  const count = Number(rawCount);
 
   if (count >= env.DAILY_ACTION_LIMIT) {
     return { allowed: false };

@@ -25,6 +25,12 @@ export const env = createEnv({
     GEMINI_MODEL: z.string().optional(),
 
     SQLITE_DB_PATH: z.string().default("./local.db"),
+    // Unset (local default) -> SQLite via SQLITE_DB_PATH. Set (e.g. injected
+    // by Vercel's Neon integration in production) -> Postgres. See
+    // src/db/dialect.ts. Deliberately `.min(1)` not `.url()` so it doesn't
+    // reject valid Postgres connection strings with query params like
+    // `?sslmode=require`.
+    DATABASE_URL: z.string().min(1).optional(),
 
     // Shared daily action pool (ATS score + JD match together). Overridable
     // for local/manual testing so the limit doesn't have to be worked around

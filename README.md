@@ -4,7 +4,7 @@ Open-source, AI-powered career assistant: ATS scoring, job-description matching,
 
 ## Stack
 
-Next.js (App Router, TypeScript, Tailwind, shadcn/ui) · LangGraph.js · Drizzle ORM (SQLite locally, Postgres in production) · Auth.js (Google login).
+Next.js (App Router, TypeScript, Tailwind, shadcn/ui) · LangGraph.js · Drizzle ORM (SQLite by default locally; Postgres in production when `DATABASE_URL` is set) · Auth.js (Google login).
 
 ## Architecture: the LangGraph pipeline
 
@@ -64,16 +64,30 @@ npm run dev
 
 | Script | Purpose |
 | --- | --- |
-| `npm run dev` | Start the dev server (pushes DB schema first) |
-| `npm run build` | Production build |
+| `npm run dev` | Start the dev server (pushes SQLite schema first) |
+| `npm run build` | Production build (plain `next build`, for self-hosting/other platforms) |
 | `npm run lint` | ESLint |
 | `npm run typecheck` | Generate Next.js route types, then `tsc --noEmit` |
-| `npm test` | Vitest (mocked LLM calls, no live API/DB dependency) |
-| `npm run db:generate` | Generate a new Drizzle migration from schema changes |
-| `npm run db:push` | Push the current schema to the local SQLite file |
+| `npm test` | Vitest (mocked LLM calls, no live API dependency; DB-touching tests run against real SQLite) |
+| `npm run db:generate` | Generate a new SQLite Drizzle migration from schema changes |
+| `npm run db:push` | Push the current SQLite schema to the local file |
+| `npm run db:generate:pg` | Generate a new Postgres migration from `src/db/schema/pg` |
+| `npm run db:migrate:pg` | Apply committed Postgres migrations against `DATABASE_URL` |
+| `npm run vercel-build` | Applies Postgres migrations, then `next build` — Vercel runs this automatically in place of `build` when the script is present |
 | `npm run secrets:scan` | Run secretlint across the repo |
 
 A Husky pre-commit hook runs `secretlint` and `eslint --fix` on staged files.
+
+## Database: SQLite locally, Postgres in production
+
+The dialect is chosen automatically by whether `DATABASE_URL` is set — not a build-time choice, so the same codebase supports both:
+
+- **Unset (local/self-hosted default):** SQLite via `better-sqlite3`, zero config, exactly the flow above.
+- **Set (production):** Postgres via `@neondatabase/serverless` + `drizzle-orm/neon-http`. On Vercel, connect the **Neon** integration from the project's Storage tab — it injects `DATABASE_URL` for you, and the `vercel-build` script applies committed migrations automatically on every deploy.
+
+Two parallel Drizzle schema trees make this possible — `src/db/schema/sqlite/` and `src/db/schema/pg/` — since `sqliteTable`/`pgTable` are incompatible builders and can't share one schema module. Both are kept structurally identical (same table/column names) by construction, checked by `src/db/schema/schema-parity.test.ts`. `src/db/dialect.ts` exposes the single `usingPostgres` flag both `src/db/schema/index.ts` and `src/db/index.ts` key off of, so the active schema tree and the active client can never mismatch.
+
+Deploying Postgres migrations manually (non-Vercel hosts): run `npm run db:migrate:pg` against your `DATABASE_URL` before `npm run build`.
 
 ## Notes
 

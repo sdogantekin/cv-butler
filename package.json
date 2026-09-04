@@ -13,6 +13,9 @@
     "test": "vitest run",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
+    "db:generate:pg": "drizzle-kit generate --config=drizzle.postgres.config.ts",
+    "db:migrate:pg": "drizzle-kit migrate --config=drizzle.postgres.config.ts",
+    "vercel-build": "drizzle-kit migrate --config=drizzle.postgres.config.ts && next build",
     "secrets:scan": "secretlint \"**/*\"",
     "prepare": "husky"
   },
@@ -31,6 +34,7 @@
     "@langchain/google-genai": "^2.3.0",
     "@langchain/langgraph": "^1.4.13",
     "@langchain/openai": "^1.5.11",
+    "@neondatabase/serverless": "^1.1.0",
     "@t3-oss/env-nextjs": "^0.13.11",
     "better-sqlite3": "^13.0.3",
     "class-variance-authority": "^0.7.1",
