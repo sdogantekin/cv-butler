@@ -17,6 +17,7 @@ const JUMP_CARDS: { tab: DashboardTab; title: string; description: string }[] = 
   { tab: "ats", title: "ATS Review", description: "Score your resume against real ATS systems." },
   { tab: "job", title: "Job Matching", description: "Compare your resume to a job description." },
   { tab: "cover", title: "Cover Letter", description: "Generate a tailored draft from your resume." },
+  { tab: "hub", title: "Learning Hub", description: "Guides on formatting, keywords, and ATS." },
 ];
 
 export function HomeTab({
@@ -81,17 +82,6 @@ export function HomeTab({
             </CardFooter>
           </Card>
         ))}
-        <Card>
-          <CardHeader>
-            <CardTitle>Learning Hub</CardTitle>
-            <CardDescription>Guides on formatting, keywords, and ATS.</CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <Button asChild size="sm">
-              <a href="/learning-hub">Open</a>
-            </Button>
-          </CardFooter>
-        </Card>
       </div>
     </div>
   );

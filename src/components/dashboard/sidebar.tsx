@@ -4,13 +4,14 @@ import { LogoIcon } from "@/components/logo-icon";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { cn } from "@/lib/utils";
 
-export type DashboardTab = "home" | "ats" | "job" | "cover";
+export type DashboardTab = "home" | "ats" | "job" | "cover" | "hub";
 
 const NAV_ITEMS: { tab: DashboardTab; label: string }[] = [
   { tab: "home", label: "Home" },
   { tab: "ats", label: "ATS Review" },
   { tab: "job", label: "Job Matching" },
   { tab: "cover", label: "Cover Letter Generation" },
+  { tab: "hub", label: "Learning Hub" },
 ];
 
 function initialsFor(name: string) {
@@ -53,12 +54,6 @@ export function Sidebar({
             {item.label}
           </button>
         ))}
-        <a
-          href="/learning-hub"
-          className="rounded-lg px-3.5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted"
-        >
-          Learning Hub
-        </a>
       </nav>
 
       <div className="mt-4 flex flex-col gap-3.5 border-t pt-4">

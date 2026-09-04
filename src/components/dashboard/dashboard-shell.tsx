@@ -6,6 +6,7 @@ import { HomeTab } from "@/components/dashboard/home-tab";
 import { AtsTab } from "@/components/dashboard/ats-tab";
 import { JobMatchTab, type JobMatchResult } from "@/components/dashboard/job-match-tab";
 import { CoverLetterTab } from "@/components/dashboard/cover-letter-tab";
+import { LearningHubTab } from "@/components/dashboard/learning-hub-tab";
 import type { ScoreResult } from "@/components/analyze/upload-form";
 
 export function DashboardShell({
@@ -41,6 +42,7 @@ export function DashboardShell({
           />
         )}
         {tab === "cover" && <CoverLetterTab />}
+        {tab === "hub" && <LearningHubTab />}
       </main>
     </div>
   );
