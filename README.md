@@ -102,7 +102,16 @@ ANALYTICS_PROVIDER=google
 NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX  # from GA4 Admin > Data Streams
 ```
 
-This is a client-visible variable (`NEXT_PUBLIC_` prefix) because gtag.js runs in the browser — it's not a secret, and it's fine for it to appear in the built JavaScript bundle. Once both are set, `src/app/layout.tsx` injects Google Analytics (`src/components/analytics/google-analytics-scripts.tsx`) and tracks pageviews on every route change plus two product events (`ats_review_completed`, `job_match_completed`) via `trackEvent()` in `src/lib/analytics/provider.ts`.
+This is a client-visible variable (`NEXT_PUBLIC_` prefix) because gtag.js runs in the browser — it's not a secret, and it's fine for it to appear in the built JavaScript bundle. Once both are set, `src/app/layout.tsx` injects Google Analytics (`src/components/analytics/google-analytics-scripts.tsx`) and tracks, via `trackEvent()`/`trackPageview()` in `src/lib/analytics/provider.ts`:
+
+| Event | Fires when |
+| --- | --- |
+| `page_view` | Every client-side route change (initial load included) |
+| `dashboard_tab_selected` | A dashboard sidebar tab is clicked (`tab` param) — dashboard tabs are client-side state, not routes, so this isn't already covered by `page_view` |
+| `ats_review_started` / `ats_review_completed` | A resume is submitted for ATS scoring / scoring finishes successfully (`score` param on completion) |
+| `job_match_started` / `job_match_completed` | A resume + job description are submitted for matching / matching finishes successfully (`score` param on completion) |
+
+No failure/error states are tracked, and no Cover Letter or Learning Hub events exist yet (no real success moment for either — v2/v3 features).
 
 **No consent/cookie-banner gate is implemented yet.** Enabling this for a real deployment with EU visitors currently means the tracker fires with no consent mechanism in front of it — acceptable for this project's own pre-GA deployment by deliberate choice, but if you enable it for your own production use with real visitors, you're responsible for your own compliance (GDPR/ePrivacy or otherwise) until a consent flow ships.
 

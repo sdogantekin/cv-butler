@@ -33,6 +33,7 @@ export function JobMatchTab({
     event.preventDefault();
     if (!file || !jobDescriptionText.trim()) return;
 
+    trackEvent("job_match_started");
     setIsSubmitting(true);
     try {
       const formData = new FormData();

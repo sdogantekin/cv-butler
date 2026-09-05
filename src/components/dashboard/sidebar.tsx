@@ -1,6 +1,7 @@
 "use client";
 
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { trackEvent } from "@/lib/analytics/provider";
 import { cn } from "@/lib/utils";
 
 export type DashboardTab = "home" | "ats" | "job" | "cover" | "hub";
@@ -37,7 +38,10 @@ export function Sidebar({
           <button
             key={item.tab}
             type="button"
-            onClick={() => onTabChange(item.tab)}
+            onClick={() => {
+              trackEvent("dashboard_tab_selected", { tab: item.tab });
+              onTabChange(item.tab);
+            }}
             className={cn(
               "rounded-lg px-3.5 py-2.5 text-left text-sm font-semibold",
               activeTab === item.tab

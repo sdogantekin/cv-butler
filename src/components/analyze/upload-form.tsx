@@ -25,6 +25,7 @@ export function UploadForm({ onScored }: { onScored: (result: ScoreResult) => vo
     event.preventDefault();
     if (!file) return;
 
+    trackEvent("ats_review_started");
     setIsSubmitting(true);
     try {
       const formData = new FormData();
