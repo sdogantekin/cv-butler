@@ -36,6 +36,29 @@ export const env = createEnv({
     // for local/manual testing so the limit doesn't have to be worked around
     // by clearing DB rows.
     DAILY_ACTION_LIMIT: z.coerce.number().int().positive().default(3),
+
+    // Opt-in, provider-agnostic analytics — unset (the default) means zero
+    // third-party script loads and zero tracking calls, for local dev and any
+    // self-hosted fork. Mirrors LLM_PROVIDER's enum-switch shape. Server-only:
+    // the client-side trackEvent()/trackPageview() switch reads
+    // NEXT_PUBLIC_GA_MEASUREMENT_ID below instead — see the two-switch note
+    // in src/lib/analytics/provider.ts.
+    ANALYTICS_PROVIDER: z.enum(["google"]).optional(),
   },
-  experimental__runtimeEnv: process.env,
+  client: {
+    // GA4 measurement ID (e.g. "G-XXXXXXXXXX"). Must live here (not in
+    // `server`) and keep its NEXT_PUBLIC_ prefix so it's readable from the
+    // browser, since gtag.js runs client-side.
+    NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
+  },
+  experimental__runtimeEnv: {
+    ...process.env,
+    // NEXT_PUBLIC_ vars must appear here as an explicit, literal
+    // `process.env.NEXT_PUBLIC_X` member-access expression. Next.js's
+    // compiler only statically inlines that exact textual pattern into the
+    // client bundle at build time — a wholesale `...process.env` spread is
+    // invisible to it, so the value would silently come back `undefined` in
+    // the browser without this line.
+    NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+  },
 });

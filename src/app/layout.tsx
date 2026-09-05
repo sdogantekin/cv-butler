@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { getAnalyticsConfig } from "@/lib/analytics/provider";
+import { GoogleAnalyticsScripts } from "@/components/analytics/google-analytics-scripts";
+import { AnalyticsPageviewTracker } from "@/components/analytics/analytics-pageview-tracker";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,6 +23,8 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  const analytics = getAnalyticsConfig();
+
   return (
     <html
       lang="en"
@@ -27,6 +33,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         {children}
         <Toaster />
+        {analytics && (
+          <>
+            {analytics.provider === "google" && (
+              <GoogleAnalyticsScripts measurementId={analytics.measurementId} />
+            )}
+            <Suspense fallback={null}>
+              <AnalyticsPageviewTracker />
+            </Suspense>
+          </>
+        )}
       </body>
     </html>
   );

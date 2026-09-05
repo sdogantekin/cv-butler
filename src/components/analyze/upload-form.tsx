@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ProcessingIndicator } from "@/components/dashboard/processing-indicator";
 import { ResumeDropzone } from "@/components/dashboard/resume-dropzone";
+import { trackEvent } from "@/lib/analytics/provider";
 import type { ParsedResume } from "@/lib/schemas/resume";
 import type { AtsScoreResult, Recommendation } from "@/lib/schemas/analysis";
 
@@ -35,6 +36,7 @@ export function UploadForm({ onScored }: { onScored: (result: ScoreResult) => vo
         return;
       }
       onScored(data as ScoreResult);
+      trackEvent("ats_review_completed", { score: (data as ScoreResult).atsScore.overallScore });
       toast.success(`ATS score ready. ${data.remaining} action(s) left today.`);
     } catch {
       toast.error("Something went wrong while analyzing your resume.");

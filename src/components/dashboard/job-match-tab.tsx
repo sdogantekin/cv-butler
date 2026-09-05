@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ProcessingIndicator } from "@/components/dashboard/processing-indicator";
 import { ResumeDropzone } from "@/components/dashboard/resume-dropzone";
 import { MatchDisplay } from "@/components/analyze/match-display";
+import { trackEvent } from "@/lib/analytics/provider";
 import type { JdMatchResult, Recommendation } from "@/lib/schemas/analysis";
 
 export type JobMatchResult = {
@@ -44,6 +45,7 @@ export function JobMatchTab({
         return;
       }
       onMatched(data as JobMatchResult);
+      trackEvent("job_match_completed", { score: (data as JobMatchResult).jdMatch.overallScore });
       toast.success(`Match ready. ${data.remaining} action(s) left today.`);
     } catch {
       toast.error("Something went wrong while matching the job description.");
