@@ -52,6 +52,8 @@ Fill in `.env.local`:
 - `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` — create an OAuth 2.0 Client ID in the [Google Cloud Console](https://console.cloud.google.com/apis/credentials), authorized redirect URI `http://localhost:3000/api/auth/callback/google`
 - `ANTHROPIC_API_KEY` — your Claude API key (default LLM provider)
 
+That's everything required to run the app. Analytics (below) is a separate, optional feature — leave its two env vars unset and you get a fully working app with zero third-party tracking.
+
 Then:
 
 ```bash
@@ -89,8 +91,24 @@ Two parallel Drizzle schema trees make this possible — `src/db/schema/sqlite/`
 
 Deploying Postgres migrations manually (non-Vercel hosts): run `npm run db:migrate:pg` against your `DATABASE_URL` before `npm run build`.
 
+## Analytics (optional, off by default)
+
+Product analytics is opt-in, mirroring the `LLM_PROVIDER` pattern: unset `ANALYTICS_PROVIDER` (the default for local dev and every fresh clone) means the app never loads any third-party script and never fires a single tracking call — nothing to disable, nothing to strip out, self-hosting stays fully private with no configuration.
+
+To enable it, set both in `.env.local` (or your host's env var settings):
+
+```bash
+ANALYTICS_PROVIDER=google
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX  # from GA4 Admin > Data Streams
+```
+
+This is a client-visible variable (`NEXT_PUBLIC_` prefix) because gtag.js runs in the browser — it's not a secret, and it's fine for it to appear in the built JavaScript bundle. Once both are set, `src/app/layout.tsx` injects Google Analytics (`src/components/analytics/google-analytics-scripts.tsx`) and tracks pageviews on every route change plus two product events (`ats_review_completed`, `job_match_completed`) via `trackEvent()` in `src/lib/analytics/provider.ts`.
+
+**No consent/cookie-banner gate is implemented yet.** Enabling this for a real deployment with EU visitors currently means the tracker fires with no consent mechanism in front of it — acceptable for this project's own pre-GA deployment by deliberate choice, but if you enable it for your own production use with real visitors, you're responsible for your own compliance (GDPR/ePrivacy or otherwise) until a consent flow ships.
+
 ## Notes
 
 - Resume files (PDF/`.docx` only — no legacy `.doc`, no scanned/OCR PDFs) are parsed in memory and never persisted; only the extracted structured data is stored.
 - The 3-actions/day limit is a shared pool across ATS scoring and job matching (each independent match — including one that uploads its own resume via `/api/analyze/match-upload` — still consumes only 1 of the 3), reset at midnight UTC.
 - Switching LLM provider (`anthropic` / `qwen` / `openai` / `deepseek` / `gemini`) is a `.env` change (`LLM_PROVIDER`), not a code change — see [Architecture](#architecture-the-langgraph-pipeline).
+- Analytics is unset/off by default — see [Analytics](#analytics-optional-off-by-default).
