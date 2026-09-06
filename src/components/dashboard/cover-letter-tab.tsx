@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 
 export function CoverLetterTab() {
   return (
@@ -9,14 +8,12 @@ export function CoverLetterTab() {
         Generate a tailored draft using your resume, with a job description as an optional
         add-on for tighter targeting.
       </p>
-      <Card>
-        <CardContent className="flex flex-wrap items-center gap-3 py-2">
-          <Badge variant="secondary">Coming in v2</Badge>
-          <p className="text-sm text-muted-foreground">
-            Cover letter generation isn&apos;t available yet — it&apos;s planned for v2.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-muted p-4">
+        <Badge variant="secondary">Coming in v2</Badge>
+        <p className="text-sm text-muted-foreground">
+          Cover letter generation isn&apos;t available yet — it&apos;s planned for v2.
+        </p>
+      </div>
     </div>
   );
 }

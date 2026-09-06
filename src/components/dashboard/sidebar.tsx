@@ -1,6 +1,5 @@
 "use client";
 
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { trackEvent } from "@/lib/analytics/provider";
 import { cn } from "@/lib/utils";
 
@@ -55,7 +54,6 @@ export function Sidebar({
       </nav>
 
       <div className="mt-4 flex flex-col gap-3.5 border-t pt-4">
-        <LanguageSwitcher className="self-start" />
         <div className="flex items-center gap-2.5">
           <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
             {initialsFor(userName)}

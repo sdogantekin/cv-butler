@@ -83,28 +83,30 @@ export function JobMatchTab({
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-9">
           <ResumeDropzone file={file} onFileChange={setFile} />
-          <div>
-            <div className="mb-2 text-sm font-semibold">
-              Company name{" "}
-              <span className="text-xs font-medium text-muted-foreground">(optional)</span>
-            </div>
-            <Input
-              placeholder="e.g. Acme Corp"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-            />
-          </div>
           <div className="rounded-xl border border-dashed p-8">
-            <div className="mb-2 text-sm font-semibold">
-              Job description{" "}
-              <span className="text-xs font-medium text-muted-foreground">(required)</span>
+            <div className="mb-6">
+              <div className="mb-2 text-sm font-semibold">
+                Company name{" "}
+                <span className="text-xs font-medium text-muted-foreground">(optional)</span>
+              </div>
+              <Input
+                placeholder="e.g. Acme Corp"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+              />
             </div>
-            <Textarea
-              rows={5}
-              placeholder="Paste the job description here"
-              value={jobDescriptionText}
-              onChange={(e) => setJobDescriptionText(e.target.value)}
-            />
+            <div>
+              <div className="mb-2 text-sm font-semibold">
+                Job description{" "}
+                <span className="text-xs font-medium text-muted-foreground">(required)</span>
+              </div>
+              <Textarea
+                rows={5}
+                placeholder="Paste the job description here"
+                value={jobDescriptionText}
+                onChange={(e) => setJobDescriptionText(e.target.value)}
+              />
+            </div>
           </div>
           <Button type="submit" size="lg" disabled={!file || !jobDescriptionText.trim()}>
             Start matching
