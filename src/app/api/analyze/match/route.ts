@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message }, { status: 400 });
   }
-  const { resumeId, jobDescriptionText } = parsed.data;
+  const { resumeId, jobDescriptionText, companyName } = parsed.data;
 
   const resume = await db.query.resumes.findFirst({
     where: and(eq(resumes.id, resumeId), eq(resumes.userId, session.user.id)),
@@ -39,7 +39,11 @@ export async function POST(request: Request) {
 
   const parsedResume = ParsedResumeSchema.parse(resume.parsedResume);
 
-  const result = await graph.invoke({ parsedResume, jobDescriptionText });
+  const result = await graph.invoke({
+    parsedResume,
+    jobDescriptionText,
+    companyName: companyName ?? null,
+  });
   if (!result.jdMatch) {
     return NextResponse.json({ error: "Analysis failed", details: result.errors }, { status: 502 });
   }

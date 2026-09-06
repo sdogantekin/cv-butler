@@ -52,6 +52,9 @@ const FAKE_JD_DIMENSIONS = [
   { name: "Skills" as const, score: 70, gaps: ["Kubernetes"] },
   { name: "Experience" as const, score: 50, gaps: ["No cloud infrastructure experience"] },
   { name: "Education" as const, score: 90, gaps: [] },
+  { name: "Domain Fit" as const, score: 60, gaps: ["No fintech background"] },
+  { name: "Seniority Fit" as const, score: 80, gaps: [] },
+  { name: "Culture Fit" as const, score: 50, gaps: [] },
 ];
 const FAKE_JD_MATCH: JdMatchResult = {
   overallScore: computeOverallMatchScore(FAKE_JD_DIMENSIONS),
@@ -61,6 +64,14 @@ const FAKE_JD_MATCH: JdMatchResult = {
 
 const extractMock = vi.fn();
 const matchMock = vi.fn();
+
+// Mocked alongside the LLM boundary below: it's the other external-service
+// call the match node can make, and it directly imports the real @/lib/env
+// module (unlike everything else here), which would otherwise fail its
+// required-var validation in a test process with no real env configured.
+vi.mock("@/lib/search/company-search", () => ({
+  searchCompanyInfo: vi.fn().mockResolvedValue(null),
+}));
 
 // Mock only the LLM boundary — every node runs for real, so this test
 // exercises the graph's actual conditional routing, not just node output shapes.
@@ -118,5 +129,20 @@ describe("graph routing", () => {
     expect(extractMock).not.toHaveBeenCalled();
     expect(matchMock).toHaveBeenCalledOnce();
     expect(result.recommendations.length).toBeGreaterThan(0);
+  });
+
+  it("match with a companyName but no TAVILY_API_KEY configured still completes and scores all 6 dimensions", async () => {
+    extractMock.mockClear();
+    matchMock.mockClear();
+
+    const result = await graph.invoke({
+      parsedResume: FAKE_PARSED_RESUME,
+      jobDescriptionText: "Looking for a Kubernetes expert.",
+      companyName: "Acme Corp",
+    });
+
+    expect(result.jdMatch).toEqual(FAKE_JD_MATCH);
+    expect(result.jdMatch?.dimensions).toHaveLength(6);
+    expect(matchMock).toHaveBeenCalledOnce();
   });
 });

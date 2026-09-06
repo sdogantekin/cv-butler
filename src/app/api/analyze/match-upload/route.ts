@@ -27,6 +27,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing resume file" }, { status: 400 });
   }
   const jobDescriptionTextField = formData.get("jobDescriptionText");
+  const companyNameField = formData.get("companyName");
 
   const upload = ResumeUploadSchema.safeParse({
     mimeType: file.type,
@@ -41,6 +42,12 @@ export async function POST(request: Request) {
   );
   if (!jd.success) {
     return NextResponse.json({ error: jd.error.issues[0]?.message }, { status: 400 });
+  }
+  const companyName = JdMatchRequestSchema.shape.companyName.safeParse(
+    typeof companyNameField === "string" ? companyNameField : undefined,
+  );
+  if (!companyName.success) {
+    return NextResponse.json({ error: companyName.error.issues[0]?.message }, { status: 400 });
   }
 
   const rateLimit = await checkAndConsumeAction(session.user.id, "jd_match");
@@ -70,7 +77,11 @@ export async function POST(request: Request) {
     })
     .returning();
 
-  const result = await graph.invoke({ parsedResume, jobDescriptionText: jd.data });
+  const result = await graph.invoke({
+    parsedResume,
+    jobDescriptionText: jd.data,
+    companyName: companyName.data ?? null,
+  });
   if (!result.jdMatch) {
     return NextResponse.json({ error: "Analysis failed", details: result.errors }, { status: 502 });
   }

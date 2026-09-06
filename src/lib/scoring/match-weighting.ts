@@ -1,12 +1,26 @@
-type MatchDimensionName = "Skills" | "Experience" | "Education";
+type MatchDimensionName =
+  | "Skills"
+  | "Experience"
+  | "Education"
+  | "Domain Fit"
+  | "Seniority Fit"
+  | "Culture Fit";
 
-// Skills and Experience dominate equally as the primary fit predictors for
-// most roles; Education acts more as a qualifying gate, weighted lower but
-// still meaningful.
+// Skills and Experience remain the dominant, equally-weighted primary fit
+// predictors (dropped from 40 to 30 each to make room for three new
+// dimensions). Domain Fit and Seniority Fit form a secondary tier — real
+// predictors, but less decisive alone than raw skills/experience match.
+// Education stays a qualifying gate, not a differentiator. Culture Fit is
+// weighted lowest: it's the softest, least-grounded signal — many JD/resume
+// pairs state nothing explicit to compare — so it's informational context
+// rather than a strong driver of overall fit.
 export const JD_DIMENSION_WEIGHTS: Readonly<Record<MatchDimensionName, number>> = {
-  Skills: 40,
-  Experience: 40,
-  Education: 20,
+  Skills: 30,
+  Experience: 30,
+  "Domain Fit": 15,
+  "Seniority Fit": 15,
+  Education: 5,
+  "Culture Fit": 5,
 };
 
 export function computeOverallMatchScore(

@@ -44,6 +44,13 @@ export const env = createEnv({
     // NEXT_PUBLIC_GA_MEASUREMENT_ID below instead — see the two-switch note
     // in src/lib/analytics/provider.ts.
     ANALYTICS_PROVIDER: z.enum(["google"]).optional(),
+
+    // Opt-in web-search enrichment for the Culture Fit match dimension
+    // (src/lib/search/company-search.ts). Unset (the default) means that
+    // dimension is scored from resume/JD text alone with zero third-party
+    // calls — mirrors ANALYTICS_PROVIDER's opt-in shape, not LLM_PROVIDER's
+    // required one.
+    TAVILY_API_KEY: z.string().optional(),
   },
   client: {
     // GA4 measurement ID (e.g. "G-XXXXXXXXXX"). Must live here (not in

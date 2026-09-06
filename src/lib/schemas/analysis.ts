@@ -38,7 +38,14 @@ export const JdMatchResultSchema = z.object({
   overallScore: z.number().min(0).max(100),
   dimensions: z.array(
     z.object({
-      name: z.enum(["Skills", "Experience", "Education"]),
+      name: z.enum([
+        "Skills",
+        "Experience",
+        "Education",
+        "Domain Fit",
+        "Seniority Fit",
+        "Culture Fit",
+      ]),
       score: z.number().min(0).max(100),
       gaps: z.array(z.string()),
     }),

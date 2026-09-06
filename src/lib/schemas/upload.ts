@@ -23,4 +23,13 @@ export const ResumeUploadSchema = z.object({
 export const JdMatchRequestSchema = z.object({
   resumeId: z.string().uuid(),
   jobDescriptionText: z.string().min(1).max(20_000),
+  // Optional. Blank/whitespace-only input normalizes to undefined so the
+  // match node treats it as "no company name" (skips Tavily enrichment)
+  // rather than searching for an empty string.
+  companyName: z
+    .string()
+    .trim()
+    .max(200)
+    .optional()
+    .transform((v) => (v ? v : undefined)),
 });

@@ -12,9 +12,12 @@ describe("computeOverallMatchScore", () => {
       { name: "Skills", score: 80 },
       { name: "Experience", score: 60 },
       { name: "Education", score: 100 },
+      { name: "Domain Fit", score: 70 },
+      { name: "Seniority Fit", score: 50 },
+      { name: "Culture Fit", score: 90 },
     ]);
-    // (80*40 + 60*40 + 100*20) / 100 = 76
-    expect(score).toBe(76);
+    // (80*30 + 60*30 + 100*5 + 70*15 + 50*15 + 90*5) / 100 = 69.5 -> rounds to 70
+    expect(score).toBe(70);
   });
 
   it("reweights over partial dimension input rather than crashing", () => {

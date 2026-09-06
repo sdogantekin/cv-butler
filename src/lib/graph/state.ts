@@ -18,6 +18,7 @@ function overwritable<T>() {
 export const GraphState = Annotation.Root({
   resumeText: overwritable<string | null>(),
   jobDescriptionText: overwritable<string | null>(),
+  companyName: overwritable<string | null>(),
   parsedResume: overwritable<ParsedResume | null>(),
   atsScore: overwritable<AtsScoreResult | null>(),
   jdMatch: overwritable<JdMatchResult | null>(),

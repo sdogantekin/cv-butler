@@ -33,7 +33,7 @@ This lets one compiled graph serve every real invocation pattern in the app:
 
 **Scoring is hybrid, not purely LLM-judged.** Five of the six ATS categories (contact info, section structure, date formatting, content depth, quantified achievements — see `src/lib/scoring/ats-checks.ts`) are deterministic, unit-tested regex/structural checks against the parsed resume. Only the sixth category, "Keyword & Content Relevance," is an LLM judgment call. The `overallScore` is always a weighted average computed in code (`computeOverallAtsScore`), never a number the LLM invents directly — this keeps repeated runs on the same resume consistent.
 
-**Matching is LLM-driven with a deterministic assist.** Semantic fit (a candidate can satisfy a requirement under different wording) is inherently a judgment call, so the `match` node's LLM call scores three dimensions (Skills/Experience/Education). A deterministic keyword-overlap computation (`src/lib/scoring/keyword-overlap.ts`) is fed into the prompt as grounding evidence, and `overallScore` is again a weighted average computed in code. Language/location requirements stated in the job description are extracted as separate `hardConstraints` (met/not-met) rather than blended into a dimension score — an unmet constraint caps the overall score, since it's typically a dealbreaker regardless of skills fit.
+**Matching is LLM-driven with a deterministic assist.** Semantic fit (a candidate can satisfy a requirement under different wording) is inherently a judgment call, so the `match` node's LLM call scores six dimensions: Skills, Experience, Education, Domain Fit, Seniority Fit, and Culture Fit (weights in `src/lib/scoring/match-weighting.ts`). A deterministic keyword-overlap computation (`src/lib/scoring/keyword-overlap.ts`) is fed into the prompt as grounding evidence, and `overallScore` is again a weighted average computed in code. Language/location requirements stated in the job description are extracted as separate `hardConstraints` (met/not-met) rather than blended into a dimension score — an unmet constraint caps the overall score, since it's typically a dealbreaker regardless of skills fit. Culture Fit can optionally be enriched with a real web search about the target company — see [Company search enrichment](#company-search-enrichment-optional-off-by-default).
 
 **LLM provider is a `.env` switch, not a code change.** `src/lib/llm/provider.ts` exposes one `getChatModel()` factory that every node calls; it switches on `LLM_PROVIDER` across five LangChain provider wrappers — `anthropic` (default), `qwen`, `openai`, `deepseek`, `gemini` (the latter three via `ChatOpenAI`'s OpenAI-compatible client, except `gemini` which uses `ChatGoogleGenerativeAI`). Nodes use `.withStructuredOutput(zodSchema)` so the LLM's response is parsed straight into a validated Zod type — no manual JSON parsing.
 
@@ -115,9 +115,24 @@ No failure/error states are tracked, and no Cover Letter or Learning Hub events 
 
 **No consent/cookie-banner gate is implemented yet.** Enabling this for a real deployment with EU visitors currently means the tracker fires with no consent mechanism in front of it — acceptable for this project's own pre-GA deployment by deliberate choice, but if you enable it for your own production use with real visitors, you're responsible for your own compliance (GDPR/ePrivacy or otherwise) until a consent flow ships.
 
+## Company search enrichment (optional, off by default)
+
+The Job Matching form's "Culture Fit" dimension can optionally be grounded with a real web search about the company name entered on the form (the field itself is optional too). Unset `TAVILY_API_KEY` (the default) means zero calls to Tavily and zero cost — Culture Fit is still scored, just from resume/JD text alone.
+
+To enable it, set in `.env.local` (or your host's env var settings):
+
+```bash
+TAVILY_API_KEY=tvly-xxx
+```
+
+If the key is set but a lookup fails for any reason (network error, timeout, rate limit), the match still completes normally — it's treated as "no search results available," never a hard failure. See `src/lib/search/company-search.ts`.
+
+Chosen over scraping sites like Glassdoor/Kununu directly: both explicitly prohibit automated scraping in their Terms of Service, and neither offers a public API — a general web-search API stays within normal ToS.
+
 ## Notes
 
 - Resume files (PDF/`.docx` only — no legacy `.doc`, no scanned/OCR PDFs) are parsed in memory and never persisted; only the extracted structured data is stored.
 - The 3-actions/day limit is a shared pool across ATS scoring and job matching (each independent match — including one that uploads its own resume via `/api/analyze/match-upload` — still consumes only 1 of the 3), reset at midnight UTC.
 - Switching LLM provider (`anthropic` / `qwen` / `openai` / `deepseek` / `gemini`) is a `.env` change (`LLM_PROVIDER`), not a code change — see [Architecture](#architecture-the-langgraph-pipeline).
 - Analytics is unset/off by default — see [Analytics](#analytics-optional-off-by-default).
+- Company web-search enrichment (`TAVILY_API_KEY`) is unset/off by default — see [Company search enrichment](#company-search-enrichment-optional-off-by-default).

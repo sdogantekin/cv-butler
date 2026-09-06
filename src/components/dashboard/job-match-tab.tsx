@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ProcessingIndicator } from "@/components/dashboard/processing-indicator";
 import { ResumeDropzone } from "@/components/dashboard/resume-dropzone";
@@ -26,6 +27,7 @@ export function JobMatchTab({
   onReset: () => void;
 }) {
   const [file, setFile] = useState<File | null>(null);
+  const [companyName, setCompanyName] = useState("");
   const [jobDescriptionText, setJobDescriptionText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -38,6 +40,7 @@ export function JobMatchTab({
     try {
       const formData = new FormData();
       formData.append("resume", file);
+      formData.append("companyName", companyName);
       formData.append("jobDescriptionText", jobDescriptionText);
       const response = await fetch("/api/analyze/match-upload", { method: "POST", body: formData });
       const data = await response.json();
@@ -80,6 +83,17 @@ export function JobMatchTab({
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-9">
           <ResumeDropzone file={file} onFileChange={setFile} />
+          <div>
+            <div className="mb-2 text-sm font-semibold">
+              Company name{" "}
+              <span className="text-xs font-medium text-muted-foreground">(optional)</span>
+            </div>
+            <Input
+              placeholder="e.g. Acme Corp"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+            />
+          </div>
           <div className="rounded-xl border border-dashed p-8">
             <div className="mb-2 text-sm font-semibold">
               Job description{" "}
