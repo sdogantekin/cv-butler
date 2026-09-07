@@ -4,10 +4,11 @@ import { db } from "@/db";
 import { resumes, analyses } from "@/db/schema";
 import { ResumeUploadSchema, JdMatchRequestSchema } from "@/lib/schemas/upload";
 import { ParsedResumeSchema } from "@/lib/schemas/resume";
-import { JdMatchResultSchema } from "@/lib/schemas/analysis";
+import { JdMatchResultSchema, type JdMatchResult } from "@/lib/schemas/analysis";
 import { checkAndConsumeAction } from "@/lib/rate-limit";
 import { extractResumeText } from "@/lib/parsers/resume-file";
 import { extractNode } from "@/lib/graph/nodes/extract";
+import { matchDiffNode } from "@/lib/graph/nodes/match-diff";
 import { graph } from "@/lib/graph";
 
 // Thin route: auth -> validate -> rate-limit -> extract -> match -> persist -> respond.
@@ -48,6 +49,26 @@ export async function POST(request: Request) {
   );
   if (!companyName.success) {
     return NextResponse.json({ error: companyName.error.issues[0]?.message }, { status: 400 });
+  }
+
+  // Optional: set when the user is comparing an updated resume against an
+  // earlier match result they already have client-side (see
+  // job-match-tab.tsx). Validated up front, alongside the other fields,
+  // before any daily action is spent on a malformed request.
+  const previousJdMatchField = formData.get("previousJdMatch");
+  let previousJdMatch: JdMatchResult | undefined;
+  if (typeof previousJdMatchField === "string" && previousJdMatchField.length > 0) {
+    let parsedField: unknown;
+    try {
+      parsedField = JSON.parse(previousJdMatchField);
+    } catch {
+      return NextResponse.json({ error: "Invalid previousJdMatch" }, { status: 400 });
+    }
+    const previous = JdMatchResultSchema.safeParse(parsedField);
+    if (!previous.success) {
+      return NextResponse.json({ error: "Invalid previousJdMatch" }, { status: 400 });
+    }
+    previousJdMatch = previous.data;
   }
 
   const rateLimit = await checkAndConsumeAction(session.user.id, "jd_match");
@@ -95,11 +116,24 @@ export async function POST(request: Request) {
     result: jdMatch,
   });
 
+  let matchDiff;
+  if (previousJdMatch) {
+    const diffResult = await matchDiffNode({ before: previousJdMatch, after: jdMatch });
+    if (!("matchDiff" in diffResult)) {
+      return NextResponse.json(
+        { error: "Comparison failed", details: diffResult.errors },
+        { status: 502 },
+      );
+    }
+    matchDiff = diffResult.matchDiff;
+  }
+
   return NextResponse.json({
     resumeId: resume.id,
     parsedResume,
     jdMatch,
     recommendations: result.recommendations,
+    ...(matchDiff && { matchDiff }),
     remaining: rateLimit.remaining,
   });
 }

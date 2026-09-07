@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getChatModel } from "@/lib/llm/provider";
-import { JdMatchResultSchema } from "@/lib/schemas/analysis";
+import { JdMatchResultSchema, MATCH_DIMENSION_NAMES } from "@/lib/schemas/analysis";
 import type { ParsedResume } from "@/lib/schemas/resume";
 import { type CompanySearchResult, searchCompanyInfo } from "@/lib/search/company-search";
 import { type KeywordOverlapResult, computeKeywordOverlap } from "@/lib/scoring/keyword-overlap";
@@ -11,14 +11,7 @@ const JdMatchLlmOutputSchema = z.object({
   dimensions: z
     .array(
       z.object({
-        name: z.enum([
-          "Skills",
-          "Experience",
-          "Education",
-          "Domain Fit",
-          "Seniority Fit",
-          "Culture Fit",
-        ]),
+        name: z.enum(MATCH_DIMENSION_NAMES),
         score: z.number().min(0).max(100),
         gaps: z.array(z.string()),
       }),

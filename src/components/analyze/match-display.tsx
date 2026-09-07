@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import type { JdMatchResult, Recommendation } from "@/lib/schemas/analysis";
@@ -6,9 +7,11 @@ import type { JdMatchResult, Recommendation } from "@/lib/schemas/analysis";
 export function MatchDisplay({
   jdMatch,
   recommendations,
+  onCompareClick,
 }: {
   jdMatch: JdMatchResult;
   recommendations: Recommendation[];
+  onCompareClick?: () => void;
 }) {
   const hasUnmetConstraint = jdMatch.hardConstraints.some((c) => !c.met);
 
@@ -68,6 +71,18 @@ export function MatchDisplay({
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+        {onCompareClick && (
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-muted p-4">
+            <div>
+              <div className="text-sm font-semibold">Upload your updated resume</div>
+              <p className="text-sm text-muted-foreground">
+                Made changes based on the feedback above? Upload the new version to see what
+                improved.
+              </p>
+            </div>
+            <Button onClick={onCompareClick}>Upload updated resume</Button>
           </div>
         )}
       </CardContent>

@@ -31,6 +31,15 @@ export const HardConstraintSchema = z.object({
 
 export type HardConstraint = z.infer<typeof HardConstraintSchema>;
 
+export const MATCH_DIMENSION_NAMES = [
+  "Skills",
+  "Experience",
+  "Education",
+  "Domain Fit",
+  "Seniority Fit",
+  "Culture Fit",
+] as const;
+
 // Matcher Node output. `overallScore` is a weighted average of `dimensions`
 // computed in code, capped low if any `hardConstraints` entry is unmet —
 // see src/lib/scoring/match-weighting.ts.
@@ -38,14 +47,7 @@ export const JdMatchResultSchema = z.object({
   overallScore: z.number().min(0).max(100),
   dimensions: z.array(
     z.object({
-      name: z.enum([
-        "Skills",
-        "Experience",
-        "Education",
-        "Domain Fit",
-        "Seniority Fit",
-        "Culture Fit",
-      ]),
+      name: z.enum(MATCH_DIMENSION_NAMES),
       score: z.number().min(0).max(100),
       gaps: z.array(z.string()),
     }),
@@ -58,3 +60,35 @@ export const JdMatchResultSchema = z.object({
 });
 
 export type JdMatchResult = z.infer<typeof JdMatchResultSchema>;
+
+export const MatchDiffItemSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+});
+
+export type MatchDiffItem = z.infer<typeof MatchDiffItemSchema>;
+
+// Match Diff Node output. Score deltas are plain arithmetic (before/after
+// pulled straight from two JdMatchResults); resolved/stillOpen/newIssues are
+// an LLM classification of the two results' free-text gaps and
+// hardConstraints, since gaps have no stable ID to diff against directly —
+// see src/lib/graph/nodes/match-diff.ts. Never persisted; computed on demand
+// and returned in the API response only.
+export const MatchDiffResultSchema = z.object({
+  beforeScore: z.number().min(0).max(100),
+  afterScore: z.number().min(0).max(100),
+  overallDelta: z.number(),
+  dimensions: z.array(
+    z.object({
+      name: z.enum(MATCH_DIMENSION_NAMES),
+      before: z.number().min(0).max(100),
+      after: z.number().min(0).max(100),
+      delta: z.number(),
+    }),
+  ),
+  resolved: z.array(MatchDiffItemSchema),
+  stillOpen: z.array(MatchDiffItemSchema),
+  newIssues: z.array(MatchDiffItemSchema),
+});
+
+export type MatchDiffResult = z.infer<typeof MatchDiffResultSchema>;
