@@ -9,33 +9,39 @@ import { JobMatchTab, type JobMatchResult } from "@/components/dashboard/job-mat
 import { CoverLetterTab } from "@/components/dashboard/cover-letter-tab";
 import { LearningHubTab } from "@/components/dashboard/learning-hub-tab";
 import type { ScoreResult } from "@/components/analyze/upload-form";
+import type { UserStats } from "@/lib/stats";
 
 export function DashboardShell({
   userName,
   userEmail,
+  stats,
   logoutAction,
 }: {
   userName: string;
   userEmail: string;
+  stats: UserStats;
   logoutAction: () => Promise<void>;
 }) {
   const [tab, setTab] = useState<DashboardTab>("home");
   const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null);
   const [matchResult, setMatchResult] = useState<JobMatchResult | null>(null);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen flex-1 flex-col">
-      <DashboardHeader />
-      <div className="flex flex-1">
+      <DashboardHeader onMenuClick={() => setMobileNavOpen(true)} />
+      <div className="flex flex-1 flex-col lg:flex-row">
         <Sidebar
           activeTab={tab}
           onTabChange={setTab}
           userName={userName}
           logoutAction={logoutAction}
+          mobileOpen={mobileNavOpen}
+          onCloseMobile={() => setMobileNavOpen(false)}
         />
-        <main className="min-w-0 flex-1 px-12 py-10">
+        <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 lg:px-12 lg:py-10">
           {tab === "home" && (
-            <HomeTab userName={userName} userEmail={userEmail} onTabChange={setTab} />
+            <HomeTab userName={userName} userEmail={userEmail} stats={stats} onTabChange={setTab} />
           )}
           {tab === "ats" && (
             <AtsTab

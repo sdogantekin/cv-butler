@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { DashboardTab } from "@/components/dashboard/sidebar";
+import type { UserStats } from "@/lib/stats";
 
 const JUMP_CARDS: { tab: DashboardTab; title: string; description: string }[] = [
   { tab: "ats", title: "ATS Review", description: "Score your resume against real ATS systems." },
@@ -20,13 +21,21 @@ const JUMP_CARDS: { tab: DashboardTab; title: string; description: string }[] = 
   { tab: "hub", title: "Learning Hub", description: "Guides on formatting, keywords, and ATS." },
 ];
 
+const STAT_ITEMS: { key: keyof UserStats; label: string }[] = [
+  { key: "atsReviews", label: "ATS reviews" },
+  { key: "jobMatches", label: "Job matches" },
+  { key: "coverLetters", label: "Cover letters" },
+];
+
 export function HomeTab({
   userName,
   userEmail,
+  stats,
   onTabChange,
 }: {
   userName: string;
   userEmail: string;
+  stats: UserStats;
   onTabChange: (tab: DashboardTab) => void;
 }) {
   const [copied, setCopied] = useState(false);
@@ -45,6 +54,15 @@ export function HomeTab({
     <div>
       <h1 className="mb-1 text-2xl font-extrabold">Welcome back, {userName}</h1>
       <p className="mb-7 text-sm text-muted-foreground">{userEmail}</p>
+
+      <div className="mb-7 grid gap-4 sm:grid-cols-3">
+        {STAT_ITEMS.map((item) => (
+          <div key={item.key} className="rounded-xl border p-5">
+            <div className="text-2xl font-extrabold">{stats[item.key]}</div>
+            <div className="text-sm text-muted-foreground">{item.label}</div>
+          </div>
+        ))}
+      </div>
 
       <Card>
         <CardContent className="flex flex-wrap items-center justify-between gap-4 py-1">
