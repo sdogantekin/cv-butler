@@ -49,10 +49,18 @@ const FAKE_ATS_SCORE: AtsScoreResult = {
 };
 
 const FAKE_JD_DIMENSIONS = [
-  { name: "Skills" as const, score: 70, gaps: ["Kubernetes"] },
-  { name: "Experience" as const, score: 50, gaps: ["No cloud infrastructure experience"] },
+  { name: "Skills" as const, score: 70, gaps: [{ severity: "critical" as const, description: "Kubernetes" }] },
+  {
+    name: "Experience" as const,
+    score: 50,
+    gaps: [{ severity: "moderate" as const, description: "No cloud infrastructure experience" }],
+  },
   { name: "Education" as const, score: 90, gaps: [] },
-  { name: "Domain Fit" as const, score: 60, gaps: ["No fintech background"] },
+  {
+    name: "Domain Fit" as const,
+    score: 60,
+    gaps: [{ severity: "minor" as const, description: "No fintech background" }],
+  },
   { name: "Seniority Fit" as const, score: 80, gaps: [] },
   { name: "Culture Fit" as const, score: 50, gaps: [] },
 ];
@@ -91,7 +99,7 @@ vi.mock("@/lib/llm/provider", () => ({
             return { dimensions: FAKE_JD_DIMENSIONS, hardConstraints: [] };
           }
           if (keys.includes("recommendations")) {
-            return { recommendations: [{ category: "Test", message: "Looks good." }] };
+            return { recommendations: [{ category: "Test", message: "Looks good.", severity: "minor" }] };
           }
           throw new Error(`Unexpected schema shape in test: ${keys.join(", ")}`);
         },

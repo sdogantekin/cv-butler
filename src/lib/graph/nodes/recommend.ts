@@ -20,7 +20,13 @@ export async function recommendNode(state: GraphStateType): Promise<Partial<Grap
 
 Each recommendation must reference concrete details from the analysis below (specific category names, specific gaps, specific findings) rather than generic career advice that could apply to any resume. Avoid vague filler phrasing (e.g. "make your resume stand out", "highlight your strengths") — state exactly what to change and why, tied to the actual scores/gaps given.
 
-If the job match analysis includes any hardConstraints entry with met: false, that must be your FIRST recommendation — an unmet language or location requirement can be a hard blocker regardless of how good the skills/experience fit is, so it should not be buried among generic suggestions.
+If the job match analysis includes any hardConstraints entry with met: false, that must be your FIRST recommendation, with severity "critical" — an unmet language or location requirement can be a hard blocker regardless of how good the skills/experience fit is, so it should not be buried among generic suggestions.
+
+Each recommendation also needs a "severity":
+- **critical**: addresses a blocking issue — an unmet hard constraint, or a critical gap in the analysis below.
+- **moderate**: a real, worthwhile improvement that isn't blocking on its own.
+- **minor**: small polish — worth doing, low impact on overall fit.
+Ground severity in what the analysis below actually shows, never from assumption.
 
 ATS score:
 ${JSON.stringify(state.atsScore)}

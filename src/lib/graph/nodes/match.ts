@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getChatModel } from "@/lib/llm/provider";
-import { JdMatchResultSchema, MATCH_DIMENSION_NAMES } from "@/lib/schemas/analysis";
+import { GapSchema, JdMatchResultSchema, MATCH_DIMENSION_NAMES } from "@/lib/schemas/analysis";
 import type { ParsedResume } from "@/lib/schemas/resume";
 import { type CompanySearchResult, searchCompanyInfo } from "@/lib/search/company-search";
 import { type KeywordOverlapResult, computeKeywordOverlap } from "@/lib/scoring/keyword-overlap";
@@ -13,7 +13,7 @@ const JdMatchLlmOutputSchema = z.object({
       z.object({
         name: z.enum(MATCH_DIMENSION_NAMES),
         score: z.number().min(0).max(100),
-        gaps: z.array(z.string()),
+        gaps: z.array(GapSchema),
       }),
     )
     .length(6),
@@ -76,7 +76,11 @@ ${JSON.stringify(resume, null, 2)}
 ${jobDescriptionText}
 
 ## Output requirements
-- Provide exactly 6 dimensions named "Skills", "Experience", "Education", "Domain Fit", "Seniority Fit", and "Culture Fit". For each, give a 0-100 score and a list of specific, concrete gaps (empty array if none) — each gap should name the specific missing/weak skill, experience type, qualification, domain mismatch, seniority mismatch, or culture/work-mode mismatch, not a generic statement.
+- Provide exactly 6 dimensions named "Skills", "Experience", "Education", "Domain Fit", "Seniority Fit", and "Culture Fit". For each, give a 0-100 score and a list of gaps (empty array if none). Each gap needs a "description" naming the specific missing/weak skill, experience type, qualification, domain mismatch, seniority mismatch, or culture/work-mode mismatch (not a generic statement), and a "severity":
+  - **critical**: the job description frames this as explicitly required or core to the role, and the resume shows nothing that satisfies it.
+  - **moderate**: a real gap that matters, but isn't a likely disqualifier alone — e.g. partial/adjacent experience, or something the job description frames as preferred/nice-to-have rather than required.
+  - **minor**: a small or soft mismatch — worth noting but low impact on overall fit (e.g. a borderline signal, a minor terminology difference).
+  Judge severity from how the job description itself frames the requirement, never from assumption — the same grounding rule as the gap's content itself.
 - Provide hardConstraints only for language/location requirements explicitly stated in the job description, with a brief grounded note for each.`;
 }
 

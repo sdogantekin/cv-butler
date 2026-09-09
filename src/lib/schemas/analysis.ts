@@ -1,8 +1,13 @@
 import { z } from "zod";
 
+// Ordered most to least severe — shared by gaps and recommendations, used
+// for sorting either by severity.
+export const SEVERITY_LEVELS = ["critical", "moderate", "minor"] as const;
+
 export const RecommendationSchema = z.object({
   category: z.string(),
   message: z.string(),
+  severity: z.enum(SEVERITY_LEVELS),
 });
 
 export type Recommendation = z.infer<typeof RecommendationSchema>;
@@ -40,6 +45,13 @@ export const MATCH_DIMENSION_NAMES = [
   "Culture Fit",
 ] as const;
 
+export const GapSchema = z.object({
+  severity: z.enum(SEVERITY_LEVELS),
+  description: z.string(),
+});
+
+export type Gap = z.infer<typeof GapSchema>;
+
 // Matcher Node output. `overallScore` is a weighted average of `dimensions`
 // computed in code, capped low if any `hardConstraints` entry is unmet —
 // see src/lib/scoring/match-weighting.ts.
@@ -49,7 +61,7 @@ export const JdMatchResultSchema = z.object({
     z.object({
       name: z.enum(MATCH_DIMENSION_NAMES),
       score: z.number().min(0).max(100),
-      gaps: z.array(z.string()),
+      gaps: z.array(GapSchema),
     }),
   ),
   // Language/location requirements explicitly stated in the job description.

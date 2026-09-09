@@ -15,11 +15,15 @@ export function AtsTab({
 }) {
   return (
     <div className="max-w-2xl">
-      <h1 className="mb-1.5 text-2xl font-extrabold">ATS Review</h1>
-      <p className="mb-7 max-w-lg text-sm text-muted-foreground">
-        Upload your resume to get a 0–100 score with a plain-language breakdown of formatting
-        issues, missing keywords, and quick fixes.
-      </p>
+      {!scoreResult && (
+        <>
+          <h1 className="mb-1.5 text-2xl font-extrabold">ATS Review</h1>
+          <p className="mb-7 max-w-lg text-sm text-muted-foreground">
+            Upload your resume to get a 0–100 score with a plain-language breakdown of formatting
+            issues, missing keywords, and quick fixes.
+          </p>
+        </>
+      )}
 
       {scoreResult ? (
         <div className="flex flex-col gap-5">

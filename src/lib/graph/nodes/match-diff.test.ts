@@ -5,7 +5,7 @@ import { computeMatchScoreDeltas, matchDiffNode } from "./match-diff";
 const BEFORE: JdMatchResult = {
   overallScore: 58,
   dimensions: [
-    { name: "Skills", score: 52, gaps: ["Missing Kubernetes experience"] },
+    { name: "Skills", score: 52, gaps: [{ severity: "critical", description: "Missing Kubernetes experience" }] },
     { name: "Experience", score: 70, gaps: [] },
     { name: "Education", score: 90, gaps: [] },
     { name: "Domain Fit", score: 60, gaps: [] },
@@ -23,7 +23,7 @@ const AFTER: JdMatchResult = {
     { name: "Education", score: 90, gaps: [] },
     { name: "Domain Fit", score: 60, gaps: [] },
     { name: "Seniority Fit", score: 80, gaps: [] },
-    { name: "Culture Fit", score: 50, gaps: ["Resume is now 3 pages"] },
+    { name: "Culture Fit", score: 50, gaps: [{ severity: "minor", description: "Resume is now 3 pages" }] },
   ],
   hardConstraints: [],
 };

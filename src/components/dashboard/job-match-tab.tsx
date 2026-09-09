@@ -103,12 +103,15 @@ export function JobMatchTab({
     }
   }
 
+  const isResultView = matchResult && resultView === "summary";
+
   return (
     <div className="max-w-2xl">
-      <h1 className="mb-1.5 text-2xl font-extrabold">Job Matching</h1>
+      <h1 className="mb-1.5 text-2xl font-extrabold">{isResultView ? "Match Results" : "Job Matching"}</h1>
       <p className="mb-7 max-w-lg text-sm text-muted-foreground">
-        Upload your resume and paste a job description to see how well it matches and what to
-        adjust.
+        {isResultView
+          ? "Here's how your resume matches the job description, category by category."
+          : "Upload your resume and paste a job description to see how well it matches and what to adjust."}
       </p>
 
       {matchResult && resultView === "summary" && (
