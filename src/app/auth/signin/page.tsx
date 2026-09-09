@@ -1,5 +1,6 @@
 import { signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
+import { env } from "@/lib/env";
 
 export default function SignInPage() {
   return (
@@ -7,7 +8,7 @@ export default function SignInPage() {
       <div className="text-center">
         <h1 className="text-2xl font-semibold">Sign in to CV Butler</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          3 free actions per day. No credit card required.
+          {env.DAILY_ACTION_LIMIT} free actions per day. No credit card required.
         </p>
       </div>
       <form
