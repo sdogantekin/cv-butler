@@ -129,6 +129,30 @@ If the key is set but a lookup fails for any reason (network error, timeout, rat
 
 **Pluggable via an additional custom provider.** Company research is behind a `CompanyResearchProvider` interface (`search(companyName): Promise<CompanySearchResult | null>`), so an extra source can be added without forking this repo — package it separately, implement the interface (default export, or a named `companyResearchProvider` export), and point `COMPANY_RESEARCH_PROVIDER_MODULE` at its package name; it's dynamically imported at runtime and its results are merged with Tavily's, not swapped in for them — each source is independently opt-in via its own env var, and a broken or misconfigured custom provider never blocks Tavily's contribution (or vice versa). This repo ships only the Tavily-backed provider itself.
 
+A minimal package implementing the interface looks like this — it only needs to match the shape below structurally (the dynamic import doesn't require depending on this repo's own types):
+
+```ts
+// your-custom-provider-package/index.ts
+//
+// The shape this needs to satisfy:
+//   interface CompanyResearchProvider {
+//     search(companyName: string): Promise<{ answer: string | null; snippets: string[] } | null>;
+//   }
+
+export const companyResearchProvider = {
+  async search(companyName: string) {
+    // Look up `companyName` against your own data source, then return
+    // either `{ answer, snippets }` (a short summary plus supporting
+    // excerpts — either can be omitted/empty) or `null` if nothing was
+    // found. Never throw: any failure should resolve to `null` so it
+    // degrades gracefully alongside Tavily's contribution.
+    return { answer: null, snippets: [`Example insight about ${companyName}.`] };
+  },
+};
+```
+
+Then in `.env.local` (or your host's env var settings): `COMPANY_RESEARCH_PROVIDER_MODULE=your-custom-provider-package`.
+
 ## Notes
 
 - Resume files (PDF/`.docx` only — no legacy `.doc`, no scanned/OCR PDFs) are parsed in memory and never persisted; only the extracted structured data is stored.
