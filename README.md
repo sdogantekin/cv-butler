@@ -127,7 +127,7 @@ TAVILY_API_KEY=tvly-xxx
 
 If the key is set but a lookup fails for any reason (network error, timeout, rate limit), the match still completes normally — it's treated as "no search results available," never a hard failure. See `src/lib/search/company-search.ts`.
 
-**Pluggable via an additional custom provider.** Company research is behind a `CompanyResearchProvider` interface (`search(companyName): Promise<CompanySearchResult | null>`), so an extra source can be added without forking this repo — package it separately, implement the interface (default export, or a named `companyResearchProvider` export), and point `COMPANY_RESEARCH_PROVIDER_MODULE` at its package name; it's dynamically imported at runtime and its results are merged with Tavily's, not swapped in for them — each source is independently opt-in via its own env var, and a broken or misconfigured custom provider never blocks Tavily's contribution (or vice versa). This repo ships only the Tavily-backed provider itself.
+**Pluggable via a custom provider.** Company research is behind a `CompanyResearchProvider` interface (`search(companyName): Promise<CompanySearchResult | null>`), so a different source can be swapped in without forking this repo — package it separately, implement the interface (default export, or a named `companyResearchProvider` export), and point `COMPANY_RESEARCH_PROVIDER_MODULE` at its package name; it's dynamically imported at runtime and takes over entirely (Tavily is not also called). This repo ships only the Tavily-backed provider itself.
 
 A minimal package implementing the interface looks like this — it only needs to match the shape below structurally (the dynamic import doesn't require depending on this repo's own types):
 
@@ -144,8 +144,9 @@ export const companyResearchProvider = {
     // Look up `companyName` against your own data source, then return
     // either `{ answer, snippets }` (a short summary plus supporting
     // excerpts — either can be omitted/empty) or `null` if nothing was
-    // found. Never throw: any failure should resolve to `null` so it
-    // degrades gracefully alongside Tavily's contribution.
+    // found. Never throw: any failure should resolve to `null`, the same
+    // way a Tavily lookup failure degrades gracefully rather than blocking
+    // the match.
     return { answer: null, snippets: [`Example insight about ${companyName}.`] };
   },
 };

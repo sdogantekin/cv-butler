@@ -88,45 +88,21 @@ describe("searchCompanyInfo", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("combines Tavily's result with a custom provider's result — an additional source, not a replacement", async () => {
+  it("uses the custom provider instead of Tavily when both are configured (module takes over entirely)", async () => {
     mockEnv = {
       TAVILY_API_KEY: "tvly-test",
       COMPANY_RESEARCH_PROVIDER_MODULE: "./providers/__fixtures__/valid-test-provider",
     };
-    const fetchMock = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        answer: "Acme Corp is a fast-paced, fully remote startup.",
-        results: [{ content: "Acme Corp offers remote-first work." }],
-      }),
-    });
+    const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
 
     const result = await searchCompanyInfo("Acme Corp");
 
-    expect(fetchMock).toHaveBeenCalledOnce();
-    expect(result?.answer).toBe("Acme Corp is a fast-paced, fully remote startup.");
-    expect(result?.snippets).toEqual(
-      expect.arrayContaining(["Acme Corp offers remote-first work.", "Custom result for Acme Corp"]),
-    );
+    expect(result).toEqual({ answer: "Custom result for Acme Corp", snippets: [] });
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("still returns Tavily's result when the custom provider module is misconfigured (never blocks the other source)", async () => {
-    mockEnv = { TAVILY_API_KEY: "tvly-test", COMPANY_RESEARCH_PROVIDER_MODULE: "./providers/__fixtures__/invalid-test-provider" };
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({ answer: "Acme Corp is a fast-paced, fully remote startup.", results: [] }),
-      }),
-    );
-
-    const result = await searchCompanyInfo("Acme Corp");
-
-    expect(result).toEqual({ answer: "Acme Corp is a fast-paced, fully remote startup.", snippets: [] });
-  });
-
-  it("returns null (never throws) when the only configured provider module doesn't export a valid provider", async () => {
+  it("returns null (never throws) when the configured provider module doesn't export a valid provider", async () => {
     mockEnv = { COMPANY_RESEARCH_PROVIDER_MODULE: "./providers/__fixtures__/invalid-test-provider" };
 
     await expect(searchCompanyInfo("Acme Corp")).resolves.toBeNull();
