@@ -51,6 +51,12 @@ export const env = createEnv({
     // calls — mirrors ANALYTICS_PROVIDER's opt-in shape, not LLM_PROVIDER's
     // required one.
     TAVILY_API_KEY: z.string().optional(),
+    // Package name of a custom CompanyResearchProvider implementation to use
+    // instead of the built-in Tavily provider (dynamically imported at
+    // runtime — see src/lib/search/company-search.ts). Unset (the default)
+    // uses Tavily when TAVILY_API_KEY is set, or no research at all
+    // otherwise. This repo never ships an implementation here itself.
+    COMPANY_RESEARCH_PROVIDER_MODULE: z.string().optional(),
   },
   client: {
     // GA4 measurement ID (e.g. "G-XXXXXXXXXX"). Must live here (not in

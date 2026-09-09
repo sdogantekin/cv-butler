@@ -127,7 +127,7 @@ TAVILY_API_KEY=tvly-xxx
 
 If the key is set but a lookup fails for any reason (network error, timeout, rate limit), the match still completes normally — it's treated as "no search results available," never a hard failure. See `src/lib/search/company-search.ts`.
 
-Chosen over scraping sites like Glassdoor/Kununu directly: both explicitly prohibit automated scraping in their Terms of Service, and neither offers a public API — a general web-search API stays within normal ToS.
+**Pluggable via an additional custom provider.** Company research is behind a `CompanyResearchProvider` interface (`search(companyName): Promise<CompanySearchResult | null>`), so an extra source can be added without forking this repo — package it separately, implement the interface (default export, or a named `companyResearchProvider` export), and point `COMPANY_RESEARCH_PROVIDER_MODULE` at its package name; it's dynamically imported at runtime and its results are merged with Tavily's, not swapped in for them — each source is independently opt-in via its own env var, and a broken or misconfigured custom provider never blocks Tavily's contribution (or vice versa). This repo ships only the Tavily-backed provider itself.
 
 ## Notes
 
