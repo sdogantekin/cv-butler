@@ -14,7 +14,7 @@ export const actionUsage = sqliteTable(
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    actionType: text("actionType", { enum: ["ats_score", "jd_match"] }).notNull(),
+    actionType: text("actionType", { enum: ["ats_score", "jd_match", "cover_letter"] }).notNull(),
     createdAt: integer("createdAt", { mode: "timestamp_ms" })
       .notNull()
       .$defaultFn(() => new Date()),

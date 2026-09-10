@@ -104,3 +104,13 @@ export const MatchDiffResultSchema = z.object({
 });
 
 export type MatchDiffResult = z.infer<typeof MatchDiffResultSchema>;
+
+// Copywriter Node output. "general" when generated from the resume alone,
+// "targeted" when a job description was also provided — see
+// src/lib/graph/nodes/copywriter.ts.
+export const CoverLetterResultSchema = z.object({
+  variant: z.enum(["general", "targeted"]),
+  letterText: z.string(),
+});
+
+export type CoverLetterResult = z.infer<typeof CoverLetterResultSchema>;

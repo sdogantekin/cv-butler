@@ -12,10 +12,10 @@ export const analyses = sqliteTable("analysis", {
   resumeId: text("resumeId")
     .notNull()
     .references(() => resumes.id, { onDelete: "cascade" }),
-  type: text("type", { enum: ["ats_score", "jd_match"] }).notNull(),
-  // Only set when type = jd_match.
+  type: text("type", { enum: ["ats_score", "jd_match", "cover_letter"] }).notNull(),
+  // Only set when type = jd_match or a targeted cover_letter.
   jobDescriptionText: text("jobDescriptionText"),
-  // AtsScoreResult or JdMatchResult (see src/lib/schemas/analysis.ts), Zod-validated before insert.
+  // AtsScoreResult, JdMatchResult, or CoverLetterResult (see src/lib/schemas/analysis.ts), Zod-validated before insert.
   result: text("result", { mode: "json" }).notNull(),
   createdAt: integer("createdAt", { mode: "timestamp_ms" })
     .notNull()

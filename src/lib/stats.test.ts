@@ -32,14 +32,15 @@ beforeAll(async () => {
     { userId: USER_WITH_HISTORY, resumeId: resume.id, type: "ats_score", result: {} },
     { userId: USER_WITH_HISTORY, resumeId: resume.id, type: "ats_score", result: {} },
     { userId: USER_WITH_HISTORY, resumeId: resume.id, type: "jd_match", result: {} },
+    { userId: USER_WITH_HISTORY, resumeId: resume.id, type: "cover_letter", result: {} },
   ]);
 });
 
 describe("getUserStats", () => {
-  it("counts analyses by type for a user with history, and 0 for cover letters (no backend yet)", async () => {
+  it("counts analyses by type for a user with history", async () => {
     const stats = await getUserStats(USER_WITH_HISTORY);
 
-    expect(stats).toEqual({ atsReviews: 2, jobMatches: 1, coverLetters: 0 });
+    expect(stats).toEqual({ atsReviews: 2, jobMatches: 1, coverLetters: 1 });
   });
 
   it("returns all zeros for a user with no analyses", async () => {

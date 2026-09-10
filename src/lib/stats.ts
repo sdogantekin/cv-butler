@@ -8,9 +8,6 @@ export type UserStats = {
   coverLetters: number;
 };
 
-// Cover Letter Generation has no backend yet (still a "Coming in v2"
-// placeholder — see cover-letter-tab.tsx), so coverLetters is always 0 until
-// that feature ships and gets its own persisted record type.
 export async function getUserStats(userId: string): Promise<UserStats> {
   const rows = await db
     .select({ type: analyses.type, count: sql<number>`count(*)` })
@@ -25,6 +22,6 @@ export async function getUserStats(userId: string): Promise<UserStats> {
   return {
     atsReviews: counts.ats_score ?? 0,
     jobMatches: counts.jd_match ?? 0,
-    coverLetters: 0,
+    coverLetters: counts.cover_letter ?? 0,
   };
 }

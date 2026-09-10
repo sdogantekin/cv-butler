@@ -14,7 +14,7 @@ export const actionUsage = pgTable(
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    actionType: text("actionType", { enum: ["ats_score", "jd_match"] }).notNull(),
+    actionType: text("actionType", { enum: ["ats_score", "jd_match", "cover_letter"] }).notNull(),
     createdAt: timestamp("createdAt", { mode: "date" })
       .notNull()
       .$defaultFn(() => new Date()),

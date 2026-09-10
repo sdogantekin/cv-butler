@@ -6,7 +6,10 @@ import { Sidebar, type DashboardTab } from "@/components/dashboard/sidebar";
 import { HomeTab } from "@/components/dashboard/home-tab";
 import { AtsTab } from "@/components/dashboard/ats-tab";
 import { JobMatchTab, type JobMatchResult } from "@/components/dashboard/job-match-tab";
-import { CoverLetterTab } from "@/components/dashboard/cover-letter-tab";
+import {
+  CoverLetterTab,
+  type CoverLetterGenerationResult,
+} from "@/components/dashboard/cover-letter-tab";
 import { LearningHubTab } from "@/components/dashboard/learning-hub-tab";
 import type { ScoreResult } from "@/components/analyze/upload-form";
 import type { UserStats } from "@/lib/stats";
@@ -25,6 +28,9 @@ export function DashboardShell({
   const [tab, setTab] = useState<DashboardTab>("home");
   const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null);
   const [matchResult, setMatchResult] = useState<JobMatchResult | null>(null);
+  const [coverLetterResult, setCoverLetterResult] = useState<CoverLetterGenerationResult | null>(
+    null,
+  );
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
@@ -57,7 +63,13 @@ export function DashboardShell({
               onReset={() => setMatchResult(null)}
             />
           )}
-          {tab === "cover" && <CoverLetterTab />}
+          {tab === "cover" && (
+            <CoverLetterTab
+              result={coverLetterResult}
+              onGenerated={setCoverLetterResult}
+              onReset={() => setCoverLetterResult(null)}
+            />
+          )}
           {tab === "hub" && <LearningHubTab />}
         </main>
       </div>

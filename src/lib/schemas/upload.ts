@@ -33,3 +33,17 @@ export const JdMatchRequestSchema = z.object({
     .optional()
     .transform((v) => (v ? v : undefined)),
 });
+
+// Job description text is optional here (unlike JdMatchRequestSchema): its
+// presence or absence is exactly what selects the General vs. Targeted cover
+// letter variant. Blank/whitespace-only input normalizes to undefined so an
+// empty textarea submission is treated as General, not a Targeted letter
+// grounded in nothing.
+export const CoverLetterRequestSchema = z.object({
+  jobDescriptionText: z
+    .string()
+    .trim()
+    .max(20_000)
+    .optional()
+    .transform((v) => (v ? v : undefined)),
+});
