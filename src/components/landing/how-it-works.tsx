@@ -11,7 +11,7 @@ const STEPS = [
   {
     title: "Generate a cover letter",
     description:
-      "Using your resume, with a job description as an optional add-on for tighter targeting. (Coming in v2.)",
+      "Using your resume, with a job description as an optional add-on for tighter targeting.",
   },
 ];
 

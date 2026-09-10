@@ -1,6 +1,6 @@
 # CV Butler
 
-Open-source, AI-powered career assistant: ATS scoring, job-description matching, and (from v2) cover letter generation. See `requirements.md` for the full product spec and `CLAUDE.md` for architecture/engineering conventions.
+Open-source, AI-powered career assistant: ATS scoring, job-description matching, and cover letter generation. See `requirements.md` for the full product spec and `CLAUDE.md` for architecture/engineering conventions.
 
 ## Stack
 
@@ -8,7 +8,7 @@ Next.js (App Router, TypeScript, Tailwind, shadcn/ui) · LangGraph.js · Drizzle
 
 ## Architecture: the LangGraph pipeline
 
-The core product logic — turning a resume into an ATS score, a job-description match, or (v2) a cover letter — runs as a single [LangGraph.js](https://langchain-ai.github.io/langgraphjs/) `StateGraph`, compiled once in `src/lib/graph/graph.ts`. Everything lives in this one Next.js/TypeScript project; there's no separate Python agent service.
+The core product logic — turning a resume into an ATS score or a job-description match — runs as a single [LangGraph.js](https://langchain-ai.github.io/langgraphjs/) `StateGraph`, compiled once in `src/lib/graph/graph.ts`. Cover letter generation (`src/lib/graph/nodes/copywriter.ts`) and the resume-comparison diff (`src/lib/graph/nodes/match-diff.ts`) are standalone nodes invoked directly by their own API routes, outside this compiled graph — neither is consumed by another node's output, so routing them through the graph would only add conditional-edge complexity for no benefit. Everything lives in this one Next.js/TypeScript project; there's no separate Python agent service.
 
 **Nodes** (`src/lib/graph/nodes/`):
 
@@ -110,8 +110,10 @@ This is a client-visible variable (`NEXT_PUBLIC_` prefix) because gtag.js runs i
 | `dashboard_tab_selected` | A dashboard sidebar tab is clicked (`tab` param) — dashboard tabs are client-side state, not routes, so this isn't already covered by `page_view` |
 | `ats_review_started` / `ats_review_completed` | A resume is submitted for ATS scoring / scoring finishes successfully (`score` param on completion) |
 | `job_match_started` / `job_match_completed` | A resume + job description are submitted for matching / matching finishes successfully (`score` param on completion) |
+| `job_match_compare_started` / `job_match_compare_completed` | An updated resume is submitted to compare against an earlier match / the comparison finishes successfully (`scoreDelta` param on completion) |
+| `cover_letter_started` / `cover_letter_completed` | A resume is submitted for cover letter generation / generation finishes successfully (`variant` param on completion — `"general"` or `"targeted"`) |
 
-No failure/error states are tracked, and no Cover Letter or Learning Hub events exist yet (no real success moment for either — v2/v3 features).
+No failure/error states are tracked, and no Learning Hub events exist yet (no real success moment there — a v3 feature, still a static stub).
 
 **No consent/cookie-banner gate is implemented yet.** Enabling this for a real deployment with EU visitors currently means the tracker fires with no consent mechanism in front of it — acceptable for this project's own pre-GA deployment by deliberate choice, but if you enable it for your own production use with real visitors, you're responsible for your own compliance (GDPR/ePrivacy or otherwise) until a consent flow ships.
 

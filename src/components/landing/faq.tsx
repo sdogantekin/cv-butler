@@ -16,7 +16,7 @@ const FAQS = [
   {
     question: "What's next on the roadmap?",
     answer:
-      "Cover letter generation is next, coming in v2. After that, v3 adds local-model support through Ollama, so scoring and matching can run against a model you host yourself instead of a hosted API — see the roadmap above for what's coming.",
+      "v3 adds local-model support through Ollama, so scoring, matching, and cover letter generation can run against a model you host yourself instead of a hosted API — see the roadmap above for what's coming.",
   },
 ];
 

@@ -15,7 +15,7 @@ const FEATURES = [
   },
   {
     title: "Cover Letter Generation",
-    subtitle: "A tailored draft in the time it takes to read the job post. (Coming in v2.)",
+    subtitle: "A tailored draft in the time it takes to read the job post.",
     description:
       "Generates a first draft grounded in your actual experience and the job description — you edit and send.",
   },
