@@ -8,6 +8,8 @@ import { ResumeDropzone } from "@/components/dashboard/resume-dropzone";
 import { trackEvent } from "@/lib/analytics/provider";
 import type { ParsedResume } from "@/lib/schemas/resume";
 import type { AtsScoreResult, Recommendation } from "@/lib/schemas/analysis";
+import type { Dictionary } from "@/lib/i18n/get-dictionary";
+import { formatMessage } from "@/lib/i18n/format-message";
 
 export type ScoreResult = {
   resumeId: string;
@@ -17,7 +19,17 @@ export type ScoreResult = {
   remaining: number;
 };
 
-export function UploadForm({ onScored }: { onScored: (result: ScoreResult) => void }) {
+export function UploadForm({
+  onScored,
+  dict,
+  processingDict,
+  dropzoneDict,
+}: {
+  onScored: (result: ScoreResult) => void;
+  dict: Dictionary["dashboard"]["atsReview"];
+  processingDict: Dictionary["processingIndicator"];
+  dropzoneDict: Dictionary["resumeDropzone"];
+}) {
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,28 +45,28 @@ export function UploadForm({ onScored }: { onScored: (result: ScoreResult) => vo
       const response = await fetch("/api/analyze/score", { method: "POST", body: formData });
       const data = await response.json();
       if (!response.ok) {
-        toast.error(data.error ?? "Failed to analyze resume");
+        toast.error(data.error ?? dict.analyzeFailed);
         return;
       }
       onScored(data as ScoreResult);
       trackEvent("ats_review_completed", { score: (data as ScoreResult).atsScore.overallScore });
-      toast.success(`ATS score ready. ${data.remaining} action(s) left today.`);
+      toast.success(formatMessage(dict.scoreReady, { count: data.remaining }));
     } catch {
-      toast.error("Something went wrong while analyzing your resume.");
+      toast.error(dict.genericError);
     } finally {
       setIsSubmitting(false);
     }
   }
 
   if (isSubmitting) {
-    return <ProcessingIndicator title="Analyzing your resume against ATS systems…" />;
+    return <ProcessingIndicator title={dict.analyzing} subtitle={processingDict.subtitle} />;
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-9">
-      <ResumeDropzone file={file} onFileChange={setFile} />
+      <ResumeDropzone file={file} onFileChange={setFile} dict={dropzoneDict} />
       <Button type="submit" size="lg" disabled={!file}>
-        Start ATS Review
+        {dict.startReview}
       </Button>
     </form>
   );

@@ -13,32 +13,38 @@ import {
 } from "@/components/ui/card";
 import type { DashboardTab } from "@/components/dashboard/sidebar";
 import type { UserStats } from "@/lib/stats";
-
-const JUMP_CARDS: { tab: DashboardTab; title: string; description: string }[] = [
-  { tab: "ats", title: "ATS Review", description: "Score your resume against real ATS systems." },
-  { tab: "job", title: "Job Matching", description: "Compare your resume to a job description." },
-  { tab: "cover", title: "Cover Letter", description: "Generate a tailored draft from your resume." },
-  { tab: "hub", title: "Learning Hub", description: "Guides on formatting, keywords, and ATS." },
-];
-
-const STAT_ITEMS: { key: keyof UserStats; label: string }[] = [
-  { key: "atsReviews", label: "ATS reviews" },
-  { key: "jobMatches", label: "Job matches" },
-  { key: "coverLetters", label: "Cover letters" },
-];
+import type { Dictionary } from "@/lib/i18n/get-dictionary";
+import { formatMessage } from "@/lib/i18n/format-message";
 
 export function HomeTab({
   userName,
   userEmail,
   stats,
   onTabChange,
+  dict,
+  common,
 }: {
   userName: string;
   userEmail: string;
   stats: UserStats;
   onTabChange: (tab: DashboardTab) => void;
+  dict: Dictionary["dashboard"]["home"];
+  common: Dictionary["common"];
 }) {
   const [copied, setCopied] = useState(false);
+
+  const STAT_ITEMS: { key: keyof UserStats; label: string }[] = [
+    { key: "atsReviews", label: dict.statsAtsReviews },
+    { key: "jobMatches", label: dict.statsJobMatches },
+    { key: "coverLetters", label: dict.statsCoverLetters },
+  ];
+
+  const JUMP_CARDS: { tab: DashboardTab; title: string; description: string }[] = [
+    { tab: "ats", title: dict.cards.atsReview.title, description: dict.cards.atsReview.description },
+    { tab: "job", title: dict.cards.jobMatching.title, description: dict.cards.jobMatching.description },
+    { tab: "cover", title: dict.cards.coverLetter.title, description: dict.cards.coverLetter.description },
+    { tab: "hub", title: dict.cards.learningHub.title, description: dict.cards.learningHub.description },
+  ];
 
   async function handleCopyLink() {
     try {
@@ -46,13 +52,13 @@ export function HomeTab({
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      toast.error("Couldn't copy the link — copy it from your browser's address bar instead.");
+      toast.error(dict.copyLinkFailed);
     }
   }
 
   return (
     <div>
-      <h1 className="mb-1 text-2xl font-extrabold">Welcome back, {userName}</h1>
+      <h1 className="mb-1 text-2xl font-extrabold">{formatMessage(dict.welcomeBack, { name: userName })}</h1>
       <p className="mb-7 text-sm text-muted-foreground">{userEmail}</p>
 
       <div className="mb-7 grid gap-4 sm:grid-cols-3">
@@ -67,25 +73,23 @@ export function HomeTab({
       <Card>
         <CardContent className="flex flex-wrap items-center justify-between gap-4 py-1">
           <div>
-            <div className="mb-1 text-sm font-bold">Know someone job hunting?</div>
-            <p className="text-xs text-muted-foreground">
-              Share this free, open-source tool with a friend.
-            </p>
+            <div className="mb-1 text-sm font-bold">{dict.shareTitle}</div>
+            <p className="text-xs text-muted-foreground">{dict.shareDescription}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={handleCopyLink}>
-              {copied ? "Copied!" : "Copy link"}
+              {copied ? common.copied : dict.copyLink}
             </Button>
             <Button asChild size="sm">
               <a href="https://github.com/sdogantekin/cv-butler" target="_blank" rel="noopener noreferrer">
-                Star on GitHub
+                {dict.starOnGithub}
               </a>
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      <h2 className="mt-8 mb-4 text-base font-bold">Jump back in</h2>
+      <h2 className="mt-8 mb-4 text-base font-bold">{dict.jumpBackIn}</h2>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {JUMP_CARDS.map((card) => (
           <Card key={card.tab}>
@@ -95,7 +99,7 @@ export function HomeTab({
             </CardHeader>
             <CardFooter>
               <Button size="sm" onClick={() => onTabChange(card.tab)}>
-                Open
+                {dict.open}
               </Button>
             </CardFooter>
           </Card>

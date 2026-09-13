@@ -1,14 +1,19 @@
 import { signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { env } from "@/lib/env";
+import { getLocale } from "@/lib/i18n/locale-cookie";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { formatMessage } from "@/lib/i18n/format-message";
 
-export default function SignInPage() {
+export default async function SignInPage() {
+  const locale = await getLocale();
+  const dict = getDictionary(locale).auth.signIn;
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-24">
       <div className="text-center">
-        <h1 className="text-2xl font-semibold">Sign in to CV Butler</h1>
+        <h1 className="text-2xl font-semibold">{dict.title}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {env.DAILY_ACTION_LIMIT} free actions per day. No credit card required.
+          {formatMessage(dict.subtitle, { count: env.DAILY_ACTION_LIMIT })}
         </p>
       </div>
       <form
@@ -18,7 +23,7 @@ export default function SignInPage() {
         }}
       >
         <Button type="submit" size="lg">
-          Continue with Google
+          {dict.continueWithGoogle}
         </Button>
       </form>
     </div>

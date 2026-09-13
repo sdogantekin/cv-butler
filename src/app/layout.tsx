@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { getAnalyticsConfig } from "@/lib/analytics/provider";
 import { GoogleAnalyticsScripts } from "@/components/analytics/google-analytics-scripts";
 import { AnalyticsPageviewTracker } from "@/components/analytics/analytics-pageview-tracker";
+import { getLocale } from "@/lib/i18n/locale-cookie";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,12 +23,13 @@ export const metadata: Metadata = {
   description: "Open-source, AI-powered career assistant: ATS scoring, resume matching, and cover letter generation.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
   const analytics = getAnalyticsConfig();
+  const locale = await getLocale();
 
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">

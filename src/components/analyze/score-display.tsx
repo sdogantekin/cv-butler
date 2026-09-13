@@ -1,27 +1,31 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import type { AtsScoreResult, Recommendation } from "@/lib/schemas/analysis";
+import type { Dictionary } from "@/lib/i18n/get-dictionary";
+import { formatMessage } from "@/lib/i18n/format-message";
 
 export function ScoreDisplay({
   atsScore,
   recommendations,
+  dict,
 }: {
   atsScore: AtsScoreResult;
   recommendations: Recommendation[];
+  dict: Dictionary["dashboard"]["atsReview"];
 }) {
   return (
     <div>
-      <h2 className="mb-1.5 text-2xl font-extrabold">Your ATS Score</h2>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Here&apos;s how your resume scored, category by category.
-      </p>
+      <h2 className="mb-1.5 text-2xl font-extrabold">{dict.resultTitle}</h2>
+      <p className="mb-6 text-sm text-muted-foreground">{dict.resultSubtitle}</p>
 
       <div className="rounded-xl border p-6">
-        <div className="text-lg font-bold">ATS Score: {atsScore.overallScore}/100</div>
+        <div className="text-lg font-bold">
+          {formatMessage(dict.scoreLabel, { score: atsScore.overallScore })}
+        </div>
         <Progress value={atsScore.overallScore} className="mt-4" />
       </div>
 
-      <h3 className="mt-8 mb-4 text-base font-bold">Category breakdown</h3>
+      <h3 className="mt-8 mb-4 text-base font-bold">{dict.categoryBreakdown}</h3>
       <div className="flex flex-col gap-4">
         {atsScore.categories.map((category) => (
           <Card key={category.name}>
@@ -43,7 +47,7 @@ export function ScoreDisplay({
 
       {recommendations.length > 0 && (
         <>
-          <h3 className="mt-8 mb-4 text-base font-bold">Recommendations</h3>
+          <h3 className="mt-8 mb-4 text-base font-bold">{dict.recommendations}</h3>
           <div className="flex flex-col gap-3">
             {recommendations.map((rec, i) => (
               <div key={i} className="rounded-lg border p-4">

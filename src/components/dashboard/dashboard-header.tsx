@@ -1,8 +1,18 @@
 import { MenuIcon } from "lucide-react";
 import { LogoIcon } from "@/components/logo-icon";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import type { Locale } from "@/lib/i18n/locales";
+import type { Dictionary } from "@/lib/i18n/get-dictionary";
 
-export function DashboardHeader({ onMenuClick }: { onMenuClick: () => void }) {
+export function DashboardHeader({
+  locale,
+  dict,
+  onMenuClick,
+}: {
+  locale: Locale;
+  dict: Dictionary["languageSwitcher"];
+  onMenuClick: () => void;
+}) {
   return (
     <div className="flex items-center justify-between gap-4 bg-primary px-5 py-4 text-sm font-bold text-primary-foreground">
       <div className="flex items-center gap-3">
@@ -19,7 +29,7 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick: () => void }) {
           CV Butler
         </div>
       </div>
-      <LanguageSwitcher invert />
+      <LanguageSwitcher locale={locale} dict={dict} invert />
     </div>
   );
 }

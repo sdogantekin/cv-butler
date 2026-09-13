@@ -2,16 +2,9 @@
 
 import { trackEvent } from "@/lib/analytics/provider";
 import { cn } from "@/lib/utils";
+import type { Dictionary } from "@/lib/i18n/get-dictionary";
 
 export type DashboardTab = "home" | "ats" | "job" | "cover" | "hub";
-
-const NAV_ITEMS: { tab: DashboardTab; label: string }[] = [
-  { tab: "home", label: "Home" },
-  { tab: "ats", label: "ATS Review" },
-  { tab: "job", label: "Job Matching" },
-  { tab: "cover", label: "Cover Letter Generation" },
-  { tab: "hub", label: "Learning Hub" },
-];
 
 function initialsFor(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -26,6 +19,8 @@ export function Sidebar({
   logoutAction,
   mobileOpen,
   onCloseMobile,
+  dict,
+  logOutLabel,
 }: {
   activeTab: DashboardTab;
   onTabChange: (tab: DashboardTab) => void;
@@ -33,7 +28,17 @@ export function Sidebar({
   logoutAction: () => Promise<void>;
   mobileOpen: boolean;
   onCloseMobile: () => void;
+  dict: Dictionary["dashboard"]["sidebar"];
+  logOutLabel: string;
 }) {
+  const NAV_ITEMS: { tab: DashboardTab; label: string }[] = [
+    { tab: "home", label: dict.home },
+    { tab: "ats", label: dict.atsReview },
+    { tab: "job", label: dict.jobMatching },
+    { tab: "cover", label: dict.coverLetterGeneration },
+    { tab: "hub", label: dict.learningHub },
+  ];
+
   return (
     <>
       {mobileOpen && (
@@ -84,7 +89,7 @@ export function Sidebar({
                   type="submit"
                   className="text-xs font-medium text-muted-foreground hover:underline"
                 >
-                  Log out
+                  {logOutLabel}
                 </button>
               </form>
             </div>

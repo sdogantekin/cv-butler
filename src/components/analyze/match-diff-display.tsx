@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { MatchDiffItem, MatchDiffResult } from "@/lib/schemas/analysis";
+import type { Dictionary } from "@/lib/i18n/get-dictionary";
 
 function DeltaBadge({ delta }: { delta: number }) {
   const sign = delta > 0 ? "+" : "";
@@ -21,28 +22,34 @@ function DiffItemCard({ item, borderClassName }: { item: MatchDiffItem; borderCl
   );
 }
 
-export function MatchDiffDisplay({ diff }: { diff: MatchDiffResult }) {
+export function MatchDiffDisplay({
+  diff,
+  dict,
+}: {
+  diff: MatchDiffResult;
+  dict: Dictionary["dashboard"]["jobMatching"]["diff"];
+}) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Before &amp; After</CardTitle>
+        <CardTitle>{dict.title}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
         <div className="flex flex-wrap items-center gap-4">
           <div className="rounded-xl border p-4 text-center">
-            <div className="text-xs font-medium text-muted-foreground">Before</div>
+            <div className="text-xs font-medium text-muted-foreground">{dict.before}</div>
             <div className="text-2xl font-bold">{diff.beforeScore}</div>
           </div>
           <span className="text-muted-foreground">→</span>
           <div className="rounded-xl border p-4 text-center">
-            <div className="text-xs font-medium text-muted-foreground">After</div>
+            <div className="text-xs font-medium text-muted-foreground">{dict.after}</div>
             <div className="text-2xl font-bold">{diff.afterScore}</div>
           </div>
           <DeltaBadge delta={diff.overallDelta} />
         </div>
 
         <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-medium">Category breakdown</h3>
+          <h3 className="text-sm font-medium">{dict.categoryBreakdown}</h3>
           <div className="flex flex-col gap-2">
             {diff.dimensions.map((dimension) => (
               <div
@@ -61,7 +68,7 @@ export function MatchDiffDisplay({ diff }: { diff: MatchDiffResult }) {
 
         {diff.resolved.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium">Resolved</h3>
+            <h3 className="text-sm font-medium">{dict.resolved}</h3>
             <div className="flex flex-col gap-2">
               {diff.resolved.map((item, i) => (
                 <DiffItemCard key={i} item={item} borderClassName="border-l-green-600" />
@@ -72,7 +79,7 @@ export function MatchDiffDisplay({ diff }: { diff: MatchDiffResult }) {
 
         {diff.stillOpen.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium">Still open</h3>
+            <h3 className="text-sm font-medium">{dict.stillOpen}</h3>
             <div className="flex flex-col gap-2">
               {diff.stillOpen.map((item, i) => (
                 <div key={i} className="rounded-lg border bg-muted p-3 text-sm">
@@ -86,7 +93,7 @@ export function MatchDiffDisplay({ diff }: { diff: MatchDiffResult }) {
 
         {diff.newIssues.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium">New issues introduced</h3>
+            <h3 className="text-sm font-medium">{dict.newIssuesIntroduced}</h3>
             <div className="flex flex-col gap-2">
               {diff.newIssues.map((item, i) => (
                 <DiffItemCard key={i} item={item} borderClassName="border-l-destructive" />

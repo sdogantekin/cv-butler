@@ -1,18 +1,19 @@
 import { Separator } from "@/components/ui/separator";
 import { LogoIcon } from "@/components/logo-icon";
+import type { Dictionary } from "@/lib/i18n/get-dictionary";
 
-const PRODUCT_LINKS = [
-  { href: "#features", label: "Features" },
-  { href: "#how-it-works", label: "How it works" },
-  { href: "#roadmap", label: "Roadmap" },
-];
+export function Footer({ dict }: { dict: Dictionary["landing"] }) {
+  const PRODUCT_LINKS = [
+    { href: "#features", label: dict.header.navFeatures },
+    { href: "#how-it-works", label: dict.header.navHowItWorks },
+    { href: "#roadmap", label: dict.header.navRoadmap },
+  ];
 
-const RESOURCE_LINKS = [
-  { href: "#learning-hub", label: "Learning Hub" },
-  { href: "#faq", label: "FAQ" },
-];
+  const RESOURCE_LINKS = [
+    { href: "#learning-hub", label: dict.header.navLearningHub },
+    { href: "#faq", label: dict.header.navFaq },
+  ];
 
-export function Footer() {
   return (
     <footer className="mt-auto border-t px-6 py-10">
       <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-4">
@@ -21,12 +22,12 @@ export function Footer() {
             <LogoIcon size={17} />
             CV Butler
           </div>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Open-source AI career assistant. MIT licensed.
-          </p>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{dict.footer.tagline}</p>
         </div>
         <div>
-          <h4 className="mb-3 text-xs font-bold tracking-wide text-muted-foreground uppercase">Product</h4>
+          <h4 className="mb-3 text-xs font-bold tracking-wide text-muted-foreground uppercase">
+            {dict.footer.productHeading}
+          </h4>
           <div className="flex flex-col gap-2 text-sm">
             {PRODUCT_LINKS.map((link) => (
               <a key={link.href} href={link.href}>
@@ -36,7 +37,9 @@ export function Footer() {
           </div>
         </div>
         <div>
-          <h4 className="mb-3 text-xs font-bold tracking-wide text-muted-foreground uppercase">Resources</h4>
+          <h4 className="mb-3 text-xs font-bold tracking-wide text-muted-foreground uppercase">
+            {dict.footer.resourcesHeading}
+          </h4>
           <div className="flex flex-col gap-2 text-sm">
             {RESOURCE_LINKS.map((link) => (
               <a key={link.href} href={link.href}>
@@ -46,7 +49,9 @@ export function Footer() {
           </div>
         </div>
         <div>
-          <h4 className="mb-3 text-xs font-bold tracking-wide text-muted-foreground uppercase">Community</h4>
+          <h4 className="mb-3 text-xs font-bold tracking-wide text-muted-foreground uppercase">
+            {dict.footer.communityHeading}
+          </h4>
           <div className="flex flex-col gap-2 text-sm">
             <a href="https://github.com/sdogantekin/cv-butler" target="_blank" rel="noopener noreferrer">
               GitHub
@@ -56,23 +61,20 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Issues &amp; discussions
+              {dict.footer.issuesDiscussions}
             </a>
             <a
               href="https://github.com/sdogantekin/cv-butler/blob/main/LICENSE"
               target="_blank"
               rel="noopener noreferrer"
             >
-              MIT License
+              {dict.footer.mitLicense}
             </a>
           </div>
         </div>
       </div>
       <Separator className="mx-auto mt-8 max-w-6xl" />
-      <p className="mx-auto mt-6 max-w-6xl text-sm text-muted-foreground">
-        © 2026 CV Butler · Open source under the MIT license · Independent project, not affiliated
-        with any commercial career platform.
-      </p>
+      <p className="mx-auto mt-6 max-w-6xl text-sm text-muted-foreground">{dict.footer.copyright}</p>
     </footer>
   );
 }
