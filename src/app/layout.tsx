@@ -6,6 +6,7 @@ import { getAnalyticsConfig } from "@/lib/analytics/provider";
 import { GoogleAnalyticsScripts } from "@/components/analytics/google-analytics-scripts";
 import { AnalyticsPageviewTracker } from "@/components/analytics/analytics-pageview-tracker";
 import { getLocale } from "@/lib/i18n/locale-cookie";
+import { env } from "@/lib/env";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,9 +19,27 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const TITLE = "CV Butler";
+const DESCRIPTION =
+  "Open-source, AI-powered career assistant: ATS scoring, resume matching, and cover letter generation.";
+
 export const metadata: Metadata = {
-  title: "CV Butler",
-  description: "Open-source, AI-powered career assistant: ATS scoring, resume matching, and cover letter generation.",
+  metadataBase: new URL(env.SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: "/",
+    siteName: TITLE,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

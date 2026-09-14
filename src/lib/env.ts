@@ -57,6 +57,13 @@ export const env = createEnv({
     // uses Tavily when TAVILY_API_KEY is set, or no research at all
     // otherwise. This repo never ships an implementation here itself.
     COMPANY_RESEARCH_PROVIDER_MODULE: z.string().optional(),
+
+    // Canonical base URL for this deployment — used for metadataBase,
+    // robots.txt, and sitemap.xml (src/app/{robots,sitemap}.ts, root
+    // layout). Defaults to localhost for local dev and self-hosted forks
+    // that haven't set a domain yet; production deployments should set this
+    // to their real public URL, no trailing slash.
+    SITE_URL: z.string().url().default("http://localhost:3000"),
   },
   client: {
     // GA4 measurement ID (e.g. "G-XXXXXXXXXX"). Must live here (not in
