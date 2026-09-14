@@ -10,6 +10,7 @@ import { extractResumeText } from "@/lib/parsers/resume-file";
 import { extractNode } from "@/lib/graph/nodes/extract";
 import { matchDiffNode } from "@/lib/graph/nodes/match-diff";
 import { graph } from "@/lib/graph";
+import { getLocale } from "@/lib/i18n/locale-cookie";
 
 // Thin route: auth -> validate -> rate-limit -> extract -> match -> persist -> respond.
 // Lets Job Matching start from a resume file directly, with no prior ATS
@@ -78,6 +79,7 @@ export async function POST(request: Request) {
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const resumeText = await extractResumeText(buffer, upload.data.mimeType);
+  const locale = await getLocale();
 
   const extracted = await extractNode({ resumeText });
   if (!extracted.parsedResume) {
@@ -102,6 +104,7 @@ export async function POST(request: Request) {
     parsedResume,
     jobDescriptionText: jd.data,
     companyName: companyName.data ?? null,
+    locale,
   });
   if (!result.jdMatch) {
     return NextResponse.json({ error: "Analysis failed", details: result.errors }, { status: 502 });
@@ -118,7 +121,7 @@ export async function POST(request: Request) {
 
   let matchDiff;
   if (previousJdMatch) {
-    const diffResult = await matchDiffNode({ before: previousJdMatch, after: jdMatch });
+    const diffResult = await matchDiffNode({ before: previousJdMatch, after: jdMatch, locale });
     if (!("matchDiff" in diffResult)) {
       return NextResponse.json(
         { error: "Comparison failed", details: diffResult.errors },

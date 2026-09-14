@@ -8,6 +8,7 @@ import { checkAndConsumeAction } from "@/lib/rate-limit";
 import { extractResumeText } from "@/lib/parsers/resume-file";
 import { extractNode } from "@/lib/graph/nodes/extract";
 import { copywriterNode } from "@/lib/graph/nodes/copywriter";
+import { getLocale } from "@/lib/i18n/locale-cookie";
 
 // Thin route: auth -> validate -> rate-limit -> extract -> write -> persist
 // -> respond. Mirrors /api/analyze/match-upload: calls the extract node
@@ -49,6 +50,7 @@ export async function POST(request: Request) {
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const resumeText = await extractResumeText(buffer, upload.data.mimeType);
+  const locale = await getLocale();
 
   const extracted = await extractNode({ resumeText });
   if (!extracted.parsedResume) {
@@ -70,7 +72,7 @@ export async function POST(request: Request) {
     .returning();
 
   const jobDescriptionText = jd.data ?? null;
-  const written = await copywriterNode({ parsedResume, jobDescriptionText });
+  const written = await copywriterNode({ parsedResume, jobDescriptionText, locale });
   if (!("coverLetter" in written)) {
     return NextResponse.json({ error: "Generation failed", details: written.errors }, { status: 502 });
   }

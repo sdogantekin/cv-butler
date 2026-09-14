@@ -153,4 +153,18 @@ describe("graph routing", () => {
     expect(result.jdMatch?.dimensions).toHaveLength(6);
     expect(matchMock).toHaveBeenCalledOnce();
   });
+
+  it("accepts an explicit locale and still produces the same result shape", async () => {
+    extractMock.mockClear();
+    matchMock.mockClear();
+
+    const result = await graph.invoke({
+      resumeText: "Ada Lovelace, TypeScript developer.",
+      locale: "tr",
+    });
+
+    expect(result.locale).toBe("tr");
+    expect(result.parsedResume).toEqual(FAKE_PARSED_RESUME);
+    expect(result.atsScore).toEqual(FAKE_ATS_SCORE);
+  });
 });

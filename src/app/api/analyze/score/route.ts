@@ -8,6 +8,7 @@ import { AtsScoreResultSchema } from "@/lib/schemas/analysis";
 import { checkAndConsumeAction } from "@/lib/rate-limit";
 import { extractResumeText } from "@/lib/parsers/resume-file";
 import { graph } from "@/lib/graph";
+import { getLocale } from "@/lib/i18n/locale-cookie";
 
 // Thin route: auth -> validate -> rate-limit -> graph invoke -> persist -> respond.
 // The uploaded file is processed in memory only and never persisted.
@@ -39,8 +40,9 @@ export async function POST(request: Request) {
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const resumeText = await extractResumeText(buffer, upload.data.mimeType);
+  const locale = await getLocale();
 
-  const result = await graph.invoke({ resumeText });
+  const result = await graph.invoke({ resumeText, locale });
   if (!result.parsedResume || !result.atsScore) {
     return NextResponse.json({ error: "Analysis failed", details: result.errors }, { status: 502 });
   }

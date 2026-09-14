@@ -8,8 +8,10 @@ import {
   runDeterministicAtsChecks,
 } from "@/lib/scoring/ats-checks";
 import type { GraphStateType } from "../state";
+import { buildOutputLanguageInstruction } from "./output-language";
+import type { Locale } from "@/lib/i18n/locales";
 
-const DETERMINISTIC_CATEGORY_NAMES = [
+export const DETERMINISTIC_CATEGORY_NAMES = [
   "Contact Information",
   "Section Structure",
   "Date Formatting",
@@ -32,7 +34,11 @@ const AtsLlmOutputSchema = z.object({
   }),
 });
 
-function buildAtsPrompt(resume: ParsedResume, deterministic: AtsCategoryResult[]): string {
+function buildAtsPrompt(
+  resume: ParsedResume,
+  deterministic: AtsCategoryResult[],
+  locale: Locale,
+): string {
   const categorySections = deterministic
     .map((c) => `### ${c.name} (deterministic score: ${c.score}/100)\n${c.findings.map((f) => `- ${f}`).join("\n")}`)
     .join("\n\n");
@@ -54,7 +60,9 @@ ${JSON.stringify(resume, null, 2)}
 ## Output requirements
 - Provide feedback for exactly these 5 category names, matching them exactly: ${DETERMINISTIC_CATEGORY_NAMES.map((n) => `"${n}"`).join(", ")}.
 - Provide a score and feedback for "Keyword & Content Relevance".
-- Keep every feedback message concise, specific, and actionable — reference the concrete findings (counts, entry names) rather than generic advice.`;
+- Keep every feedback message concise, specific, and actionable — reference the concrete findings (counts, entry names) rather than generic advice.
+
+${buildOutputLanguageInstruction(locale)}`;
 }
 
 // ATS Scoring Node (v1). Deterministic checks (src/lib/scoring/ats-checks.ts)
@@ -69,7 +77,7 @@ export async function scoreNode(state: GraphStateType): Promise<Partial<GraphSta
   try {
     const deterministic = runDeterministicAtsChecks(state.parsedResume);
     const model = getChatModel().withStructuredOutput(AtsLlmOutputSchema);
-    const llmOutput = await model.invoke(buildAtsPrompt(state.parsedResume, deterministic));
+    const llmOutput = await model.invoke(buildAtsPrompt(state.parsedResume, deterministic, state.locale));
 
     const categories = deterministic.map((category) => {
       const matched = llmOutput.categoryFeedback.find((f) => f.name === category.name);

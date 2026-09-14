@@ -31,7 +31,9 @@ export function ScoreDisplay({
           <Card key={category.name}>
             <CardContent>
               <div className="mb-2.5 flex items-center justify-between gap-3">
-                <span className="text-sm font-semibold">{category.name}</span>
+                <span className="text-sm font-semibold">
+                  {dict.categoryNames[category.name as keyof typeof dict.categoryNames] ?? category.name}
+                </span>
                 <span className="text-xs font-semibold text-muted-foreground">
                   {category.score}/100
                 </span>

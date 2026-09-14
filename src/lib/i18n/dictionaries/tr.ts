@@ -204,6 +204,14 @@ export const tr: Dictionary = {
       scoreLabel: "ATS Puanı: {score}/100",
       categoryBreakdown: "Kategori dökümü",
       recommendations: "Öneriler",
+      categoryNames: {
+        "Contact Information": "İletişim Bilgileri",
+        "Section Structure": "Bölüm Yapısı",
+        "Date Formatting": "Tarih Biçimlendirme",
+        "Resume Length & Content Depth": "Özgeçmiş Uzunluğu ve İçerik Derinliği",
+        "Quantified Achievements": "Sayısallaştırılmış Başarılar",
+        "Keyword & Content Relevance": "Anahtar Kelime ve İçerik Uygunluğu",
+      },
     },
     jobMatching: {
       formTitle: "İş Eşleştirme",
@@ -232,6 +240,14 @@ export const tr: Dictionary = {
       uploadUpdatedDescription: "Yukarıdaki geri bildirime göre değişiklik mi yaptınız? Neyin iyileştiğini görmek için yeni sürümü yükleyin.",
       uploadUpdatedButton: "Güncellenmiş özgeçmiş yükle",
       startNewMatch: "Yeni eşleştirme başlat",
+      dimensionNames: {
+        Skills: "Beceriler",
+        Experience: "Deneyim",
+        Education: "Eğitim",
+        "Domain Fit": "Alan Uyumu",
+        "Seniority Fit": "Kıdem Uyumu",
+        "Culture Fit": "Kültür Uyumu",
+      },
       compareForm: {
         title: "Güncellenmiş özgeçmişinizi yükleyin",
         description: "Yukarıdaki geri bildirime göre değişiklik mi yaptınız? Neyin iyileştiğini görmek için yeni sürümü yükleyin.",

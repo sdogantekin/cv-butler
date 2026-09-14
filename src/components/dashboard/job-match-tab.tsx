@@ -173,7 +173,7 @@ export function JobMatchTab({
 
       {matchResult && resultView === "diff" && diffResult && (
         <div className="flex flex-col gap-5">
-          <MatchDiffDisplay diff={diffResult} dict={dict.diff} />
+          <MatchDiffDisplay diff={diffResult} dict={dict.diff} dimensionNames={dict.dimensionNames} />
           <div className="flex items-center justify-between gap-4">
             <p className="text-xs text-muted-foreground">
               {formatMessage(common.actionsRemainingToday, { count: remaining ?? 0 })}

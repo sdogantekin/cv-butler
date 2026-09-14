@@ -62,7 +62,7 @@ export function MatchDisplay({
         {jdMatch.dimensions.map((dimension) => (
           <div key={dimension.name} className="rounded-xl border p-4">
             <div className="flex justify-between text-sm font-semibold">
-              <span>{dimension.name}</span>
+              <span>{dict.dimensionNames[dimension.name]}</span>
               <span>{dimension.score}/100</span>
             </div>
             {dimension.gaps.length > 0 && (

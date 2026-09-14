@@ -2,6 +2,8 @@ import { z } from "zod";
 import { getChatModel } from "@/lib/llm/provider";
 import { CoverLetterResultSchema, type CoverLetterResult } from "@/lib/schemas/analysis";
 import type { ParsedResume } from "@/lib/schemas/resume";
+import type { Locale } from "@/lib/i18n/locales";
+import { buildOutputLanguageInstruction } from "./output-language";
 
 const CopywriterLlmOutputSchema = z.object({
   letterText: z.string(),
@@ -31,18 +33,44 @@ const HUMANIZER_GUIDANCE = `Write in a natural, human voice. Avoid these common 
 
 Write like a specific person addressing a specific role, not a template.`;
 
-function buildCopywriterPrompt(resume: ParsedResume, jobDescriptionText: string | null): string {
+// Adapted for Turkish, not translated word-for-word from the English list
+// above — English AI-writing tells ("delve", em dashes as connectors) don't
+// map 1:1 onto what reads as generic/AI-generated Turkish prose. Same
+// category structure (overused words, forced triads, staged openers,
+// dramatic closers, sales language, generic send-offs), populated with the
+// actual Turkish equivalents of those tells.
+const HUMANIZER_GUIDANCE_TR = `Doğal, insan bir üslupla yazın. Şu yapay zekâ metinlerine özgü klişelerden kaçının:
+
+- "Sadece X değil, aynı zamanda Y" veya "yalnızca X değil, Y de" kalıplarını kullanmayın; aynı karşıtlığı iki cümleye bölmeyin ("Bu X ile ilgili değil. Bu Y ile ilgili.").
+- Cümleyi tekrar eden tek satırlık dramatik kapanışlar kullanmayın ("İşte fark bu.", "Bunu bir düşünün.").
+- Sahnelenmiş, hazırlık cümleleriyle başlamayın ("Sizlerle paylaşmaktan büyük mutluluk duyuyorum...", "İzin verirseniz şunu belirtmek isterim...").
+- İçerik gerçekten üç ayrı ve gerekli unsur içermiyorsa, zorlama üçlü gruplamalar kullanmayın (üç sıfat, üç örnek).
+- Şu aşırı kullanılan, klişeleşmiş kelime ve ifadelerden tamamen kaçının: adeta, bütünsel, derinlemesine, elbette, güçlü bir şekilde, ivme kazandırmak, kritik öneme sahip, kusursuz, köklü, önemli bir rol oynamak, özenle, sinerji, şüphesiz, vurgulamak (fiil olarak), yolculuk (soyut anlamda), zengin bir deneyim/birikim, zenginleştirmek.
+- Abartılı önem atfeden ifadeler kullanmayın ("bir dönüm noktası niteliğinde", "gerçek bir kanıt niteliğinde", "doğru yönde atılmış bir adım").
+- Satış/pazarlama diline kaçmayın ("eşsiz", "benzersiz", "nadide", "seçkin").
+- Basit fiilleri tercih edin: "temsil eder/sunar/sergiler" yerine "-dır/-dir", "var", "sahip".
+- Kalın yazılmış kelimeler veya etiketli madde işaretleri kullanmayın — bu bir mektup, tam cümlelerle akıcı bir şekilde yazılmalı.
+- Cümle uzunluğunu ve yapısını çeşitlendirin; art arda gelen cümlelere aynı özneyle başlamayın.
+- Sohbet robotu tarzı açılış veya kapanışlardan kaçının ("Umarım bu yardımcı olur"), ve genel geçer, içi boş bir kapanış cümlesi kullanmayın ("Ekibinize tutkumu ve özverimi getirmeyi dört gözle bekliyorum") — bunun yerine somut bir noktayla bitirin.
+
+Belirli bir kişinin, belirli bir role yazdığı gibi yazın; şablon gibi değil.`;
+
+function buildCopywriterPrompt(
+  resume: ParsedResume,
+  jobDescriptionText: string | null,
+  locale: Locale,
+): string {
   const variantInstructions = jobDescriptionText
     ? `Write a TARGETED cover letter for the specific role described in the job description below. Reference the company name, the role title, and specific stated requirements from that job description where the candidate's actual background genuinely supports them.`
     : `Write a GENERAL cover letter — no specific job description was provided. Write it as a professional introduction of the candidate that could open a conversation about relevant roles, without inventing a specific company or job title to address.`;
 
   return `You are a professional cover-letter writer helping a job candidate. ${variantInstructions}
 
-${HUMANIZER_GUIDANCE}
+${locale === "tr" ? HUMANIZER_GUIDANCE_TR : HUMANIZER_GUIDANCE}
 
 CRITICAL constraint: every name, company, title, number, date, or achievement you mention must come directly from the candidate's resume data below. Never invent, estimate, or embellish a fact to sound more impressive. If the job description asks for something the resume doesn't show, you may write around that gap in general terms, but never fabricate specific evidence for it.
 
-Write 3-4 paragraphs, roughly 250-400 words total: an opening establishing interest and fit, one or two body paragraphs connecting specific resume experience to what the role needs, and a closing. Use a standard greeting and sign-off appropriate for a letter (e.g. "Dear Hiring Manager," and the candidate's own name from the resume as the signature) — these are letter conventions, not the AI tells described above.
+Write 3-4 paragraphs, roughly 250-400 words total: an opening establishing interest and fit, one or two body paragraphs connecting specific resume experience to what the role needs, and a closing. Use a standard greeting and sign-off appropriate for a formal cover letter in the target language (using the candidate's own name from the resume as the signature) — these are letter conventions, not the AI tells described above.
 
 ## Candidate resume (parsed)
 
@@ -54,7 +82,9 @@ ${
 
 ${jobDescriptionText}`
     : ""
-}`;
+}
+
+${buildOutputLanguageInstruction(locale)}`;
 }
 
 // Copywriter Node (v2). Not part of the compiled StateGraph — a cover letter
@@ -63,11 +93,12 @@ ${jobDescriptionText}`
 export async function copywriterNode(input: {
   parsedResume: ParsedResume;
   jobDescriptionText: string | null;
+  locale: Locale;
 }): Promise<{ coverLetter: CoverLetterResult } | { errors: string[] }> {
   try {
     const model = getChatModel().withStructuredOutput(CopywriterLlmOutputSchema);
     const { letterText } = await model.invoke(
-      buildCopywriterPrompt(input.parsedResume, input.jobDescriptionText),
+      buildCopywriterPrompt(input.parsedResume, input.jobDescriptionText, input.locale),
     );
     const coverLetter = CoverLetterResultSchema.parse({
       variant: input.jobDescriptionText ? "targeted" : "general",

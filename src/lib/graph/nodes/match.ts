@@ -5,7 +5,9 @@ import type { ParsedResume } from "@/lib/schemas/resume";
 import { type CompanySearchResult, searchCompanyInfo } from "@/lib/search/company-search";
 import { type KeywordOverlapResult, computeKeywordOverlap } from "@/lib/scoring/keyword-overlap";
 import { applyHardConstraintCap, computeOverallMatchScore } from "@/lib/scoring/match-weighting";
+import type { Locale } from "@/lib/i18n/locales";
 import type { GraphStateType } from "../state";
+import { buildOutputLanguageInstruction } from "./output-language";
 
 const JdMatchLlmOutputSchema = z.object({
   dimensions: z
@@ -33,6 +35,7 @@ function buildMatchPrompt(
   overlap: KeywordOverlapResult,
   companyName: string | null,
   companySearch: CompanySearchResult | null,
+  locale: Locale,
 ): string {
   const companySearchSection = companySearch
     ? `
@@ -81,7 +84,9 @@ ${jobDescriptionText}
   - **moderate**: a real gap that matters, but isn't a likely disqualifier alone — e.g. partial/adjacent experience, or something the job description frames as preferred/nice-to-have rather than required.
   - **minor**: a small or soft mismatch — worth noting but low impact on overall fit (e.g. a borderline signal, a minor terminology difference).
   Judge severity from how the job description itself frames the requirement, never from assumption — the same grounding rule as the gap's content itself.
-- Provide hardConstraints only for language/location requirements explicitly stated in the job description, with a brief grounded note for each.`;
+- Provide hardConstraints only for language/location requirements explicitly stated in the job description, with a brief grounded note for each.
+
+${buildOutputLanguageInstruction(locale)}`;
 }
 
 // Matcher Node (v1). The LLM does the real semantic matching for the 6
@@ -105,6 +110,7 @@ export async function matchNode(state: GraphStateType): Promise<Partial<GraphSta
         overlap,
         state.companyName,
         companySearch,
+        state.locale,
       ),
     );
 

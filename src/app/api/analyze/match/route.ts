@@ -8,6 +8,7 @@ import { ParsedResumeSchema } from "@/lib/schemas/resume";
 import { JdMatchResultSchema } from "@/lib/schemas/analysis";
 import { checkAndConsumeAction } from "@/lib/rate-limit";
 import { graph } from "@/lib/graph";
+import { getLocale } from "@/lib/i18n/locale-cookie";
 
 // Thin route: auth -> validate -> rate-limit -> graph invoke -> persist -> respond.
 // Invokes the graph with an already-parsed resume, so it skips extract/score
@@ -38,11 +39,13 @@ export async function POST(request: Request) {
   }
 
   const parsedResume = ParsedResumeSchema.parse(resume.parsedResume);
+  const locale = await getLocale();
 
   const result = await graph.invoke({
     parsedResume,
     jobDescriptionText,
     companyName: companyName ?? null,
+    locale,
   });
   if (!result.jdMatch) {
     return NextResponse.json({ error: "Analysis failed", details: result.errors }, { status: 502 });

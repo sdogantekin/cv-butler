@@ -69,7 +69,7 @@ vi.mock("@/lib/llm/provider", () => ({
 
 describe("matchDiffNode", () => {
   it("merges the LLM classification with the computed score deltas into a valid MatchDiffResult", async () => {
-    const result = await matchDiffNode({ before: BEFORE, after: AFTER });
+    const result = await matchDiffNode({ before: BEFORE, after: AFTER, locale: "en" });
 
     expect(result).toEqual({
       matchDiff: {
@@ -89,7 +89,7 @@ describe("matchDiffNode", () => {
       }),
     } as unknown as ReturnType<typeof getChatModel>);
 
-    const result = await matchDiffNode({ before: BEFORE, after: AFTER });
+    const result = await matchDiffNode({ before: BEFORE, after: AFTER, locale: "en" });
 
     expect("errors" in result).toBe(true);
     if ("errors" in result) {

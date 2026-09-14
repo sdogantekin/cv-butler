@@ -202,6 +202,14 @@ export const en = {
       scoreLabel: "ATS Score: {score}/100",
       categoryBreakdown: "Category breakdown",
       recommendations: "Recommendations",
+      categoryNames: {
+        "Contact Information": "Contact Information",
+        "Section Structure": "Section Structure",
+        "Date Formatting": "Date Formatting",
+        "Resume Length & Content Depth": "Resume Length & Content Depth",
+        "Quantified Achievements": "Quantified Achievements",
+        "Keyword & Content Relevance": "Keyword & Content Relevance",
+      },
     },
     jobMatching: {
       formTitle: "Job Matching",
@@ -230,6 +238,14 @@ export const en = {
       uploadUpdatedDescription: "Made changes based on the feedback above? Upload the new version to see what improved.",
       uploadUpdatedButton: "Upload updated resume",
       startNewMatch: "Start new match",
+      dimensionNames: {
+        Skills: "Skills",
+        Experience: "Experience",
+        Education: "Education",
+        "Domain Fit": "Domain Fit",
+        "Seniority Fit": "Seniority Fit",
+        "Culture Fit": "Culture Fit",
+      },
       compareForm: {
         title: "Upload your updated resume",
         description: "Made changes based on the feedback above? Upload the new version to see what improved.",

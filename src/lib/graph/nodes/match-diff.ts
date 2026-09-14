@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { getChatModel } from "@/lib/llm/provider";
 import { type JdMatchResult, type MatchDiffResult, MatchDiffResultSchema } from "@/lib/schemas/analysis";
+import type { Locale } from "@/lib/i18n/locales";
+import { buildOutputLanguageInstruction } from "./output-language";
 
 const MatchDiffItemLlmSchema = z.object({
   title: z.string(),
@@ -13,7 +15,7 @@ const MatchDiffLlmOutputSchema = z.object({
   newIssues: z.array(MatchDiffItemLlmSchema),
 });
 
-function buildMatchDiffPrompt(before: JdMatchResult, after: JdMatchResult): string {
+function buildMatchDiffPrompt(before: JdMatchResult, after: JdMatchResult, locale: Locale): string {
   return `You are comparing two job-fit analyses of the same candidate against the same job description: one from an earlier version of their resume ("before"), one from a revised version ("after"). Classify the issues (dimension gaps and hard constraints) from both analyses into exactly three lists:
 
 - **resolved**: an issue present in "before" that no longer appears, or is clearly no longer true, in "after" — the candidate fixed it.
@@ -30,7 +32,9 @@ ${JSON.stringify(before, null, 2)}
 
 ## After (revised resume version)
 
-${JSON.stringify(after, null, 2)}`;
+${JSON.stringify(after, null, 2)}
+
+${buildOutputLanguageInstruction(locale)}`;
 }
 
 export function computeMatchScoreDeltas(before: JdMatchResult, after: JdMatchResult) {
@@ -58,11 +62,12 @@ export function computeMatchScoreDeltas(before: JdMatchResult, after: JdMatchRes
 export async function matchDiffNode(input: {
   before: JdMatchResult;
   after: JdMatchResult;
+  locale: Locale;
 }): Promise<{ matchDiff: MatchDiffResult } | { errors: string[] }> {
   try {
     const model = getChatModel().withStructuredOutput(MatchDiffLlmOutputSchema);
     const { resolved, stillOpen, newIssues } = await model.invoke(
-      buildMatchDiffPrompt(input.before, input.after),
+      buildMatchDiffPrompt(input.before, input.after, input.locale),
     );
     const matchDiff = MatchDiffResultSchema.parse({
       ...computeMatchScoreDeltas(input.before, input.after),

@@ -25,9 +25,11 @@ function DiffItemCard({ item, borderClassName }: { item: MatchDiffItem; borderCl
 export function MatchDiffDisplay({
   diff,
   dict,
+  dimensionNames,
 }: {
   diff: MatchDiffResult;
   dict: Dictionary["dashboard"]["jobMatching"]["diff"];
+  dimensionNames: Dictionary["dashboard"]["jobMatching"]["dimensionNames"];
 }) {
   return (
     <Card>
@@ -56,7 +58,7 @@ export function MatchDiffDisplay({
                 key={dimension.name}
                 className="flex items-center justify-between rounded-lg border p-4 text-sm"
               >
-                <span className="font-semibold">{dimension.name}</span>
+                <span className="font-semibold">{dimensionNames[dimension.name]}</span>
                 <span className="flex items-center gap-2 text-muted-foreground">
                   {dimension.before} → {dimension.after}
                   <DeltaBadge delta={dimension.delta} />

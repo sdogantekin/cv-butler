@@ -1,6 +1,7 @@
 import { Annotation } from "@langchain/langgraph";
 import type { ParsedResume } from "@/lib/schemas/resume";
 import type { AtsScoreResult, JdMatchResult, Recommendation } from "@/lib/schemas/analysis";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
 
 // Shared state for the v1 pipeline: Extract -> Score -> Match -> Recommend.
 // Routing between nodes (see graph.ts) is driven by which of these fields are
@@ -16,6 +17,10 @@ function overwritable<T>() {
 }
 
 export const GraphState = Annotation.Root({
+  locale: Annotation<Locale>({
+    reducer: (_current: Locale, update: Locale) => update,
+    default: () => DEFAULT_LOCALE,
+  }),
   resumeText: overwritable<string | null>(),
   jobDescriptionText: overwritable<string | null>(),
   companyName: overwritable<string | null>(),

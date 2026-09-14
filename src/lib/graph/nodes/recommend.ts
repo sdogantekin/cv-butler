@@ -2,6 +2,7 @@ import { z } from "zod";
 import { getChatModel } from "@/lib/llm/provider";
 import { RecommendationSchema } from "@/lib/schemas/analysis";
 import type { GraphStateType } from "../state";
+import { buildOutputLanguageInstruction } from "./output-language";
 
 const RecommendationsOutputSchema = z.object({
   recommendations: z.array(RecommendationSchema),
@@ -32,7 +33,9 @@ ATS score:
 ${JSON.stringify(state.atsScore)}
 
 Job match:
-${JSON.stringify(state.jdMatch)}`,
+${JSON.stringify(state.jdMatch)}
+
+${buildOutputLanguageInstruction(state.locale)}`,
     );
     return { recommendations };
   } catch (err) {
