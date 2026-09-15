@@ -11,6 +11,8 @@ import { extractNode } from "@/lib/graph/nodes/extract";
 import { matchDiffNode } from "@/lib/graph/nodes/match-diff";
 import { graph } from "@/lib/graph";
 import { getLocale } from "@/lib/i18n/locale-cookie";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { errorResponse } from "@/lib/api-errors";
 
 // Thin route: auth -> validate -> rate-limit -> extract -> match -> persist -> respond.
 // Lets Job Matching start from a resume file directly, with no prior ATS
@@ -18,15 +20,18 @@ import { getLocale } from "@/lib/i18n/locale-cookie";
 // extract node standalone (no LLM score call) instead of routing through the
 // full score pipeline the way /api/analyze/score does.
 export async function POST(request: Request) {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return errorResponse(dict, "unauthorized", 401);
   }
 
   const formData = await request.formData();
   const file = formData.get("resume");
   if (!(file instanceof File)) {
-    return NextResponse.json({ error: "Missing resume file" }, { status: 400 });
+    return errorResponse(dict, "missing_resume_file", 400);
   }
   const jobDescriptionTextField = formData.get("jobDescriptionText");
   const companyNameField = formData.get("companyName");
@@ -37,19 +42,19 @@ export async function POST(request: Request) {
     size: file.size,
   });
   if (!upload.success) {
-    return NextResponse.json({ error: upload.error.issues[0]?.message }, { status: 400 });
+    return errorResponse(dict, upload.error.issues[0]?.message, 400);
   }
   const jd = JdMatchRequestSchema.shape.jobDescriptionText.safeParse(
     typeof jobDescriptionTextField === "string" ? jobDescriptionTextField : undefined,
   );
   if (!jd.success) {
-    return NextResponse.json({ error: jd.error.issues[0]?.message }, { status: 400 });
+    return errorResponse(dict, jd.error.issues[0]?.message, 400);
   }
   const companyName = JdMatchRequestSchema.shape.companyName.safeParse(
     typeof companyNameField === "string" ? companyNameField : undefined,
   );
   if (!companyName.success) {
-    return NextResponse.json({ error: companyName.error.issues[0]?.message }, { status: 400 });
+    return errorResponse(dict, companyName.error.issues[0]?.message, 400);
   }
 
   // Optional: set when the user is comparing an updated resume against an
@@ -63,30 +68,26 @@ export async function POST(request: Request) {
     try {
       parsedField = JSON.parse(previousJdMatchField);
     } catch {
-      return NextResponse.json({ error: "Invalid previousJdMatch" }, { status: 400 });
+      return errorResponse(dict, "invalid_previous_match", 400);
     }
     const previous = JdMatchResultSchema.safeParse(parsedField);
     if (!previous.success) {
-      return NextResponse.json({ error: "Invalid previousJdMatch" }, { status: 400 });
+      return errorResponse(dict, "invalid_previous_match", 400);
     }
     previousJdMatch = previous.data;
   }
 
   const rateLimit = await checkAndConsumeAction(session.user.id, "jd_match");
   if (!rateLimit.allowed) {
-    return NextResponse.json({ error: "Daily limit reached" }, { status: 429 });
+    return errorResponse(dict, "daily_limit_reached", 429);
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const resumeText = await extractResumeText(buffer, upload.data.mimeType);
-  const locale = await getLocale();
 
   const extracted = await extractNode({ resumeText });
   if (!extracted.parsedResume) {
-    return NextResponse.json(
-      { error: "Resume parsing failed", details: extracted.errors },
-      { status: 502 },
-    );
+    return errorResponse(dict, "resume_parsing_failed", 502, { details: extracted.errors });
   }
   const parsedResume = ParsedResumeSchema.parse(extracted.parsedResume);
 
@@ -107,7 +108,7 @@ export async function POST(request: Request) {
     locale,
   });
   if (!result.jdMatch) {
-    return NextResponse.json({ error: "Analysis failed", details: result.errors }, { status: 502 });
+    return errorResponse(dict, "analysis_failed", 502, { details: result.errors });
   }
   const jdMatch = JdMatchResultSchema.parse(result.jdMatch);
 
@@ -123,10 +124,7 @@ export async function POST(request: Request) {
   if (previousJdMatch) {
     const diffResult = await matchDiffNode({ before: previousJdMatch, after: jdMatch, locale });
     if (!("matchDiff" in diffResult)) {
-      return NextResponse.json(
-        { error: "Comparison failed", details: diffResult.errors },
-        { status: 502 },
-      );
+      return errorResponse(dict, "comparison_failed", 502, { details: diffResult.errors });
     }
     matchDiff = diffResult.matchDiff;
   }

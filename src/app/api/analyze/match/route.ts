@@ -9,20 +9,25 @@ import { JdMatchResultSchema } from "@/lib/schemas/analysis";
 import { checkAndConsumeAction } from "@/lib/rate-limit";
 import { graph } from "@/lib/graph";
 import { getLocale } from "@/lib/i18n/locale-cookie";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { errorResponse } from "@/lib/api-errors";
 
 // Thin route: auth -> validate -> rate-limit -> graph invoke -> persist -> respond.
 // Invokes the graph with an already-parsed resume, so it skips extract/score
 // entirely (no wasted LLM call, no re-billing that action).
 export async function POST(request: Request) {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return errorResponse(dict, "unauthorized", 401);
   }
 
   const body = await request.json().catch(() => null);
   const parsed = JdMatchRequestSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.issues[0]?.message }, { status: 400 });
+    return errorResponse(dict, parsed.error.issues[0]?.message, 400);
   }
   const { resumeId, jobDescriptionText, companyName } = parsed.data;
 
@@ -30,16 +35,15 @@ export async function POST(request: Request) {
     where: and(eq(resumes.id, resumeId), eq(resumes.userId, session.user.id)),
   });
   if (!resume) {
-    return NextResponse.json({ error: "Resume not found" }, { status: 404 });
+    return errorResponse(dict, "resume_not_found", 404);
   }
 
   const rateLimit = await checkAndConsumeAction(session.user.id, "jd_match");
   if (!rateLimit.allowed) {
-    return NextResponse.json({ error: "Daily limit reached" }, { status: 429 });
+    return errorResponse(dict, "daily_limit_reached", 429);
   }
 
   const parsedResume = ParsedResumeSchema.parse(resume.parsedResume);
-  const locale = await getLocale();
 
   const result = await graph.invoke({
     parsedResume,
@@ -48,7 +52,7 @@ export async function POST(request: Request) {
     locale,
   });
   if (!result.jdMatch) {
-    return NextResponse.json({ error: "Analysis failed", details: result.errors }, { status: 502 });
+    return errorResponse(dict, "analysis_failed", 502, { details: result.errors });
   }
 
   const jdMatch = JdMatchResultSchema.parse(result.jdMatch);

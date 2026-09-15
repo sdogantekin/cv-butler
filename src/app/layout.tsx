@@ -9,14 +9,17 @@ import { getLocale } from "@/lib/i18n/locale-cookie";
 import { env } from "@/lib/env";
 import "./globals.css";
 
+// latin-ext covers Turkish-specific characters (ğ, ş, ı, İ) that fall
+// outside the base latin subset — without it those glyphs silently fall
+// back to a different system font.
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
 });
 
 const TITLE = "CV Butler";

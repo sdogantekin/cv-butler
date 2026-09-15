@@ -7,6 +7,25 @@ export const en = {
     getStartedFree: "Get Started Free",
     actionsRemainingToday: "{count} action(s) remaining today",
   },
+  // Keyed by ApiErrorCode (src/lib/api-errors.ts) — every API route error
+  // response is built from this, never a hardcoded English string.
+  errors: {
+    unauthorized: "You need to be signed in to do this.",
+    missing_resume_file: "Please attach a resume file.",
+    invalid_resume_file: "That resume file looks invalid or empty. Please try a different file.",
+    unsupported_file_type: "Only PDF and .docx resumes are supported (no scanned PDFs or legacy .doc).",
+    file_too_large: "Resume file must be 10MB or smaller.",
+    invalid_job_description: "Please provide a valid job description (1–20,000 characters).",
+    invalid_company_name: "Company name is too long.",
+    invalid_request: "That request wasn't valid. Please try again.",
+    resume_not_found: "Resume not found.",
+    daily_limit_reached: "You've reached today's action limit. Try again tomorrow.",
+    invalid_previous_match: "The previous match result couldn't be read. Please start a new match.",
+    resume_parsing_failed: "We couldn't read your resume. Please try a different file.",
+    analysis_failed: "Something went wrong while analyzing your resume.",
+    comparison_failed: "Something went wrong while comparing your resumes.",
+    generation_failed: "Something went wrong while generating your cover letter.",
+  },
   severity: {
     critical: "Critical",
     moderate: "Moderate",

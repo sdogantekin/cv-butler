@@ -9,19 +9,24 @@ import { checkAndConsumeAction } from "@/lib/rate-limit";
 import { extractResumeText } from "@/lib/parsers/resume-file";
 import { graph } from "@/lib/graph";
 import { getLocale } from "@/lib/i18n/locale-cookie";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { errorResponse } from "@/lib/api-errors";
 
 // Thin route: auth -> validate -> rate-limit -> graph invoke -> persist -> respond.
 // The uploaded file is processed in memory only and never persisted.
 export async function POST(request: Request) {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return errorResponse(dict, "unauthorized", 401);
   }
 
   const formData = await request.formData();
   const file = formData.get("resume");
   if (!(file instanceof File)) {
-    return NextResponse.json({ error: "Missing resume file" }, { status: 400 });
+    return errorResponse(dict, "missing_resume_file", 400);
   }
 
   const upload = ResumeUploadSchema.safeParse({
@@ -30,21 +35,20 @@ export async function POST(request: Request) {
     size: file.size,
   });
   if (!upload.success) {
-    return NextResponse.json({ error: upload.error.issues[0]?.message }, { status: 400 });
+    return errorResponse(dict, upload.error.issues[0]?.message, 400);
   }
 
   const rateLimit = await checkAndConsumeAction(session.user.id, "ats_score");
   if (!rateLimit.allowed) {
-    return NextResponse.json({ error: "Daily limit reached" }, { status: 429 });
+    return errorResponse(dict, "daily_limit_reached", 429);
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const resumeText = await extractResumeText(buffer, upload.data.mimeType);
-  const locale = await getLocale();
 
   const result = await graph.invoke({ resumeText, locale });
   if (!result.parsedResume || !result.atsScore) {
-    return NextResponse.json({ error: "Analysis failed", details: result.errors }, { status: 502 });
+    return errorResponse(dict, "analysis_failed", 502, { details: result.errors });
   }
 
   const parsedResume = ParsedResumeSchema.parse(result.parsedResume);

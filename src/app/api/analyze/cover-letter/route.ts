@@ -9,6 +9,8 @@ import { extractResumeText } from "@/lib/parsers/resume-file";
 import { extractNode } from "@/lib/graph/nodes/extract";
 import { copywriterNode } from "@/lib/graph/nodes/copywriter";
 import { getLocale } from "@/lib/i18n/locale-cookie";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { errorResponse } from "@/lib/api-errors";
 
 // Thin route: auth -> validate -> rate-limit -> extract -> write -> persist
 // -> respond. Mirrors /api/analyze/match-upload: calls the extract node
@@ -16,15 +18,18 @@ import { getLocale } from "@/lib/i18n/locale-cookie";
 // daily action. Job description text is optional here — its presence is
 // exactly what selects the General vs. Targeted variant.
 export async function POST(request: Request) {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return errorResponse(dict, "unauthorized", 401);
   }
 
   const formData = await request.formData();
   const file = formData.get("resume");
   if (!(file instanceof File)) {
-    return NextResponse.json({ error: "Missing resume file" }, { status: 400 });
+    return errorResponse(dict, "missing_resume_file", 400);
   }
   const jobDescriptionTextField = formData.get("jobDescriptionText");
 
@@ -34,30 +39,26 @@ export async function POST(request: Request) {
     size: file.size,
   });
   if (!upload.success) {
-    return NextResponse.json({ error: upload.error.issues[0]?.message }, { status: 400 });
+    return errorResponse(dict, upload.error.issues[0]?.message, 400);
   }
   const jd = CoverLetterRequestSchema.shape.jobDescriptionText.safeParse(
     typeof jobDescriptionTextField === "string" ? jobDescriptionTextField : undefined,
   );
   if (!jd.success) {
-    return NextResponse.json({ error: jd.error.issues[0]?.message }, { status: 400 });
+    return errorResponse(dict, jd.error.issues[0]?.message, 400);
   }
 
   const rateLimit = await checkAndConsumeAction(session.user.id, "cover_letter");
   if (!rateLimit.allowed) {
-    return NextResponse.json({ error: "Daily limit reached" }, { status: 429 });
+    return errorResponse(dict, "daily_limit_reached", 429);
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const resumeText = await extractResumeText(buffer, upload.data.mimeType);
-  const locale = await getLocale();
 
   const extracted = await extractNode({ resumeText });
   if (!extracted.parsedResume) {
-    return NextResponse.json(
-      { error: "Resume parsing failed", details: extracted.errors },
-      { status: 502 },
-    );
+    return errorResponse(dict, "resume_parsing_failed", 502, { details: extracted.errors });
   }
   const parsedResume = ParsedResumeSchema.parse(extracted.parsedResume);
 
@@ -74,7 +75,7 @@ export async function POST(request: Request) {
   const jobDescriptionText = jd.data ?? null;
   const written = await copywriterNode({ parsedResume, jobDescriptionText, locale });
   if (!("coverLetter" in written)) {
-    return NextResponse.json({ error: "Generation failed", details: written.errors }, { status: 502 });
+    return errorResponse(dict, "generation_failed", 502, { details: written.errors });
   }
   const { coverLetter } = written;
 

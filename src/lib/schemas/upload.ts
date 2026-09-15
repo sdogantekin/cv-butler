@@ -7,29 +7,29 @@ export const SUPPORTED_RESUME_MIME_TYPES = [
 
 const MAX_RESUME_FILE_BYTES = 10 * 1024 * 1024; // 10MB
 
+// Every `.message`/`error` string below is an ApiErrorCode (see
+// src/lib/api-errors.ts), not user-facing text — routes resolve the code to
+// a localized message via errorResponse(), so these schemas stay
+// locale-agnostic and never hardcode English.
+
 // Legacy binary .doc (application/msword) is intentionally rejected: there is
 // no good npm-native parser for it, unlike modern .docx (via mammoth).
 export const ResumeUploadSchema = z.object({
-  mimeType: z.enum(SUPPORTED_RESUME_MIME_TYPES, {
-    error: "Only PDF and .docx resumes are supported (no scanned PDFs or legacy .doc).",
-  }),
-  filename: z.string().min(1),
-  size: z
-    .number()
-    .positive()
-    .max(MAX_RESUME_FILE_BYTES, "Resume file must be 10MB or smaller."),
+  mimeType: z.enum(SUPPORTED_RESUME_MIME_TYPES, { error: "unsupported_file_type" }),
+  filename: z.string().min(1, "invalid_resume_file"),
+  size: z.number().positive("invalid_resume_file").max(MAX_RESUME_FILE_BYTES, "file_too_large"),
 });
 
 export const JdMatchRequestSchema = z.object({
-  resumeId: z.string().uuid(),
-  jobDescriptionText: z.string().min(1).max(20_000),
+  resumeId: z.string().uuid("invalid_request"),
+  jobDescriptionText: z.string().min(1, "invalid_job_description").max(20_000, "invalid_job_description"),
   // Optional. Blank/whitespace-only input normalizes to undefined so the
   // match node treats it as "no company name" (skips Tavily enrichment)
   // rather than searching for an empty string.
   companyName: z
     .string()
     .trim()
-    .max(200)
+    .max(200, "invalid_company_name")
     .optional()
     .transform((v) => (v ? v : undefined)),
 });
@@ -43,7 +43,7 @@ export const CoverLetterRequestSchema = z.object({
   jobDescriptionText: z
     .string()
     .trim()
-    .max(20_000)
+    .max(20_000, "invalid_job_description")
     .optional()
     .transform((v) => (v ? v : undefined)),
 });
