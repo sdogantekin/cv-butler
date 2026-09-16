@@ -16,6 +16,11 @@ describe("getLocale", () => {
     expect(await getLocale()).toBe("tr");
   });
 
+  it("returns 'de' from the cookie", async () => {
+    cookieValue = "de";
+    expect(await getLocale()).toBe("de");
+  });
+
   it("falls back to the default locale when the cookie is unset", async () => {
     cookieValue = undefined;
     expect(await getLocale()).toBe("en");

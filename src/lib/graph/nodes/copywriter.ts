@@ -55,6 +55,31 @@ const HUMANIZER_GUIDANCE_TR = `Doğal, insan bir üslupla yazın. Şu yapay zek�
 
 Belirli bir kişinin, belirli bir role yazdığı gibi yazın; şablon gibi değil.`;
 
+// Adapted for German the same way as the Turkish block above — the actual
+// German equivalents of these AI-writing tells, not a literal translation.
+const HUMANIZER_GUIDANCE_DE = `Schreiben Sie in einem natürlichen, menschlichen Ton. Vermeiden Sie diese typischen KI-Textmerkmale:
+
+- Verwenden Sie nie Konstruktionen wie "nicht nur X, sondern auch Y", und teilen Sie denselben Gegensatz nicht auf zwei Sätze auf ("Hier geht es nicht um X. Hier geht es um Y.").
+- Keine dramatischen Ein-Satz-Schlusszeilen, die nur den Punkt wiederholen ("Genau das macht den Unterschied.", "Das sagt alles.").
+- Keine inszenierten Anlauf-Sätze zu Beginn ("Ich freue mich, Ihnen mitteilen zu können...", "Lassen Sie mich erklären, warum...").
+- Keine erzwungenen Dreiergruppen (drei Adjektive, drei Beispiele), außer der Inhalt hat tatsächlich drei eigenständige, notwendige Teile.
+- Keine Gedankenstriche als durchgängiges Verbindungselement — verwenden Sie stattdessen Punkt, Komma oder Klammern.
+- Vermeiden Sie diese abgenutzten, floskelhaften Wörter und Wendungen vollständig: zudem, darüber hinaus, maßgeblich, ganzheitlich, maßgeschneidert, essenziell, entscheidend, facettenreich, Vielzahl, Synergien, Mehrwert, auf Augenhöhe, im Fokus stehen, eine wichtige Rolle spielen, unterstreichen (als Verb), hervorheben (als Verb), Reise (im übertragenen Sinn), nachhaltig (außer im wörtlichen, technischen Sinn), innovativ (als Füllwort), vielfältig (als Füllwort).
+- Keine übertriebenen Bedeutungsfloskeln ("ein echter Meilenstein", "ein entscheidender Wendepunkt", "ein Schritt in die richtige Richtung").
+- Keine Verkaufs-/Marketingsprache ("einzigartig", "erstklassig", "beeindruckend", "vielfältiges Angebot").
+- Bevorzugen Sie einfache Verben: "ist/hat" statt "fungiert als/bietet/verfügt über/zeichnet sich aus durch".
+- Keine fett gedruckten Wörter oder Aufzählungslisten mit Labels — dies ist ein Brief, geschrieben in vollständigen, zusammenhängenden Absätzen.
+- Variieren Sie Satzlänge und -struktur; beginnen Sie nicht mehrere Sätze hintereinander mit demselben Subjekt.
+- Keine Chatbot-artigen Eröffnungen oder Abschlüsse ("Ich hoffe, das hilft"), und kein generischer, inhaltsleerer Schlusssatz ("Ich freue mich darauf, meine Leidenschaft und mein Engagement in Ihr Team einzubringen") — enden Sie stattdessen mit etwas Konkretem.
+
+Schreiben Sie wie eine bestimmte Person, die sich an eine bestimmte Stelle wendet, nicht wie eine Vorlage.`;
+
+const HUMANIZER_GUIDANCE_BY_LOCALE: Record<Locale, string> = {
+  en: HUMANIZER_GUIDANCE,
+  tr: HUMANIZER_GUIDANCE_TR,
+  de: HUMANIZER_GUIDANCE_DE,
+};
+
 function buildCopywriterPrompt(
   resume: ParsedResume,
   jobDescriptionText: string | null,
@@ -66,7 +91,7 @@ function buildCopywriterPrompt(
 
   return `You are a professional cover-letter writer helping a job candidate. ${variantInstructions}
 
-${locale === "tr" ? HUMANIZER_GUIDANCE_TR : HUMANIZER_GUIDANCE}
+${HUMANIZER_GUIDANCE_BY_LOCALE[locale]}
 
 CRITICAL constraint: every name, company, title, number, date, or achievement you mention must come directly from the candidate's resume data below. Never invent, estimate, or embellish a fact to sound more impressive. If the job description asks for something the resume doesn't show, you may write around that gap in general terms, but never fabricate specific evidence for it.
 

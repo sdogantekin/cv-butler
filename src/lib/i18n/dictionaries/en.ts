@@ -31,10 +31,6 @@ export const en = {
     moderate: "Moderate",
     minor: "Minor",
   },
-  languageSwitcher: {
-    comingSoon: "{language} support is coming in a future iteration — staying in English for now.",
-    german: "German",
-  },
   resumeDropzone: {
     title: "Drop your resume here",
     subtitle: "PDF or DOCX",

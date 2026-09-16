@@ -9,4 +9,8 @@ describe("buildOutputLanguageInstruction", () => {
   it("names Turkish for locale 'tr'", () => {
     expect(buildOutputLanguageInstruction("tr")).toContain("fluent Turkish");
   });
+
+  it("names German for locale 'de'", () => {
+    expect(buildOutputLanguageInstruction("de")).toContain("fluent German");
+  });
 });

@@ -41,11 +41,7 @@ export function DashboardShell({
 
   return (
     <div className="flex min-h-screen flex-1 flex-col">
-      <DashboardHeader
-        locale={locale}
-        dict={dict.languageSwitcher}
-        onMenuClick={() => setMobileNavOpen(true)}
-      />
+      <DashboardHeader locale={locale} onMenuClick={() => setMobileNavOpen(true)} />
       <div className="flex flex-1 flex-col lg:flex-row">
         <Sidebar
           activeTab={tab}

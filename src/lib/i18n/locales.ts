@@ -1,5 +1,4 @@
-// German is the next locale to add here — see requirements.md 6.7.
-export const LOCALES = ["en", "tr"] as const;
+export const LOCALES = ["en", "tr", "de"] as const;
 
 export type Locale = (typeof LOCALES)[number];
 

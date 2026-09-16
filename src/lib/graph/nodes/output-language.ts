@@ -3,6 +3,7 @@ import type { Locale } from "@/lib/i18n/locales";
 const OUTPUT_LANGUAGE_NAMES: Record<Locale, string> = {
   en: "English",
   tr: "Turkish",
+  de: "German",
 };
 
 // Appended to every node prompt that produces free-text output shown to the

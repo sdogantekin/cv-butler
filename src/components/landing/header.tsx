@@ -31,7 +31,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         </nav>
 
         <div className="flex items-center gap-2.5">
-          <LanguageSwitcher locale={locale} dict={dict.languageSwitcher} />
+          <LanguageSwitcher locale={locale} />
           <Button asChild variant="outline" size="sm">
             <Link href="/auth/signin">{dict.landing.header.logIn}</Link>
           </Button>

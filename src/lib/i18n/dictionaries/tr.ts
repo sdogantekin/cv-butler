@@ -32,10 +32,6 @@ export const tr: Dictionary = {
     moderate: "Orta",
     minor: "Düşük",
   },
-  languageSwitcher: {
-    comingSoon: "{language} desteği ileride eklenecek — şimdilik İngilizce olarak devam ediyoruz.",
-    german: "Almanca",
-  },
   resumeDropzone: {
     title: "Özgeçmişinizi buraya bırakın",
     subtitle: "PDF veya DOCX",

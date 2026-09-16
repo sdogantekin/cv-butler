@@ -66,6 +66,15 @@ describe("copywriterNode", () => {
     expect(capturedPrompt).not.toContain("Avoid these common AI-writing tells");
   });
 
+  it("uses the German humanizer guidance and instructs German output for locale 'de'", async () => {
+    await copywriterNode({ parsedResume: FAKE_RESUME, jobDescriptionText: null, locale: "de" });
+
+    expect(capturedPrompt).toContain("Schreiben Sie in einem natürlichen, menschlichen Ton");
+    expect(capturedPrompt).toContain("fluent German");
+    expect(capturedPrompt).not.toContain("Avoid these common AI-writing tells");
+    expect(capturedPrompt).not.toContain("Doğal, insan bir üslupla yazın");
+  });
+
   it("returns errors instead of throwing when the LLM call fails", async () => {
     const { getChatModel } = await import("@/lib/llm/provider");
     vi.mocked(getChatModel).mockReturnValueOnce({
