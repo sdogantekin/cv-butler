@@ -72,4 +72,22 @@ describe("computeKeywordOverlap", () => {
   it("does not throw on regex-special characters in a skill", () => {
     expect(() => computeKeywordOverlap(resumeWithSkills(["C++", ".NET"]), "Experience with .NET.")).not.toThrow();
   });
+
+  it("matches dotted İ against plain i (Turkish casing)", () => {
+    const result = computeKeywordOverlap(
+      resumeWithSkills(["İngilizce"]),
+      "Pozisyon için ingilizce bilgisi gereklidir.",
+    );
+    expect(result.matchedSkills).toEqual(["İngilizce"]);
+  });
+
+  it("matches dotless ı against uppercase I (Turkish casing)", () => {
+    const result = computeKeywordOverlap(resumeWithSkills(["Yazılım"]), "YAZILIM geliştirme deneyimi arıyoruz.");
+    expect(result.matchedSkills).toEqual(["Yazılım"]);
+  });
+
+  it("still matches an English acronym containing 'I' as expected", () => {
+    const result = computeKeywordOverlap(resumeWithSkills(["IoT"]), "Experience with IoT and iot platforms.");
+    expect(result.matchedSkills).toEqual(["IoT"]);
+  });
 });
