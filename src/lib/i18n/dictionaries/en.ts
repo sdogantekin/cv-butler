@@ -162,7 +162,7 @@ export const en = {
       productHeading: "Product",
       resourcesHeading: "Resources",
       communityHeading: "Community",
-      issuesDiscussions: "Issues & discussions",
+      issuesDiscussions: "Issues and discussions",
       mitLicense: "MIT License",
       copyright:
         "© 2026 CV Butler · Open source under the MIT license · Independent project, not affiliated with any commercial career platform.",

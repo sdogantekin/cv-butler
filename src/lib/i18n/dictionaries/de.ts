@@ -163,7 +163,7 @@ export const de: Dictionary = {
       productHeading: "Produkt",
       resourcesHeading: "Ressourcen",
       communityHeading: "Community",
-      issuesDiscussions: "Issues & Diskussionen",
+      issuesDiscussions: "Issues und Diskussionen",
       mitLicense: "MIT-Lizenz",
       copyright:
         "© 2026 CV Butler · Open Source unter der MIT-Lizenz · Unabhängiges Projekt, nicht mit einer kommerziellen Karriereplattform verbunden.",
