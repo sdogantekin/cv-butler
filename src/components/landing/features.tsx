@@ -3,7 +3,7 @@ import type { Dictionary } from "@/lib/i18n/get-dictionary";
 
 export function Features({ dict }: { dict: Dictionary["landing"]["features"] }) {
   return (
-    <section id="features" className="bg-muted">
+    <section id="features" className="scroll-mt-20 bg-muted">
       <div className="mx-auto max-w-6xl px-6 py-16">
         <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">{dict.heading}</h2>
         <p className="mt-2 max-w-xl text-muted-foreground">{dict.subheading}</p>
