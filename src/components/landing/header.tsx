@@ -55,7 +55,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
         <div className="hidden items-center gap-2.5 lg:flex">
           <LanguageSwitcher locale={locale} />
-          <Button asChild variant="outline" size="sm">
+          <Button asChild size="sm">
             <Link href="/auth/signin">{dict.landing.header.logIn}</Link>
           </Button>
           <Button asChild variant="outline" size="sm">
@@ -92,7 +92,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           </nav>
           <div className="mt-4 flex flex-wrap items-center gap-2.5 border-t pt-4">
             <LanguageSwitcher locale={locale} />
-            <Button asChild variant="outline" size="sm">
+            <Button asChild size="sm">
               <Link href="/auth/signin" onClick={closeMobileMenu}>
                 {dict.landing.header.logIn}
               </Link>
