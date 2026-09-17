@@ -38,7 +38,7 @@ export function LanguageSwitcher({
   return (
     <div
       className={cn(
-        "flex overflow-hidden rounded-lg border",
+        "flex h-7 overflow-hidden rounded-lg border",
         invert && "border-primary-foreground/30",
         className,
       )}
