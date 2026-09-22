@@ -1,20 +1,23 @@
 export function LogoIcon({ size = 20 }: { size?: number }) {
+  // Rendered via a currentColor mask (rather than <img>) so the icon keeps
+  // inheriting text color automatically, same as the inline SVG it replaced —
+  // needed since it sits on both light and dark/primary-colored backgrounds.
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+    <span
       aria-hidden="true"
-    >
-      <rect x="4" y="2.5" width="16" height="19" rx="2.5" />
-      <circle cx="12" cy="9" r="2.2" />
-      <path d="M8 14.8a4 4 0 0 1 8 0" />
-      <path d="M8 17.3h8M8 19.8h6" />
-    </svg>
+      className="inline-block shrink-0 bg-current"
+      style={{
+        width: size,
+        height: size,
+        WebkitMaskImage: "url(/logo-icon.png)",
+        maskImage: "url(/logo-icon.png)",
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskPosition: "center",
+        maskPosition: "center",
+      }}
+    />
   );
 }
