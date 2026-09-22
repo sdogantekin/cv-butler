@@ -303,13 +303,105 @@ export const tr: Dictionary = {
     learningHub: {
       title: "ATS Öğrenme Merkezi",
       subtitle: "Özgeçmiş biçimlendirme, anahtar kelime stratejisi ve otomatik tarama sistemlerinin gerçekte nasıl çalıştığı hakkında ücretsiz rehberler.",
-      comingBadge: "v3'te geliyor",
-      comingText: "Tam rehberler henüz mevcut değil — işte planlananların bir önizlemesi.",
+      comingBadge: "Yakında",
+      comingText: "Daha fazla rehber hazırlanıyor — sırada bunlar var.",
+      availableBadge: "Rehber mevcut",
+      readGuideCta: "Rehberi oku",
       topics: [
-        { title: "ATS'yi Aşmak", description: "Ayrıştırıcıları memnun eden biçimlendirme kuralları." },
-        { title: "Anahtar kelime stratejisi", description: "Dilinizi ilanınkiyle eşleştirmek." },
-        { title: "Tarama sistemleri nasıl çalışır", description: "Otomatik sistemlerin neyi kontrol ettiği ve nedeni." },
+        {
+          title: "ATS'yi Aşmak",
+          description: "Ayrıştırıcıları memnun eden biçimlendirme kuralları.",
+          slug: "beating-the-ats",
+        },
+        { title: "Anahtar kelime stratejisi", description: "Dilinizi ilanınkiyle eşleştirmek.", slug: null },
+        {
+          title: "Tarama sistemleri nasıl çalışır",
+          description: "Otomatik sistemlerin neyi kontrol ettiği ve nedeni.",
+          slug: null,
+        },
       ],
+      // Rehber içeriği şimdilik kasıtlı olarak İngilizce (çeviri, içerik netleştikten sonra planlanıyor).
+      beatingTheAts: {
+        backLink: "Back to Learning Hub",
+        title: "Beating the ATS",
+        subtitle:
+          "Formatting rules that keep applicant tracking systems from mangling your resume before a human ever sees it.",
+        sections: [
+          {
+            heading: "Layout",
+            rules: [
+              "Use a single-column layout. Multi-column and sidebar designs often get read out of order or dropped entirely.",
+              "Skip images, icons, logos, and graphics — parsers can't read them, and a headshot won't help your score.",
+              "Avoid text boxes, shapes, and Word SmartArt. Content placed inside them is frequently skipped.",
+              "Avoid tables for structure. If you must use one for alignment, keep it minimal — many parsers read across rows instead of down columns.",
+              "Never put contact details or key content in a header or footer. Plenty of ATS ignore that area completely.",
+            ],
+          },
+          {
+            heading: "File format & name",
+            rules: [
+              "Save as a PDF — it's the safest bet for modern ATS. Use DOCX only if the job posting explicitly asks for it.",
+              "Never upload a scanned PDF. It's just an image, and there's no text underneath for the parser to extract.",
+              "Name the file Firstname_Lastname_CV.pdf. Skip dates, version numbers, and special characters in the filename.",
+            ],
+          },
+          {
+            heading: "Fonts & sizing",
+            rules: [
+              "Stick to universal, ATS-safe fonts: Arial, Calibri, Helvetica, Times New Roman, or Verdana.",
+              "Avoid condensed or decorative fonts, however stylish they look.",
+              "Keep body text at 10–12pt and headings at 12–14pt.",
+            ],
+          },
+          {
+            heading: "Characters, bullets & headings",
+            rules: [
+              "Avoid special icons (☎ ✉ ➤ ✔), emojis (🚀 ⭐), and decorative bullets (■ ◆) — use a plain \"•\" or a hyphen instead.",
+              "Use standard section headings the parser recognizes, like \"Experience,\" not creative alternatives like \"Career Journey.\"",
+              "Keep date formats consistent throughout — don't mix \"Jan 2020\" with \"2020-01\" in the same document.",
+            ],
+          },
+        ],
+        breakersTitle: "ATS breakers — avoid these at all costs",
+        breakers: [
+          "Photos or logos",
+          "Multi-column layouts",
+          "Text boxes",
+          "Tables used for structure",
+          "Headers or footers holding key information",
+          "Icons (☎ ✉ ✔)",
+          "Uncommon or decorative fonts",
+          "PDFs exported straight from design tools like Figma or Canva",
+          "Over-stylized templates",
+          "\"&\" in place of \"and\" within keyword phrases",
+          "Hyphenated line breaks splitting words across lines",
+          "Inconsistent spelling variants (e.g. mixing \"analyse\" and \"analyze\")",
+        ],
+        checklistTitle: "Final formatting checklist",
+        checklist: [
+          {
+            category: "Structure",
+            items: ["Single column", "Standard section headings", "No images or graphics"],
+          },
+          {
+            category: "Formatting",
+            items: [
+              "Clean PDF export",
+              "Plain, extractable text",
+              "Standard font",
+              "No special characters or icons",
+            ],
+          },
+          {
+            category: "Content",
+            items: [
+              "Consistent date formats",
+              "Contact info in the main body, not header/footer",
+              "Certifications and section titles spelled out in full",
+            ],
+          },
+        ],
+      },
     },
   },
 };
