@@ -312,7 +312,11 @@ export const en = {
           description: "Formatting rules that keep parsers happy.",
           slug: "beating-the-ats",
         },
-        { title: "Keyword strategy", description: "Matching your language to the listing's.", slug: null },
+        {
+          title: "Keyword strategy",
+          description: "Matching your language to the listing's.",
+          slug: "keyword-strategy",
+        },
         {
           title: "How screeners work",
           description: "What automated systems check for, and why.",
@@ -396,6 +400,86 @@ export const en = {
               "Consistent date formats",
               "Contact info in the main body, not header/footer",
               "Certifications and section titles spelled out in full",
+            ],
+          },
+        ],
+      },
+      keywordStrategy: {
+        backLink: "Back to Learning Hub",
+        title: "Keyword Strategy",
+        subtitle:
+          "How to match your resume's language to the job listing's, so both the parser and the recruiter see the fit.",
+        sections: [
+          {
+            heading: "Find your target keywords",
+            rules: [
+              "Pull them straight from the job description: responsibilities, required skills, nice-to-have skills, certifications, tools and technologies, and any industry terms that keep coming up.",
+              "Weight what's listed as required or repeated more than once over anything mentioned just once as a nice-to-have.",
+            ],
+          },
+          {
+            heading: "Match the listing's exact wording",
+            rules: [
+              "ATS keyword matching is literal. If the listing says \"stakeholder management,\" write that — not \"stakeholder coordination.\"",
+              "Only swap in a synonym if the listing itself uses it somewhere else. Otherwise, keep its exact phrasing.",
+              "Watch regional spelling. \"Data visualisation\" and \"data visualization\" are different strings to a parser — match whichever the listing uses.",
+            ],
+          },
+          {
+            heading: "Place keywords where the parser looks first",
+            rules: [
+              "Summary: work 4–6 of your strongest keyword skills into 1–3 sentences right at the top.",
+              "Skills section: list them as a flat, comma-separated list rather than bullets — parsers extract this section on its own, and comma lists parse more reliably.",
+              "Experience bullets: weave keywords into the achievements themselves, not just the standalone skills list.",
+              "Education: only add keywords or coursework here if they genuinely apply — padding this section doesn't help.",
+            ],
+          },
+          {
+            heading: "Repeat critical keywords, naturally",
+            rules: [
+              "Aim for each critical keyword to show up 2–4 times across the whole document — summary, skills, and experience combined.",
+              "The repetition should read naturally in context. A recruiter reads the same document a parser does, so it still has to make sense as prose.",
+            ],
+          },
+        ],
+        bulletFormulaTitle: "The bullet formula for experience",
+        bulletFormulaFormula: "Verb + skill/keyword + outcome",
+        bulletFormulaExamples: [
+          "Improved a Python data pipeline's efficiency by 30% by implementing optimized scripts.",
+          "Led a team of 5 analysts, delivering insights that increased revenue by €1.2M.",
+          "Developed Power BI dashboards used by 120+ stakeholders across Finance and Operations.",
+        ],
+        mistakesTitle: "Keyword mistakes to avoid",
+        mistakes: [
+          "Swapping in a synonym the listing doesn't use, even if it means the same thing",
+          "Keyword-stuffing the skills section with terms that don't appear anywhere else in the CV",
+          "Listing skills only once, in a wall at the bottom, instead of reinforcing them in the summary and experience bullets",
+          "Ignoring a regional spelling the listing specifically uses (e.g. \"optimise\" vs \"optimize\")",
+          "Weakening a job title match unnecessarily (e.g. \"Business Analyst – Intern\" instead of \"Business Analyst Intern\")",
+        ],
+        checklistTitle: "Keyword strategy checklist",
+        checklist: [
+          {
+            category: "Research",
+            items: [
+              "All required and nice-to-have keywords extracted from the listing",
+              "Recurring industry terms noted",
+            ],
+          },
+          {
+            category: "Placement",
+            items: [
+              "4–6 keywords worked into the summary",
+              "Skills listed as a flat, comma-separated list",
+              "Keywords woven into experience bullets",
+            ],
+          },
+          {
+            category: "Wording",
+            items: [
+              "Exact listing phrasing used, not synonyms",
+              "Consistent regional spelling",
+              "Each critical keyword repeated 2–4 times",
             ],
           },
         ],
