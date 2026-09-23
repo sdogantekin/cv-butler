@@ -321,7 +321,7 @@ export const de: Dictionary = {
         {
           title: "So funktionieren Screener",
           description: "Wonach automatisierte Systeme suchen, und warum.",
-          slug: null,
+          slug: "how-screeners-work",
         },
       ],
       // Guide body intentionally left in English for now (translation planned once the content is finalized).
@@ -485,6 +485,82 @@ export const de: Dictionary = {
               "Each critical keyword repeated 2–4 times",
             ],
           },
+        ],
+      },
+      // Guide body intentionally left in English for now (translation planned once the content is finalized).
+      howScreenersWork: {
+        backLink: "Back to Learning Hub",
+        title: "How Screeners Work",
+        subtitle:
+          "What an ATS actually checks, how your score gets calculated, and why qualified candidates still get rejected.",
+        sections: [
+          {
+            heading: "What an ATS actually does",
+            rules: [
+              "It's recruitment software, not a human reviewer — think of it as a first-round interview conducted by a computer before anyone reads your CV.",
+              "It collects and stores every application in a database, then parses each CV to extract structured fields like contact info, job titles, dates, and skills.",
+              "It ranks candidates by keyword match and other criteria, then filters out anything that doesn't meet the minimum requirements the recruiter set.",
+              "Nearly every large employer uses one — over 98% of Fortune 500 companies and roughly 75% of employers overall.",
+            ],
+          },
+          {
+            heading: "The systems you're actually up against",
+            rules: [
+              "Enterprise: Workday, Taleo (Oracle), SuccessFactors (SAP), and iCIMS — common at large and Fortune 500 companies.",
+              "Mid-market: Greenhouse, Lever, SmartRecruiters, and Jobvite — common at tech companies and startups.",
+              "Small business: BambooHR, Zoho Recruit, and Bullhorn — common at smaller companies and staffing agencies.",
+              "Each has different parsing quirks — some handle formatting or synonyms better than others — which is exactly why a clean, standard-format CV maximizes compatibility across all of them.",
+            ],
+          },
+          {
+            heading: "How your score gets calculated",
+            rules: [
+              "Keyword match (40–60% of the score): how many required keywords appear, how often, and where — skills section, summary, and experience all count.",
+              "Experience match (20–30%): your years of experience against what's required, and how closely your job titles match the role.",
+              "Education & certifications (10–20%): whether required degrees or certifications are present and relevant.",
+              "Other factors (10–20%): things like location match, salary expectations, and whether the application is complete.",
+            ],
+          },
+        ],
+        scoreRangesTitle: "What the score actually means",
+        scoreRanges: [
+          { range: "80–100%", label: "Human review", description: "Your CV reaches a recruiter." },
+          {
+            range: "60–79%",
+            label: "Maybe reviewed",
+            description: "Depends on how many other applicants there are.",
+          },
+          { range: "0–59%", label: "Auto-rejected", description: "Filtered out before anyone sees it." },
+        ],
+        funnelTitle: "The funnel doesn't stop at the ATS",
+        funnelSteps: [
+          {
+            stage: "ATS filtering",
+            detail: "Automated keyword and requirement matching eliminates 50–75% of applications.",
+          },
+          {
+            stage: "Recruiter quick scan",
+            detail:
+              "About 6–10 seconds, checking title, companies, education, and keywords — plus red flags like gaps or job-hopping.",
+          },
+          {
+            stage: "Detailed review",
+            detail:
+              "2–3 minutes, only for CVs that survive the scan, weighed against the rest of the shortlist.",
+          },
+          {
+            stage: "Phone screening & interviews",
+            detail: "15–30 minutes to verify experience and fit before the final rounds.",
+          },
+        ],
+        rejectionTitle: "Why qualified candidates still get rejected",
+        rejectionReasons: [
+          "Missing keywords — you have the skill, but used different terminology than the listing",
+          "Formatting that broke parsing, even though the experience was there",
+          "Key information buried instead of highlighted in the first 6–10 seconds",
+          "Gaps or inconsistencies that raised a flag with no context to explain them",
+          "The role was filled internally, budgeted out, or frozen after the posting went up",
+          "Simple competition — hundreds of applicants, referrals, or internal candidates prioritized",
         ],
       },
     },
