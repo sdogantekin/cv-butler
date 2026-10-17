@@ -176,6 +176,11 @@ export const de: Dictionary = {
       continueWithGoogle: "Mit Google fortfahren",
     },
   },
+  // Content intentionally left in English for now (translation planned once the content is finalized).
+  checkout: {
+    title: "Pricing",
+    subtitle: "Pick a plan. Prices are shown in your local currency with tax included.",
+  },
   dashboard: {
     sidebar: {
       home: "Start",

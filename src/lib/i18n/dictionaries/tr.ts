@@ -176,6 +176,11 @@ export const tr: Dictionary = {
       continueWithGoogle: "Google ile devam et",
     },
   },
+  // İçerik şimdilik kasıtlı olarak İngilizce (çeviri, içerik netleştikten sonra planlanıyor).
+  checkout: {
+    title: "Pricing",
+    subtitle: "Pick a plan. Prices are shown in your local currency with tax included.",
+  },
   dashboard: {
     sidebar: {
       home: "Ana Sayfa",

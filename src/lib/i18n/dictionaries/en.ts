@@ -175,6 +175,10 @@ export const en = {
       continueWithGoogle: "Continue with Google",
     },
   },
+  checkout: {
+    title: "Pricing",
+    subtitle: "Pick a plan. Prices are shown in your local currency with tax included.",
+  },
   dashboard: {
     sidebar: {
       home: "Home",

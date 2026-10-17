@@ -70,6 +70,14 @@ export const env = createEnv({
     // `server`) and keep its NEXT_PUBLIC_ prefix so it's readable from the
     // browser, since gtag.js runs client-side.
     NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
+
+    // Paddle.js (pricing + checkout, src/app/checkout). Both required with
+    // no default — unlike the opt-in vars above, silently defaulting the
+    // environment risks running checkout against the wrong Paddle account,
+    // so this fails the build/boot instead. Client token is safe to expose:
+    // it can only open checkout and preview prices, not act as an API key.
+    NEXT_PUBLIC_PADDLE_ENV: z.enum(["sandbox", "production"]),
+    NEXT_PUBLIC_PADDLE_CLIENT_TOKEN: z.string().min(1),
   },
   experimental__runtimeEnv: {
     ...process.env,
@@ -80,5 +88,7 @@ export const env = createEnv({
     // invisible to it, so the value would silently come back `undefined` in
     // the browser without this line.
     NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+    NEXT_PUBLIC_PADDLE_ENV: process.env.NEXT_PUBLIC_PADDLE_ENV,
+    NEXT_PUBLIC_PADDLE_CLIENT_TOKEN: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN,
   },
 });
