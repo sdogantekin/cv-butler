@@ -8,7 +8,7 @@ export const env = createEnv({
     AUTH_GOOGLE_SECRET: z.string().min(1),
 
     LLM_PROVIDER: z.enum(["anthropic", "qwen", "openai", "deepseek", "gemini"]).default("anthropic"),
-    ANTHROPIC_API_KEY: z.string().min(1),
+    ANTHROPIC_API_KEY: z.string().min(1).optional(),
     ANTHROPIC_MODEL: z.string().default("claude-sonnet-4-5"),
     QWEN_API_KEY: z.string().optional(),
     QWEN_BASE_URL: z.string().optional(),
@@ -71,13 +71,14 @@ export const env = createEnv({
     // browser, since gtag.js runs client-side.
     NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
 
-    // Paddle.js (pricing + checkout, src/app/checkout). Both required with
-    // no default — unlike the opt-in vars above, silently defaulting the
-    // environment risks running checkout against the wrong Paddle account,
-    // so this fails the build/boot instead. Client token is safe to expose:
-    // it can only open checkout and preview prices, not act as an API key.
-    NEXT_PUBLIC_PADDLE_ENV: z.enum(["sandbox", "production"]),
-    NEXT_PUBLIC_PADDLE_CLIENT_TOKEN: z.string().min(1),
+    // Paddle.js (pricing + checkout, src/app/checkout). Opt-in and
+    // experimental: /checkout returns 404 unless both are set. There is
+    // deliberately no default for the environment — silently defaulting it
+    // risks running checkout against the wrong Paddle account. Client token
+    // is safe to expose: it can only open checkout and preview prices, not
+    // act as an API key.
+    NEXT_PUBLIC_PADDLE_ENV: z.enum(["sandbox", "production"]).optional(),
+    NEXT_PUBLIC_PADDLE_CLIENT_TOKEN: z.string().min(1).optional(),
   },
   experimental__runtimeEnv: {
     ...process.env,

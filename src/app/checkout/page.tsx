@@ -1,11 +1,18 @@
 import { headers } from "next/headers";
+import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { Header } from "@/components/landing/header";
 import { PricingCheckout } from "@/components/checkout/pricing-checkout";
 import { getLocale } from "@/lib/i18n/locale-cookie";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { env } from "@/lib/env";
 
 export default async function CheckoutPage() {
+  // Paddle is opt-in: without both vars there is nothing to check out against.
+  if (!env.NEXT_PUBLIC_PADDLE_ENV || !env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN) {
+    notFound();
+  }
+
   const [locale, h, session] = await Promise.all([getLocale(), headers(), auth()]);
   const dict = getDictionary(locale);
   const country = h.get("x-vercel-ip-country") ?? "OTHERS";

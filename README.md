@@ -50,7 +50,7 @@ Fill in `.env.local`:
 
 - `AUTH_SECRET` — generate with `npx auth secret`
 - `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` — create an OAuth 2.0 Client ID in the [Google Cloud Console](https://console.cloud.google.com/apis/credentials), authorized redirect URI `http://localhost:3000/api/auth/callback/google`
-- `ANTHROPIC_API_KEY` — your Claude API key (default LLM provider)
+- `ANTHROPIC_API_KEY` — your Claude API key (default LLM provider; not needed if you set `LLM_PROVIDER` to another provider, e.g. local Ollama — see below)
 
 That's everything required to run the app. Analytics (below) is a separate, optional feature — leave its two env vars unset and you get a fully working app with zero third-party tracking.
 
@@ -113,7 +113,7 @@ This is a client-visible variable (`NEXT_PUBLIC_` prefix) because gtag.js runs i
 | `job_match_compare_started` / `job_match_compare_completed` | An updated resume is submitted to compare against an earlier match / the comparison finishes successfully (`scoreDelta` param on completion) |
 | `cover_letter_started` / `cover_letter_completed` | A resume is submitted for cover letter generation / generation finishes successfully (`variant` param on completion — `"general"` or `"targeted"`) |
 
-No failure/error states are tracked, and no Learning Hub events exist yet (no real success moment there — a v3 feature, still a static stub).
+No failure/error states are tracked, and no Learning Hub events exist yet (static guides with no real success moment to track).
 
 **No consent/cookie-banner gate is implemented yet.** Enabling this for a real deployment with EU visitors currently means the tracker fires with no consent mechanism in front of it — acceptable for this project's own pre-GA deployment by deliberate choice, but if you enable it for your own production use with real visitors, you're responsible for your own compliance (GDPR/ePrivacy or otherwise) until a consent flow ships.
 
@@ -155,6 +155,40 @@ export const companyResearchProvider = {
 ```
 
 Then in `.env.local` (or your host's env var settings): `COMPANY_RESEARCH_PROVIDER_MODULE=your-custom-provider-package`.
+
+## Running locally with Ollama and Qwen (v3 commitment — validation in progress)
+
+Goal for v3: run the whole pipeline on your own machine with an open-weight Qwen model served by [Ollama](https://ollama.com), so resume text never leaves it. No code change is needed to try this today — Ollama exposes an OpenAI-compatible API, which the existing `qwen` provider already speaks. What's still open is quality and speed validation on consumer hardware (target: a ~8B-class model on a 16GB Apple Silicon Mac), so treat local mode as experimental until that's done and the expected response times are documented here.
+
+1. Install Ollama and pull a model:
+
+   ```bash
+   ollama pull qwen3:8b
+   ```
+
+2. Give the model enough context. CV Butler sends a resume, the extraction schema, and often a job description in one request, and Ollama's default context window can be small enough to truncate that silently. Start the server with a larger window (the OpenAI-compatible endpoint can't set it per request):
+
+   ```bash
+   OLLAMA_CONTEXT_LENGTH=16384 ollama serve
+   ```
+
+3. Point CV Butler at it in `.env.local`:
+
+   ```bash
+   LLM_PROVIDER=qwen
+   QWEN_BASE_URL=http://localhost:11434/v1
+   QWEN_MODEL=qwen3:8b
+   QWEN_API_KEY=ollama            # ignored by Ollama, but the provider requires a non-empty value
+   ```
+
+   `ANTHROPIC_API_KEY` can stay unset in this mode.
+
+Known caveats while this is being validated:
+
+- Every node relies on structured output (`.withStructuredOutput(zodSchema)`). Smaller local models fail schema-conforming output more often than Claude, so expect occasional "analysis failed" errors until prompting is tuned for them.
+- Qwen3 models have a "thinking" mode that can add latency; whether to disable it for this pipeline is part of the validation.
+- Output quality for scoring consistency, German/Turkish output, and the cover letter's never-invent-facts rule has not yet been checked against local models.
+- Local mode only applies to self-hosted runs; a hosted deployment (e.g. Vercel) can't reach your machine's Ollama.
 
 ## Notes
 

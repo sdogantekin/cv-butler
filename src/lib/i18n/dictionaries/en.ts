@@ -118,9 +118,19 @@ export const en = {
           description: "Run scoring and matching against your own local model instead of a hosted one.",
         },
         {
-          badge: "Future",
+          badge: "v4",
           title: "Job application tracking",
           description: "Track every application — company, resume, cover letter, and status — all in one place.",
+        },
+        {
+          badge: "v5",
+          title: "Job search agent",
+          description: "Based on your preferences, an agent looks for the best job opportunities for you.",
+        },
+        {
+          badge: "v6",
+          title: "Interview preparation",
+          description: "Get likely interview questions based on the gaps between your resume and the job.",
         },
       ],
       followProgress: "Follow progress",

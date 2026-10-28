@@ -12,6 +12,9 @@ import { env } from "@/lib/env";
 export function getChatModel(): BaseChatModel {
   switch (env.LLM_PROVIDER) {
     case "anthropic":
+      if (!env.ANTHROPIC_API_KEY) {
+        throw new Error("LLM_PROVIDER=anthropic requires ANTHROPIC_API_KEY to be set.");
+      }
       return new ChatAnthropic({
         apiKey: env.ANTHROPIC_API_KEY,
         model: env.ANTHROPIC_MODEL,

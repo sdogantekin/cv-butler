@@ -119,9 +119,19 @@ export const tr: Dictionary = {
           description: "Puanlama ve eşleştirmeyi barındırılan bir model yerine kendi yerel modelinize karşı çalıştırın.",
         },
         {
-          badge: "Gelecek",
+          badge: "v4",
           title: "İş başvurusu takibi",
           description: "Her başvuruyu — şirket, özgeçmiş, ön yazı ve durum — tek bir yerden takip edin.",
+        },
+        {
+          badge: "v5",
+          title: "İş arama ajanı",
+          description: "Tercihlerinize göre bir ajan sizin için en iyi iş fırsatlarını arar.",
+        },
+        {
+          badge: "v6",
+          title: "Mülakat hazırlığı",
+          description: "Özgeçmişiniz ile ilan arasındaki boşluklara dayanan olası mülakat sorularını alın.",
         },
       ],
       followProgress: "Gelişmeleri takip edin",

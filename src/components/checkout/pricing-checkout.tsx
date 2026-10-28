@@ -25,10 +25,10 @@ export function PricingCheckout({
   const { prices, loading } = usePaddlePrices(paddle, country);
 
   useEffect(() => {
-    initializePaddle({
-      token: env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN,
-      environment: env.NEXT_PUBLIC_PADDLE_ENV,
-    }).then((p) => p && setPaddle(p));
+    const token = env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN;
+    const environment = env.NEXT_PUBLIC_PADDLE_ENV;
+    if (!token || !environment) return;
+    initializePaddle({ token, environment }).then((p) => p && setPaddle(p));
   }, []);
 
   function handleSubscribe(priceId: string) {

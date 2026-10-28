@@ -5,7 +5,7 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 
 type MockEnv = {
   LLM_PROVIDER: "anthropic" | "qwen" | "openai" | "deepseek" | "gemini";
-  ANTHROPIC_API_KEY: string;
+  ANTHROPIC_API_KEY: string | undefined;
   ANTHROPIC_MODEL: string;
   QWEN_API_KEY: string | undefined;
   QWEN_BASE_URL: string | undefined;
@@ -49,6 +49,11 @@ describe("getChatModel", () => {
   it("returns ChatAnthropic for the default (anthropic) provider", () => {
     mockEnv = { ...baseEnv, LLM_PROVIDER: "anthropic" };
     expect(getChatModel()).toBeInstanceOf(ChatAnthropic);
+  });
+
+  it("throws when anthropic is selected but ANTHROPIC_API_KEY is missing", () => {
+    mockEnv = { ...baseEnv, LLM_PROVIDER: "anthropic", ANTHROPIC_API_KEY: undefined };
+    expect(() => getChatModel()).toThrow(/ANTHROPIC_API_KEY/);
   });
 
   it("returns ChatOpenAI pointed at Qwen's endpoint when fully configured", () => {

@@ -119,9 +119,19 @@ export const de: Dictionary = {
           description: "Führen Sie Scoring und Abgleich mit Ihrem eigenen lokalen Modell statt eines gehosteten Modells aus.",
         },
         {
-          badge: "Zukunft",
+          badge: "v4",
           title: "Bewerbungsverfolgung",
           description: "Behalten Sie jede Bewerbung im Blick — Firma, Lebenslauf, Anschreiben und Status — alles an einem Ort.",
+        },
+        {
+          badge: "v5",
+          title: "Jobsuche-Agent",
+          description: "Auf Basis Ihrer Präferenzen sucht ein Agent für Sie nach den besten Stellenangeboten.",
+        },
+        {
+          badge: "v6",
+          title: "Vorbereitung auf Vorstellungsgespräche",
+          description: "Erhalten Sie wahrscheinliche Interviewfragen, abgeleitet aus den Lücken zwischen Ihrem Lebenslauf und der Stelle.",
         },
       ],
       followProgress: "Fortschritt verfolgen",
