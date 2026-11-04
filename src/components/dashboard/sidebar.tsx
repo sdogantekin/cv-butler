@@ -4,7 +4,7 @@ import { trackEvent } from "@/lib/analytics/provider";
 import { cn } from "@/lib/utils";
 import type { Dictionary } from "@/lib/i18n/get-dictionary";
 
-export type DashboardTab = "home" | "ats" | "job" | "cover" | "hub";
+export type DashboardTab = "home" | "ats" | "job" | "cover" | "interview" | "hub";
 
 function initialsFor(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -36,6 +36,7 @@ export function Sidebar({
     { tab: "ats", label: dict.atsReview },
     { tab: "job", label: dict.jobMatching },
     { tab: "cover", label: dict.coverLetterGeneration },
+    { tab: "interview", label: dict.interviewPreparation },
     { tab: "hub", label: dict.learningHub },
   ];
 

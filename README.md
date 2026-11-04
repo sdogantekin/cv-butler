@@ -1,6 +1,6 @@
 # CV Butler
 
-Open-source, AI-powered career assistant: ATS scoring, job-description matching, and cover letter generation. See `requirements.md` for the full product spec and `CLAUDE.md` for architecture/engineering conventions.
+Open-source, AI-powered career assistant: ATS scoring, job-description matching, cover letter generation, and interview preparation. See `requirements.md` for the full product spec and `CLAUDE.md` for architecture/engineering conventions.
 
 ## Stack
 
@@ -36,6 +36,8 @@ This lets one compiled graph serve every real invocation pattern in the app:
 **Matching is LLM-driven with a deterministic assist.** Semantic fit (a candidate can satisfy a requirement under different wording) is inherently a judgment call, so the `match` node's LLM call scores six dimensions: Skills, Experience, Education, Domain Fit, Seniority Fit, and Culture Fit (weights in `src/lib/scoring/match-weighting.ts`). A deterministic keyword-overlap computation (`src/lib/scoring/keyword-overlap.ts`) is fed into the prompt as grounding evidence, and `overallScore` is again a weighted average computed in code. Language/location requirements stated in the job description are extracted as separate `hardConstraints` (met/not-met) rather than blended into a dimension score — an unmet constraint caps the overall score, since it's typically a dealbreaker regardless of skills fit. Culture Fit can optionally be enriched with a real web search about the target company — see [Company search enrichment](#company-search-enrichment-optional-off-by-default).
 
 **LLM provider is a `.env` switch, not a code change.** `src/lib/llm/provider.ts` exposes one `getChatModel()` factory that every node calls; it switches on `LLM_PROVIDER` across five LangChain provider wrappers — `anthropic` (default), `qwen`, `openai`, `deepseek`, `gemini` (the latter three via `ChatOpenAI`'s OpenAI-compatible client, except `gemini` which uses `ChatGoogleGenerativeAI`). Nodes use `.withStructuredOutput(zodSchema)` so the LLM's response is parsed straight into a validated Zod type — no manual JSON parsing.
+
+**Interview Preparation is its own multi-agent graph** (`src/lib/graph/interview/`, `POST /api/analyze/interview-prep`). It is a separate compiled `StateGraph` rather than more nodes on the score/match graph, because it is a different workflow with its own state. One `analyst` agent reads the resume and job description and writes a shared brief (company, role, requirements, strengths, gaps, and, when interviewer details were given, the interviewer's name/role/company). A code-only `research` step then runs the optional web lookups, and four specialists run in parallel from the brief: `interviewerProfiler`, `prepPlanner` (what to review beforehand, extra tips), `questionCoach` (likely questions with suggested answers), and `askBackAdvisor` (questions for the candidate to ask). A code-only `compile` step merges and validates the result. Only the question coach is required; if another agent fails, its section is left out rather than failing the run. Suggested answers may only draw on facts in the parsed resume, the same never-invent-facts rule as the cover letter. The whole run costs one daily action.
 
 **Tests mock the LLM, not the graph.** `src/lib/graph/graph.test.ts` runs the real compiled graph and real routing logic, with each node's LLM call mocked, so CI exercises the actual wiring (extract → score → match → recommend, conditional branches, schema validation) without live API calls.
 
@@ -111,6 +113,7 @@ This is a client-visible variable (`NEXT_PUBLIC_` prefix) because gtag.js runs i
 | `ats_review_started` / `ats_review_completed` | A resume is submitted for ATS scoring / scoring finishes successfully (`score` param on completion) |
 | `job_match_started` / `job_match_completed` | A resume + job description are submitted for matching / matching finishes successfully (`score` param on completion) |
 | `job_match_compare_started` / `job_match_compare_completed` | An updated resume is submitted to compare against an earlier match / the comparison finishes successfully (`scoreDelta` param on completion) |
+| `interview_prep_started` / `interview_prep_completed` | A resume + job description are submitted for interview preparation / the plan finishes successfully |
 | `cover_letter_started` / `cover_letter_completed` | A resume is submitted for cover letter generation / generation finishes successfully (`variant` param on completion — `"general"` or `"targeted"`) |
 
 No failure/error states are tracked, and no Learning Hub events exist yet (static guides with no real success moment to track).
@@ -190,10 +193,14 @@ Known caveats while this is being validated:
 - Output quality for scoring consistency, German/Turkish output, and the cover letter's never-invent-facts rule has not yet been checked against local models.
 - Local mode only applies to self-hosted runs; a hosted deployment (e.g. Vercel) can't reach your machine's Ollama.
 
+### Interview preparation lookups
+
+Interview Preparation reuses the same `TAVILY_API_KEY`, with the same opt-in behaviour: unset means no web search at all, and the plan is built from the resume, job description, and interviewer text alone. When it is set, two lookups can run. A **company** lookup, using the company name the analyst reads from the job description, grounds the "review before the interview" list and the questions to ask. An **interviewer** lookup only runs if the user typed interviewer details, and its query is built solely from the name, role, and company the analyst extracted from that text, never the raw pasted text, and only when a name is present. Results are treated as unverified: they may describe a different person with the same name, the agents are told to use professional information only, and the UI notes when search results were used. These lookups use Tavily only; the pluggable `COMPANY_RESEARCH_PROVIDER_MODULE` applies to Culture Fit matching, not here.
+
 ## Notes
 
 - Resume files (PDF/`.docx` only — no legacy `.doc`, no scanned/OCR PDFs) are parsed in memory and never persisted; only the extracted structured data is stored.
-- The 3-actions/day limit is a shared pool across ATS scoring and job matching (each independent match — including one that uploads its own resume via `/api/analyze/match-upload` — still consumes only 1 of the 3), reset at midnight UTC.
+- The 3-actions/day limit is a shared pool across ATS scoring, job matching, cover letters, and interview preparation (an interview prep run, despite its several agents, counts as one; each independent match — including one that uploads its own resume via `/api/analyze/match-upload` — still consumes only 1 of the 3), reset at midnight UTC.
 - Switching LLM provider (`anthropic` / `qwen` / `openai` / `deepseek` / `gemini`) is a `.env` change (`LLM_PROVIDER`), not a code change — see [Architecture](#architecture-the-langgraph-pipeline).
 - Analytics is unset/off by default — see [Analytics](#analytics-optional-off-by-default).
 - Company web-search enrichment (`TAVILY_API_KEY`) is unset/off by default — see [Company search enrichment](#company-search-enrichment-optional-off-by-default).

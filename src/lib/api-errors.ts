@@ -13,6 +13,7 @@ export const API_ERROR_CODES = [
   "file_too_large",
   "invalid_job_description",
   "invalid_company_name",
+  "invalid_interviewer_details",
   "invalid_request",
   "resume_not_found",
   "daily_limit_reached",
@@ -21,6 +22,7 @@ export const API_ERROR_CODES = [
   "analysis_failed",
   "comparison_failed",
   "generation_failed",
+  "interview_prep_failed",
 ] as const;
 
 export type ApiErrorCode = (typeof API_ERROR_CODES)[number];

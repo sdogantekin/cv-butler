@@ -10,6 +10,10 @@ import {
   CoverLetterTab,
   type CoverLetterGenerationResult,
 } from "@/components/dashboard/cover-letter-tab";
+import {
+  InterviewPrepTab,
+  type InterviewPrepGenerationResult,
+} from "@/components/dashboard/interview-prep-tab";
 import { LearningHubTab } from "@/components/dashboard/learning-hub-tab";
 import type { ScoreResult } from "@/components/analyze/upload-form";
 import type { UserStats } from "@/lib/stats";
@@ -35,6 +39,9 @@ export function DashboardShell({
   const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null);
   const [matchResult, setMatchResult] = useState<JobMatchResult | null>(null);
   const [coverLetterResult, setCoverLetterResult] = useState<CoverLetterGenerationResult | null>(
+    null,
+  );
+  const [interviewPrepResult, setInterviewPrepResult] = useState<InterviewPrepGenerationResult | null>(
     null,
   );
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -93,6 +100,17 @@ export function DashboardShell({
               onGenerated={setCoverLetterResult}
               onReset={() => setCoverLetterResult(null)}
               dict={dict.dashboard.coverLetter}
+              common={dict.common}
+              processingDict={dict.processingIndicator}
+              dropzoneDict={dict.resumeDropzone}
+            />
+          )}
+          {tab === "interview" && (
+            <InterviewPrepTab
+              result={interviewPrepResult}
+              onGenerated={setInterviewPrepResult}
+              onReset={() => setInterviewPrepResult(null)}
+              dict={dict.dashboard.interviewPrep}
               common={dict.common}
               processingDict={dict.processingIndicator}
               dropzoneDict={dict.resumeDropzone}

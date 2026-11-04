@@ -43,6 +43,11 @@ export function HomeTab({
     { tab: "ats", title: dict.cards.atsReview.title, description: dict.cards.atsReview.description },
     { tab: "job", title: dict.cards.jobMatching.title, description: dict.cards.jobMatching.description },
     { tab: "cover", title: dict.cards.coverLetter.title, description: dict.cards.coverLetter.description },
+    {
+      tab: "interview",
+      title: dict.cards.interviewPrep.title,
+      description: dict.cards.interviewPrep.description,
+    },
     { tab: "hub", title: dict.cards.learningHub.title, description: dict.cards.learningHub.description },
   ];
 
@@ -90,7 +95,7 @@ export function HomeTab({
       </Card>
 
       <h2 className="mt-8 mb-4 text-base font-bold">{dict.jumpBackIn}</h2>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {JUMP_CARDS.map((card) => (
           <Card key={card.tab}>
             <CardHeader>

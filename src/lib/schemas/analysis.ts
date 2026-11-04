@@ -114,3 +114,44 @@ export const CoverLetterResultSchema = z.object({
 });
 
 export type CoverLetterResult = z.infer<typeof CoverLetterResultSchema>;
+
+export const INTERVIEW_QUESTION_CATEGORIES = [
+  "introduction",
+  "behavioral",
+  "role",
+  "motivation",
+  "situational",
+] as const;
+
+export const InterviewQuestionSchema = z.object({
+  question: z.string(),
+  // Fixed literal set, labelled per-locale by the UI dictionary.
+  category: z.enum(INTERVIEW_QUESTION_CATEGORIES),
+  answerGuidance: z.string(),
+});
+
+export const QuestionToAskSchema = z.object({
+  question: z.string(),
+  why: z.string(),
+});
+
+// Interview Prep output (v4). Assembled in code by the compile step of the
+// interview graph — see src/lib/graph/interview/. Every section except
+// `likelyQuestions` may be empty (an agent failed, or had nothing to work
+// with), and the UI hides empty sections.
+export const InterviewPrepResultSchema = z.object({
+  interviewer: z
+    .object({
+      summary: z.string(),
+      approachTips: z.array(z.string()),
+    })
+    .nullable(),
+  reviewBeforeInterview: z.array(z.string()),
+  likelyQuestions: z.array(InterviewQuestionSchema).min(1),
+  questionsToAsk: z.array(QuestionToAskSchema),
+  tips: z.array(z.string()),
+  // Which optional web lookups actually returned something.
+  researchUsed: z.object({ company: z.boolean(), interviewer: z.boolean() }),
+});
+
+export type InterviewPrepResult = z.infer<typeof InterviewPrepResultSchema>;

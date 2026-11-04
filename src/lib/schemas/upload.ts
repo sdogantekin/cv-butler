@@ -47,3 +47,16 @@ export const CoverLetterRequestSchema = z.object({
     .optional()
     .transform((v) => (v ? v : undefined)),
 });
+
+// Job description is required for interview prep (reuse JdMatchRequestSchema's
+// rules for it). Interviewer details are free text — a name, role, LinkedIn
+// URL, or notes — and optional; blank input normalizes to undefined so the
+// interviewer agents and lookup are skipped entirely.
+export const InterviewPrepRequestSchema = z.object({
+  interviewerDetails: z
+    .string()
+    .trim()
+    .max(2_000, "invalid_interviewer_details")
+    .optional()
+    .transform((v) => (v ? v : undefined)),
+});
