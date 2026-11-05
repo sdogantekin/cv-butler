@@ -48,7 +48,7 @@ export default function Image() {
           <div style={{ display: "flex", fontSize: 96, fontWeight: 800, color: "#171717" }}>CV Butler</div>
         </div>
         <div style={{ display: "flex", fontSize: 34, color: "#57534e" }}>
-          ATS scoring, resume matching &amp; cover letters
+          ATS scoring, resume matching, cover letters &amp; interview prep
         </div>
       </div>
     ),

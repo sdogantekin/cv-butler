@@ -54,7 +54,7 @@ export const en = {
       badge: "Open source · Free to use today",
       title: "Get your resume past the bots.",
       subtitle:
-        "CV Butler scores your resume against real ATS systems, matches it to any job description, and writes tailored cover letters — free, open source, no catch.",
+        "CV Butler scores your resume against real ATS systems, matches it to any job description, and writes tailored cover letters, and prepares you for the interview — free, open source, no catch.",
       freeNote: "100% free · No credit card · MIT licensed · Self-hostable",
       cardTitle: "Your ATS Score",
       cardSubtitle: "Senior Product Designer · matched against your resume",
@@ -68,7 +68,7 @@ export const en = {
     },
     howItWorks: {
       heading: "How it works",
-      subheading: "Pick the tool you need — each one works with just your resume.",
+      subheading: "Pick the tool you need — all you need to start is your resume.",
       steps: [
         {
           title: "Upload your resume for an ATS review",
@@ -84,11 +84,16 @@ export const en = {
           description:
             "Using your resume, with a job description as an optional add-on for tighter targeting.",
         },
+        {
+          title: "Prepare for the interview",
+          description:
+            "Add the job description and, optionally, your interviewer's details for likely questions, answers, and tips.",
+        },
       ],
     },
     features: {
       heading: "Everything you need to land the interview",
-      subheading: "Three core tools, built to work together.",
+      subheading: "Four core tools, built to work together.",
       items: [
         {
           title: "ATS Score & Analysis",
@@ -108,6 +113,12 @@ export const en = {
           description:
             "Generates a first draft grounded in your actual experience and the job description — you edit and send.",
         },
+        {
+          title: "Interview Preparation",
+          subtitle: "Walk into the interview knowing what to expect.",
+          description:
+            "Likely questions with suggested answers drawn from your resume, what to review beforehand, questions to ask, and tips tailored to the role and your interviewer.",
+        },
       ],
     },
     roadmap: {
@@ -118,11 +129,6 @@ export const en = {
           badge: "v3",
           title: "Local-model support via Ollama",
           description: "Run scoring and matching against your own local model instead of a hosted one.",
-        },
-        {
-          badge: "v4",
-          title: "Interview preparation",
-          description: "Get likely interview questions based on the gaps between your resume and the job.",
         },
         {
           badge: "v5",
@@ -153,7 +159,7 @@ export const en = {
         {
           question: "What happens to my resume data?",
           answer:
-            "Being open source, the code handling your data is public and auditable, and you can self-host your own instance. Local-model support that keeps everything on your own machine is planned for v3, via Ollama.",
+            "Being open source, the code handling your data is public and auditable, and you can self-host your own instance. Local-model support that keeps everything on your own machine is planned for v3, via Ollama. Interview preparation can also run an optional web search on the company and on an interviewer's name if you provide one.",
         },
         {
           question: "Do I need to install anything to try it?",
@@ -162,7 +168,7 @@ export const en = {
         {
           question: "What's next on the roadmap?",
           answer:
-            "v3 adds local-model support through Ollama, so scoring, matching, and cover letter generation can run against a model you host yourself instead of a hosted API — see the roadmap above for what's coming.",
+            "Interview preparation is already live. Next up is v3, local-model support through Ollama, so scoring, matching, cover letters, and interview prep can run against a model you host yourself instead of a hosted API, followed by a job search agent (v5) and application tracking (v6) — see the roadmap above.",
         },
       ],
     },

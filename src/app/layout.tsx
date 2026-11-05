@@ -24,7 +24,7 @@ const geistMono = Geist_Mono({
 
 const TITLE = "CV Butler";
 const DESCRIPTION =
-  "Open-source, AI-powered career assistant: ATS scoring, resume matching, and cover letter generation.";
+  "Open-source, AI-powered career assistant: ATS scoring, resume matching, cover letter generation, and interview preparation.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.SITE_URL),

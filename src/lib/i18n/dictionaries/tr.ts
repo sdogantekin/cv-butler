@@ -55,7 +55,7 @@ export const tr: Dictionary = {
       badge: "Açık kaynak · Bugün ücretsiz kullanın",
       title: "Özgeçmişinizi robotların önünden geçirin.",
       subtitle:
-        "CV Butler özgeçmişinizi gerçek ATS sistemlerine göre puanlar, herhangi bir iş ilanıyla eşleştirir ve size özel ön yazılar hazırlar — ücretsiz, açık kaynak, hiçbir gizli şart yok.",
+        "CV Butler özgeçmişinizi gerçek ATS sistemlerine göre puanlar, herhangi bir iş ilanıyla eşleştirir ve size özel ön yazılar hazırlar ve sizi mülakata hazırlar — ücretsiz, açık kaynak, hiçbir gizli şart yok.",
       freeNote: "%100 ücretsiz · Kredi kartı gerekmez · MIT lisanslı · Kendi sunucunuzda barındırılabilir",
       cardTitle: "ATS Puanınız",
       cardSubtitle: "Kıdemli Ürün Tasarımcısı · özgeçmişinizle eşleştirildi",
@@ -69,7 +69,7 @@ export const tr: Dictionary = {
     },
     howItWorks: {
       heading: "Nasıl çalışır",
-      subheading: "İhtiyacınız olan aracı seçin — her biri yalnızca özgeçmişinizle çalışır.",
+      subheading: "İhtiyacınız olan aracı seçin — başlamak için yalnızca özgeçmişiniz yeterli.",
       steps: [
         {
           title: "ATS incelemesi için özgeçmişinizi yükleyin",
@@ -85,11 +85,16 @@ export const tr: Dictionary = {
           description:
             "Özgeçmişinizi kullanarak, daha isabetli bir hedefleme için isteğe bağlı olarak iş ilanı ekleyebilirsiniz.",
         },
+        {
+          title: "Mülakata hazırlanın",
+          description:
+            "İş ilanını ve isteğe bağlı olarak mülakatçınızın bilgilerini ekleyin; olası sorular, yanıtlar ve ipuçları alın.",
+        },
       ],
     },
     features: {
       heading: "Mülakata girmek için ihtiyacınız olan her şey",
-      subheading: "Birlikte çalışacak şekilde tasarlanmış üç temel araç.",
+      subheading: "Birlikte çalışacak şekilde tasarlanmış dört temel araç.",
       items: [
         {
           title: "ATS Puanı ve Analizi",
@@ -109,6 +114,12 @@ export const tr: Dictionary = {
           description:
             "Gerçek deneyiminize ve iş ilanına dayanan bir ilk taslak oluşturur — siz düzenleyip gönderirsiniz.",
         },
+        {
+          title: "Mülakat Hazırlığı",
+          subtitle: "Mülakata ne bekleyeceğinizi bilerek girin.",
+          description:
+            "Özgeçmişinize dayanan olası sorular ve önerilen yanıtlar, önceden gözden geçirilecekler, sorabileceğiniz sorular ve role ile mülakatçınıza özel ipuçları.",
+        },
       ],
     },
     roadmap: {
@@ -119,11 +130,6 @@ export const tr: Dictionary = {
           badge: "v3",
           title: "Ollama ile yerel model desteği",
           description: "Puanlama ve eşleştirmeyi barındırılan bir model yerine kendi yerel modelinize karşı çalıştırın.",
-        },
-        {
-          badge: "v4",
-          title: "Mülakat hazırlığı",
-          description: "Özgeçmişiniz ile ilan arasındaki boşluklara dayanan olası mülakat sorularını alın.",
         },
         {
           badge: "v5",
@@ -154,7 +160,7 @@ export const tr: Dictionary = {
         {
           question: "Özgeçmiş verilerime ne oluyor?",
           answer:
-            "Açık kaynaklı olduğu için verilerinizi işleyen kod herkese açık ve denetlenebilir, ayrıca kendi sunucunuzda kendi örneğinizi barındırabilirsiniz. Her şeyi kendi bilgisayarınızda tutan yerel model desteği, Ollama üzerinden v3 için planlanıyor.",
+            "Açık kaynaklı olduğu için verilerinizi işleyen kod herkese açık ve denetlenebilir, ayrıca kendi sunucunuzda kendi örneğinizi barındırabilirsiniz. Her şeyi kendi bilgisayarınızda tutan yerel model desteği, Ollama üzerinden v3 için planlanıyor. Mülakat hazırlığı ayrıca isteğe bağlı olarak şirket hakkında ve, eğer verirseniz, mülakatçınızın adı hakkında web araması yapabilir.",
         },
         {
           question: "Denemek için bir şey kurmam gerekiyor mu?",
@@ -163,7 +169,7 @@ export const tr: Dictionary = {
         {
           question: "Yol haritasında sırada ne var?",
           answer:
-            "v3, Ollama üzerinden yerel model desteği ekliyor; böylece puanlama, eşleştirme ve ön yazı oluşturma, barındırılan bir API yerine kendi barındırdığınız bir modelle çalışabilir — nelerin geleceğini görmek için yukarıdaki yol haritasına bakın.",
+            "Mülakat hazırlığı artık kullanıma açık. Sırada v3 var: Ollama üzerinden yerel model desteği; böylece puanlama, eşleştirme, ön yazı ve mülakat hazırlığı barındırılan bir API yerine kendi barındırdığınız bir modelle çalışabilir. Ardından iş arama ajanı (v5) ve başvuru takibi (v6) gelecek — ayrıntılar için yukarıdaki yol haritasına bakın.",
         },
       ],
     },

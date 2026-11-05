@@ -55,7 +55,7 @@ export const de: Dictionary = {
       badge: "Open Source · Heute kostenlos nutzen",
       title: "Bringen Sie Ihren Lebenslauf an den Bots vorbei.",
       subtitle:
-        "CV Butler bewertet Ihren Lebenslauf anhand echter ATS-Systeme, gleicht ihn mit jeder Stellenbeschreibung ab und schreibt maßgeschneiderte Anschreiben — kostenlos, Open Source, ohne Haken.",
+        "CV Butler bewertet Ihren Lebenslauf anhand echter ATS-Systeme, gleicht ihn mit jeder Stellenbeschreibung ab und schreibt maßgeschneiderte Anschreiben und bereitet Sie auf das Vorstellungsgespräch vor — kostenlos, Open Source, ohne Haken.",
       freeNote: "100 % kostenlos · Keine Kreditkarte nötig · MIT-lizenziert · Selbst hostbar",
       cardTitle: "Ihr ATS-Score",
       cardSubtitle: "Senior Product Designer · abgeglichen mit Ihrem Lebenslauf",
@@ -69,7 +69,7 @@ export const de: Dictionary = {
     },
     howItWorks: {
       heading: "So funktioniert's",
-      subheading: "Wählen Sie das Tool, das Sie brauchen — jedes funktioniert allein mit Ihrem Lebenslauf.",
+      subheading: "Wählen Sie das Tool, das Sie brauchen — für den Start genügt Ihr Lebenslauf.",
       steps: [
         {
           title: "Lebenslauf für eine ATS-Prüfung hochladen",
@@ -85,11 +85,16 @@ export const de: Dictionary = {
           description:
             "Basierend auf Ihrem Lebenslauf, optional ergänzt durch eine Stellenbeschreibung für eine gezieltere Ausrichtung.",
         },
+        {
+          title: "Auf das Interview vorbereiten",
+          description:
+            "Ergänzen Sie die Stellenbeschreibung und optional Angaben zu Ihrem Interviewer für wahrscheinliche Fragen, Antworten und Tipps.",
+        },
       ],
     },
     features: {
       heading: "Alles, was Sie brauchen, um das Vorstellungsgespräch zu bekommen",
-      subheading: "Drei Kernwerkzeuge, die zusammen funktionieren.",
+      subheading: "Vier Kernwerkzeuge, die zusammen funktionieren.",
       items: [
         {
           title: "ATS-Score & Analyse",
@@ -109,6 +114,12 @@ export const de: Dictionary = {
           description:
             "Erstellt einen ersten Entwurf, der auf Ihrer tatsächlichen Erfahrung und der Stellenbeschreibung basiert — Sie bearbeiten und senden ihn.",
         },
+        {
+          title: "Interviewvorbereitung",
+          subtitle: "Gehen Sie ins Gespräch und wissen Sie, was Sie erwartet.",
+          description:
+            "Wahrscheinliche Fragen mit Antwortvorschlägen auf Basis Ihres Lebenslaufs, was Sie vorab durchgehen sollten, Fragen, die Sie stellen können, und Tipps zur Stelle und zu Ihrem Interviewer.",
+        },
       ],
     },
     roadmap: {
@@ -119,11 +130,6 @@ export const de: Dictionary = {
           badge: "v3",
           title: "Unterstützung für lokale Modelle über Ollama",
           description: "Führen Sie Scoring und Abgleich mit Ihrem eigenen lokalen Modell statt eines gehosteten Modells aus.",
-        },
-        {
-          badge: "v4",
-          title: "Vorbereitung auf Vorstellungsgespräche",
-          description: "Erhalten Sie wahrscheinliche Interviewfragen, abgeleitet aus den Lücken zwischen Ihrem Lebenslauf und der Stelle.",
         },
         {
           badge: "v5",
@@ -154,7 +160,7 @@ export const de: Dictionary = {
         {
           question: "Was passiert mit meinen Lebenslaufdaten?",
           answer:
-            "Da der Code Open Source ist, ist der Code, der Ihre Daten verarbeitet, öffentlich einsehbar und überprüfbar, und Sie können Ihre eigene Instanz selbst hosten. Unterstützung für lokale Modelle, bei denen alles auf Ihrem eigenen Rechner bleibt, ist für v3 über Ollama geplant.",
+            "Da der Code Open Source ist, ist der Code, der Ihre Daten verarbeitet, öffentlich einsehbar und überprüfbar, und Sie können Ihre eigene Instanz selbst hosten. Unterstützung für lokale Modelle, bei denen alles auf Ihrem eigenen Rechner bleibt, ist für v3 über Ollama geplant. Die Interviewvorbereitung kann außerdem optional eine Websuche zum Unternehmen und, falls Sie einen angeben, zum Namen Ihres Interviewers durchführen.",
         },
         {
           question: "Muss ich etwas installieren, um es auszuprobieren?",
@@ -163,7 +169,7 @@ export const de: Dictionary = {
         {
           question: "Was kommt als Nächstes auf der Roadmap?",
           answer:
-            "v3 bringt Unterstützung für lokale Modelle über Ollama, sodass Scoring, Abgleich und Anschreiben-Erstellung mit einem selbst gehosteten Modell statt einer gehosteten API laufen können — siehe die Roadmap oben für weitere Details.",
+            "Die Interviewvorbereitung ist bereits verfügbar. Als Nächstes kommt v3 mit Unterstützung für lokale Modelle über Ollama, sodass Scoring, Abgleich, Anschreiben und Interviewvorbereitung mit einem selbst gehosteten Modell statt einer gehosteten API laufen können, danach ein Jobsuche-Agent (v5) und die Bewerbungsverfolgung (v6) — siehe die Roadmap oben.",
         },
       ],
     },

@@ -8,7 +8,7 @@ export function RoadmapCallout({ dict }: { dict: Dictionary["landing"]["roadmap"
     <section id="roadmap" className="mx-auto w-full max-w-6xl scroll-mt-20 px-6 py-16">
       <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">{dict.heading}</h2>
       <p className="mt-2 max-w-xl text-muted-foreground">{dict.subheading}</p>
-      <div className="mt-10 grid gap-6 sm:grid-cols-2">
+      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {dict.items.map((item) => (
           <Card key={item.title}>
             <CardHeader>
