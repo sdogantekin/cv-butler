@@ -3,7 +3,7 @@ import type { InterviewPrepResult } from "@/lib/schemas/analysis";
 import type { Dictionary } from "@/lib/i18n/get-dictionary";
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
-  return <h2 className="mb-3 text-base font-bold">{children}</h2>;
+  return <h2 className="mb-3 text-base font-bold print:break-after-avoid">{children}</h2>;
 }
 
 export function InterviewPrepDisplay({
@@ -44,7 +44,7 @@ export function InterviewPrepDisplay({
           <SectionHeading>{dict.reviewBefore}</SectionHeading>
           <ol className="flex flex-col gap-2.5">
             {plan.reviewBeforeInterview.map((item, i) => (
-              <li key={item} className="flex gap-3 rounded-xl border px-4 py-3 text-sm">
+              <li key={item} className="flex gap-3 rounded-xl border px-4 py-3 text-sm print:break-inside-avoid">
                 <span className="font-bold text-muted-foreground">{i + 1}</span>
                 <span>{item}</span>
               </li>
@@ -60,7 +60,7 @@ export function InterviewPrepDisplay({
         <SectionHeading>{dict.likelyQuestions}</SectionHeading>
         <div className="flex flex-col gap-3">
           {plan.likelyQuestions.map((q) => (
-            <div key={q.question} className="rounded-xl border p-5">
+            <div key={q.question} className="rounded-xl border p-5 print:break-inside-avoid">
               <div className="mb-1.5 flex flex-wrap items-start justify-between gap-2">
                 <div className="font-semibold">{q.question}</div>
                 <Badge variant="outline">{dict.categories[q.category]}</Badge>
@@ -76,7 +76,7 @@ export function InterviewPrepDisplay({
           <SectionHeading>{dict.questionsToAsk}</SectionHeading>
           <div className="flex flex-col gap-3">
             {plan.questionsToAsk.map((q) => (
-              <div key={q.question} className="rounded-xl border p-5">
+              <div key={q.question} className="rounded-xl border p-5 print:break-inside-avoid">
                 <div className="mb-1.5 font-semibold">{q.question}</div>
                 <p className="text-sm text-muted-foreground">{q.why}</p>
               </div>

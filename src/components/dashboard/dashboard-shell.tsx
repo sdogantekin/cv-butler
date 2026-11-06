@@ -60,7 +60,7 @@ export function DashboardShell({
           dict={dict.dashboard.sidebar}
           logOutLabel={dict.common.logOut}
         />
-        <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 lg:px-12 lg:py-10">
+        <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 lg:px-12 lg:py-10 print:p-0">
           {tab === "home" && (
             <HomeTab
               userName={userName}

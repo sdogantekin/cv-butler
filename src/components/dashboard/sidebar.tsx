@@ -44,14 +44,14 @@ export function Sidebar({
     <>
       {mobileOpen && (
         <div
-          className="fixed inset-x-0 top-14 bottom-0 z-40 bg-black/40 lg:hidden"
+          className="fixed inset-x-0 top-14 bottom-0 z-40 bg-black/40 lg:hidden print:hidden"
           onClick={onCloseMobile}
           aria-hidden="true"
         />
       )}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-card transition-transform duration-200",
+          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-card transition-transform duration-200 print:hidden",
           "lg:static lg:z-auto lg:w-[260px] lg:shrink-0 lg:translate-x-0 lg:border-r lg:p-5",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         )}

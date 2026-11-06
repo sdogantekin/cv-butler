@@ -11,7 +11,7 @@ export function DashboardHeader({
   onMenuClick: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 bg-primary px-5 py-4 text-sm font-bold text-primary-foreground">
+    <div className="flex items-center justify-between gap-4 bg-primary px-5 py-4 text-sm font-bold text-primary-foreground print:hidden">
       <div className="flex items-center gap-3">
         <button
           type="button"

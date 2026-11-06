@@ -114,6 +114,7 @@ This is a client-visible variable (`NEXT_PUBLIC_` prefix) because gtag.js runs i
 | `job_match_started` / `job_match_completed` | A resume + job description are submitted for matching / matching finishes successfully (`score` param on completion) |
 | `job_match_compare_started` / `job_match_compare_completed` | An updated resume is submitted to compare against an earlier match / the comparison finishes successfully (`scoreDelta` param on completion) |
 | `interview_prep_started` / `interview_prep_completed` | A resume + job description are submitted for interview preparation / the plan finishes successfully |
+| `interview_prep_exported` | The interview plan is copied or printed/saved as PDF (`method` param — `"copy"` or `"print"`) |
 | `cover_letter_started` / `cover_letter_completed` | A resume is submitted for cover letter generation / generation finishes successfully (`variant` param on completion — `"general"` or `"targeted"`) |
 
 No failure/error states are tracked, and no Learning Hub events exist yet (static guides with no real success moment to track).
