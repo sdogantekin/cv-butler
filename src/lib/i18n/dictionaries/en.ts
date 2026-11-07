@@ -126,9 +126,9 @@ export const en = {
       subheading: "CV Butler is under active development. Here's what's coming.",
       items: [
         {
-          badge: "v3",
-          title: "Local-model support via Ollama",
-          description: "Run scoring and matching against your own local model instead of a hosted one.",
+          badge: "v4 · Testing phase",
+          title: "Interview preparation",
+          description: "Get likely interview questions and suggested answers based on the gaps between your resume and the job. Available now, still being tested.",
         },
         {
           badge: "v5",
@@ -159,7 +159,7 @@ export const en = {
         {
           question: "What happens to my resume data?",
           answer:
-            "Being open source, the code handling your data is public and auditable, and you can self-host your own instance. Local-model support that keeps everything on your own machine is planned for v3, via Ollama. Interview preparation can also run an optional web search on the company and on an interviewer's name if you provide one.",
+            "Being open source, the code handling your data is public and auditable, and you can self-host your own instance. You can also run it entirely on your own machine with a local model through Ollama (experimental; see the setup guide in the README). Interview preparation can also run an optional web search on the company and on an interviewer's name if you provide one.",
         },
         {
           question: "Do I need to install anything to try it?",
@@ -168,7 +168,7 @@ export const en = {
         {
           question: "What's next on the roadmap?",
           answer:
-            "Interview preparation is already live. Next up is v3, local-model support through Ollama, so scoring, matching, cover letters, and interview prep can run against a model you host yourself instead of a hosted API, followed by a job search agent (v5) and application tracking (v6) — see the roadmap above.",
+            "Interview preparation (v4) is live and in its testing phase. After that come a job search agent (v5) and application tracking (v6) — see the roadmap above.",
         },
       ],
     },

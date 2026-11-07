@@ -127,9 +127,9 @@ export const tr: Dictionary = {
       subheading: "CV Butler aktif olarak geliştiriliyor. İşte yakında gelecekler.",
       items: [
         {
-          badge: "v3",
-          title: "Ollama ile yerel model desteği",
-          description: "Puanlama ve eşleştirmeyi barındırılan bir model yerine kendi yerel modelinize karşı çalıştırın.",
+          badge: "v4 · Test aşaması",
+          title: "Mülakat hazırlığı",
+          description: "Özgeçmişiniz ile ilan arasındaki boşluklara dayanan olası mülakat soruları ve önerilen yanıtlar alın. Şimdiden kullanılabilir, test aşamasında.",
         },
         {
           badge: "v5",
@@ -160,7 +160,7 @@ export const tr: Dictionary = {
         {
           question: "Özgeçmiş verilerime ne oluyor?",
           answer:
-            "Açık kaynaklı olduğu için verilerinizi işleyen kod herkese açık ve denetlenebilir, ayrıca kendi sunucunuzda kendi örneğinizi barındırabilirsiniz. Her şeyi kendi bilgisayarınızda tutan yerel model desteği, Ollama üzerinden v3 için planlanıyor. Mülakat hazırlığı ayrıca isteğe bağlı olarak şirket hakkında ve, eğer verirseniz, mülakatçınızın adı hakkında web araması yapabilir.",
+            "Açık kaynaklı olduğu için verilerinizi işleyen kod herkese açık ve denetlenebilir, ayrıca kendi sunucunuzda kendi örneğinizi barındırabilirsiniz. Ollama üzerinden yerel bir modelle her şeyi tamamen kendi bilgisayarınızda da çalıştırabilirsiniz (deneysel; kurulum rehberi için README'ye bakın). Mülakat hazırlığı ayrıca isteğe bağlı olarak şirket hakkında ve, eğer verirseniz, mülakatçınızın adı hakkında web araması yapabilir.",
         },
         {
           question: "Denemek için bir şey kurmam gerekiyor mu?",
@@ -169,7 +169,7 @@ export const tr: Dictionary = {
         {
           question: "Yol haritasında sırada ne var?",
           answer:
-            "Mülakat hazırlığı artık kullanıma açık. Sırada v3 var: Ollama üzerinden yerel model desteği; böylece puanlama, eşleştirme, ön yazı ve mülakat hazırlığı barındırılan bir API yerine kendi barındırdığınız bir modelle çalışabilir. Ardından iş arama ajanı (v5) ve başvuru takibi (v6) gelecek — ayrıntılar için yukarıdaki yol haritasına bakın.",
+            "Mülakat hazırlığı (v4) kullanıma açık ve test aşamasında. Ardından iş arama ajanı (v5) ve başvuru takibi (v6) gelecek — ayrıntılar için yukarıdaki yol haritasına bakın.",
         },
       ],
     },

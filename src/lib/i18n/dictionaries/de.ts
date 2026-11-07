@@ -127,9 +127,9 @@ export const de: Dictionary = {
       subheading: "CV Butler wird aktiv weiterentwickelt. Das kommt als Nächstes.",
       items: [
         {
-          badge: "v3",
-          title: "Unterstützung für lokale Modelle über Ollama",
-          description: "Führen Sie Scoring und Abgleich mit Ihrem eigenen lokalen Modell statt eines gehosteten Modells aus.",
+          badge: "v4 · Testphase",
+          title: "Interviewvorbereitung",
+          description: "Erhalten Sie wahrscheinliche Interviewfragen mit Antwortvorschlägen, abgeleitet aus den Lücken zwischen Ihrem Lebenslauf und der Stelle. Bereits nutzbar, wird noch getestet.",
         },
         {
           badge: "v5",
@@ -160,7 +160,7 @@ export const de: Dictionary = {
         {
           question: "Was passiert mit meinen Lebenslaufdaten?",
           answer:
-            "Da der Code Open Source ist, ist der Code, der Ihre Daten verarbeitet, öffentlich einsehbar und überprüfbar, und Sie können Ihre eigene Instanz selbst hosten. Unterstützung für lokale Modelle, bei denen alles auf Ihrem eigenen Rechner bleibt, ist für v3 über Ollama geplant. Die Interviewvorbereitung kann außerdem optional eine Websuche zum Unternehmen und, falls Sie einen angeben, zum Namen Ihres Interviewers durchführen.",
+            "Da der Code Open Source ist, ist der Code, der Ihre Daten verarbeitet, öffentlich einsehbar und überprüfbar, und Sie können Ihre eigene Instanz selbst hosten. Sie können CV Butler auch vollständig auf Ihrem eigenen Rechner mit einem lokalen Modell über Ollama betreiben (experimentell, siehe die Einrichtungsanleitung im README). Die Interviewvorbereitung kann außerdem optional eine Websuche zum Unternehmen und, falls Sie einen angeben, zum Namen Ihres Interviewers durchführen.",
         },
         {
           question: "Muss ich etwas installieren, um es auszuprobieren?",
@@ -169,7 +169,7 @@ export const de: Dictionary = {
         {
           question: "Was kommt als Nächstes auf der Roadmap?",
           answer:
-            "Die Interviewvorbereitung ist bereits verfügbar. Als Nächstes kommt v3 mit Unterstützung für lokale Modelle über Ollama, sodass Scoring, Abgleich, Anschreiben und Interviewvorbereitung mit einem selbst gehosteten Modell statt einer gehosteten API laufen können, danach ein Jobsuche-Agent (v5) und die Bewerbungsverfolgung (v6) — siehe die Roadmap oben.",
+            "Die Interviewvorbereitung (v4) ist verfügbar und befindet sich in der Testphase. Danach folgen ein Jobsuche-Agent (v5) und die Bewerbungsverfolgung (v6) — siehe die Roadmap oben.",
         },
       ],
     },
