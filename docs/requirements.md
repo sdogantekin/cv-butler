@@ -19,6 +19,34 @@ This spec was written collaboratively with an AI assistant (Claude) and is kept 
 
 **Core Objective:** Deliver a high-quality, multi-lingual career prep tool using an agentic state-machine architecture. The system must be fully modular, deployable via a single unified codebase, and able to route to different LLM providers via configuration. v1 runs on cloud providers (Claude by default, with Qwen, OpenAI, DeepSeek, and Gemini available as configurable alternatives); local execution via open-source models (Ollama) is documented as experimental (v3) and still has to be validated against realistic consumer hardware (see Section 2).
 
+### 1.1 Problem
+Job seekers are screened twice before a person engages with them: by applicant tracking software that parses and ranks resumes, and by recruiters who give a resume seconds. Candidates rarely learn why a resume was filtered out, and generic advice ("tailor your resume") doesn't tell them what to change. The commercial tools that do give feedback are paid and closed, and they ask users to upload personal data to a service they can't inspect.
+
+### 1.2 Target users
+*   **Job seekers** applying to roles through online portals, comfortable uploading a PDF or DOCX resume, working in English, German, or Turkish.
+*   **Self-hosters and contributors** who want an inspectable tool they can run on their own infrastructure (and, experimentally, with a local model) or extend.
+
+### 1.3 Goals, non-goals, and success metrics
+**Goals:** help a user (1) see how a resume reads to screening software, (2) tailor it to a specific job, and (3) prepare for the interview, while staying free, open source, self-hostable, and honest (generated text never invents facts about the candidate).
+
+**Non-goals:**
+*   Guaranteeing interviews or outcomes. Scores are heuristics, not what any specific vendor's ATS would compute.
+*   Scraping job boards, or auto-applying on the user's behalf.
+*   Storing raw resume files (only the structured data extracted from them is kept).
+*   Paid tiers or billing in the current phases (a Paddle checkout page exists only as a disabled experiment).
+
+**Success metrics.** The product has no usage baseline yet, so targets are intentionally not set; the metrics below are what to track once there is one. Product analytics events already exist for most of them (README, Analytics section).
+
+| Metric | Definition | Instrumented? |
+| --- | --- | --- |
+| Activation | Share of signed-in users who complete at least one action | Yes (`*_completed` events) |
+| Breadth | Users who use two or more different tools within their first 7 days | Derivable from events |
+| Completion rate | Completed vs. started per feature | Yes (`*_started` / `*_completed`) |
+| Failure rate | Runs that end in an error | **No** (failures are not tracked yet) |
+| Output honesty | Share of sampled outputs containing a fact not in the resume | No (needs an evaluation set; see Section 10) |
+| Cost per action | LLM spend divided by completed actions | No (provider dashboards only) |
+| Open-source health | Stars, forks, issues, successful self-host setups | GitHub only |
+
 ## 2. Iteration Plan (v1 → v6)
 This section is the current source of truth for what's in scope now versus deferred. Section 6 (Core Features & Acceptance Criteria) describes the full target feature set across all phases; each subsection there is tagged with its phase.
 
@@ -181,3 +209,33 @@ The backend orchestrates the following specialized nodes using LangGraph.js. Lan
     3. Secret scanning
     4. Automated test suites (`vitest run`)
 *   **Deployment:** Seamless automatic deployments to Vercel for the production branch.
+
+## 9. Decision Log
+Key decisions and the reasoning behind them, so the spec explains itself. Dates are when the decision was made or last changed.
+
+| When | Decision | Why | Alternatives considered |
+| --- | --- | --- | --- |
+| 2026-09 | One TypeScript repository; LangGraph.js for agent workflows | One codebase and one deploy; the workflows are fixed graphs, which fit LangGraph's explicit state model | CrewAI or another Python framework behind a second service |
+| 2026-09 | Claude as the default model, with Qwen, OpenAI, DeepSeek, and Gemini behind one `LLM_PROVIDER` switch | Fast, reliable structured output during development; switching providers is a config change | Local-first from day one (too slow on 16GB hardware for iteration) |
+| 2026-09 | Hybrid ATS scoring: five deterministic checks plus one LLM category, overall score computed in code | Repeatable scores, unit-testable logic, and the LLM does only what needs judgment | Fully LLM-scored |
+| 2026-09 | Rate limit of 3 actions per day, counted per operation, in an append-only log table | Simple and cheap to reason about; each user-initiated operation is one action | Count per full pipeline run; a transactional counter (deferred) |
+| 2026-09 | Resumes are parsed in memory; only structured data is stored | Smallest possible PII footprint | Persisting raw files (a possible later phase) |
+| 2026-09 | SQLite by default, Postgres when `DATABASE_URL` is set, with two schema trees and a parity test | Zero-config self-hosting, and production on Neon/Vercel | Postgres only |
+| 2026-09 | Analytics and company research are opt-in via environment variables | Self-hosters send nothing to third parties unless they choose to | Always-on analytics |
+| 2026-09 | Consent banner deferred to a pass before general availability | Avoid building it speculatively; the risk is documented in 8.1 | Build it with the first analytics release |
+| 2026-09 | Cover letter prompt adapts the blader/humanizer patterns, and may never invent facts | Avoid generic AI writing and fabrication | A generic "write a cover letter" prompt |
+| 2026-09 to 2026-10 | Hand-rolled i18n dictionaries for UI, agent output, and API errors (en/de/tr) | Lightweight, typed, and explicit output-language instructions in prompts | An i18n library |
+| 2026-10 | v3 scoped to documenting Ollama through the existing OpenAI-compatible provider path | No new code needed; validation is the real work | A dedicated Ollama provider |
+| 2026-11 | Interview preparation as a separate multi-agent graph: analyst, optional research, four parallel specialists, code-only compile | Different state and workflow from score/match; small prompts per agent suit smaller local models | Extra nodes on the existing graph; one large prompt |
+| 2026-11 | Interviewer lookup uses only a name, role, and company extracted from the user's text, Tavily only, results labeled unverified | Data minimization when searching for a named person; avoids acting on a wrong-person match | Searching on the raw pasted text; no lookup at all |
+| 2026-11 | Plan export via copy and the browser print dialog | No PDF dependency, works in every locale | A server-side or library PDF renderer |
+| 2026-11 | Paddle checkout kept as an optional experiment and switched off in production | Not part of the product plan; it contradicted the free positioning | Shipping paid tiers now |
+
+## 10. Known Gaps & Risks
+*   **Rate-limit race:** concurrent requests can exceed the daily limit slightly (check-then-insert). Fix: a transactional counter.
+*   **Local models unvalidated:** structured-output reliability, scoring consistency, language quality, and response times on consumer hardware are untested (v3).
+*   **Interview prep quality unvalidated:** the no-fabrication rule for suggested answers has not yet been checked against real model output; needs a small evaluation set.
+*   **No failure tracking:** analytics records successes only, so the failure-rate metric can't be computed.
+*   **Analytics without a consent gate** on the production deployment (deliberately deferred; see 8.1).
+*   **Interviewer research:** even minimized, searching for a named person has privacy and accuracy risks, mitigated by opt-in, unverified labeling, and professional-only use.
+*   **Scores are heuristics:** an ATS score here does not predict what any specific employer's system will do.

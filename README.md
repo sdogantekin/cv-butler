@@ -53,9 +53,14 @@ The core product logic — turning a resume into an ATS score or a job-descripti
 
 **Routing is data-driven, not hardcoded per use case.** A no-op `route` node sits after `START` (LangGraph's typings don't allow a conditional edge directly off `START`), and every conditional edge downstream branches on which fields are already populated in state at invoke time:
 
-```
-START → route ─┬─(no parsedResume)→ extract → score ─┬─(has jobDescriptionText)→ match → recommend → END
-                └─(has parsedResume)──────────────────┘                    └─(no jobDescriptionText)→ recommend → END
+```mermaid
+flowchart LR
+  S([Start]) --> route{route}
+  route -->|no parsedResume| extract --> score
+  route -->|has parsedResume| match
+  score -->|has jobDescriptionText| match
+  score -->|no jobDescriptionText| recommend
+  match --> recommend --> E([End])
 ```
 
 This lets one compiled graph serve every real invocation pattern in the app:
@@ -70,6 +75,22 @@ This lets one compiled graph serve every real invocation pattern in the app:
 **LLM provider is a `.env` switch, not a code change.** `src/lib/llm/provider.ts` exposes one `getChatModel()` factory that every node calls; it switches on `LLM_PROVIDER` across five LangChain provider wrappers — `anthropic` (default), `qwen`, `openai`, `deepseek`, `gemini` (the latter three via `ChatOpenAI`'s OpenAI-compatible client, except `gemini` which uses `ChatGoogleGenerativeAI`). Nodes use `.withStructuredOutput(zodSchema)` so the LLM's response is parsed straight into a validated Zod type — no manual JSON parsing.
 
 **Interview Preparation is its own multi-agent graph** (`src/lib/graph/interview/`, `POST /api/analyze/interview-prep`). It is a separate compiled `StateGraph` rather than more nodes on the score/match graph, because it is a different workflow with its own state. One `analyst` agent reads the resume and job description and writes a shared brief (company, role, requirements, strengths, gaps, and, when interviewer details were given, the interviewer's name/role/company). A code-only `research` step then runs the optional web lookups, and four specialists run in parallel from the brief: `interviewerProfiler`, `prepPlanner` (what to review beforehand, extra tips), `questionCoach` (likely questions with suggested answers), and `askBackAdvisor` (questions for the candidate to ask). A code-only `compile` step merges and validates the result. Only the question coach is required; if another agent fails, its section is left out rather than failing the run. Suggested answers may only draw on facts in the parsed resume, the same never-invent-facts rule as the cover letter. The whole run costs one daily action.
+
+```mermaid
+flowchart LR
+  S([Start]) --> analyst
+  analyst -->|brief| research["research (optional web lookups)"]
+  analyst -->|fails| E([End])
+  research --> profiler[interviewerProfiler]
+  research --> planner[prepPlanner]
+  research --> coach[questionCoach]
+  research --> askback[askBackAdvisor]
+  profiler --> compile
+  planner --> compile
+  coach --> compile
+  askback --> compile
+  compile --> E
+```
 
 **Tests mock the LLM, not the graph.** `src/lib/graph/graph.test.ts` runs the real compiled graph and real routing logic, with each node's LLM call mocked, so CI exercises the actual wiring (extract → score → match → recommend, conditional branches, schema validation) without live API calls.
 

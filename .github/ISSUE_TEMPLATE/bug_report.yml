@@ -1,0 +1,41 @@
+name: Bug report
+description: Something isn't working as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not paste real resumes or personal data. Use a fictional example or redact it.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - ATS Review
+        - Job Matching
+        - Cover Letters
+        - Interview Preparation
+        - Learning Hub
+        - Language / translation
+        - Sign-in
+        - Self-hosting / local setup
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: setup
+    attributes:
+      label: Where are you running it?
+      description: The hosted site, or your own setup (LLM provider, local or Postgres database).
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error messages or logs
+      render: shell
