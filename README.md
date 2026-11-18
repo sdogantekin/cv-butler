@@ -1,6 +1,38 @@
 # CV Butler
 
-Open-source, AI-powered career assistant: ATS scoring, job-description matching, cover letter generation, and interview preparation. See `requirements.md` for the full product spec and `CLAUDE.md` for architecture/engineering conventions.
+[![CI](https://github.com/sdogantekin/cv-butler/actions/workflows/ci.yml/badge.svg)](https://github.com/sdogantekin/cv-butler/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+Open-source, AI-powered career assistant: ATS scoring, job-description matching, cover letter generation, and interview preparation, in English, German, and Turkish.
+
+**Live demo: [cv-butler.serkandogantekin.com](https://cv-butler.serkandogantekin.com)** (free, Google sign-in, 3 actions per day)
+
+## What it does
+
+- **ATS Review:** upload a resume and get a 0–100 score with a breakdown of formatting, structure, and keyword issues.
+- **Job Matching:** paste a job description and get a six-dimension match score, hard-constraint checks (language, location), and concrete gaps. Optional web research on the company grounds the Culture Fit score.
+- **Cover Letters:** general or job-targeted drafts grounded strictly in your resume.
+- **Interview Preparation** (testing phase): likely questions with suggested answers drawn from your resume, what to review, questions to ask, and an optional interviewer profile, produced by a small multi-agent workflow. Copy it or save it as a PDF.
+- **ATS Learning Hub:** free guides on resume formatting, keyword strategy, and how screeners work.
+- **Bring your own model:** Claude by default; Qwen, OpenAI, DeepSeek, and Gemini by changing one env var. Running fully locally with Ollama is documented and experimental.
+
+## How it's built
+
+One TypeScript repository with no separate backend: Next.js (App Router), two [LangGraph.js](https://langchain-ai.github.io/langgraphjs/) graphs for the AI workflows, Drizzle ORM (SQLite locally, Postgres in production), and Auth.js. The product spec is in [docs/requirements.md](docs/requirements.md), written collaboratively with an AI assistant, and the rules that assistant works under are in [CLAUDE.md](CLAUDE.md). On every push, CI runs type checking, linting, secret scanning, the Vitest suite (LLM calls mocked, no live API needed), and a production build.
+
+## Status
+
+| Phase | Focus | State |
+| --- | --- | --- |
+| v1 | ATS scoring, job matching, Google login | Shipped |
+| v2 | Cover letters, Postgres on Vercel | Shipped |
+| — | German and Turkish, ATS Learning Hub | Shipped |
+| v3 | Local models via Ollama | Setup documented, experimental, validation pending |
+| v4 | Interview preparation | Shipped, testing phase |
+| v5 | Job search agent | Planned |
+| v6 | Job application tracking | Planned |
+
+See [docs/requirements.md](docs/requirements.md) for scope and acceptance criteria per phase.
 
 ## Stack
 
@@ -160,9 +192,9 @@ export const companyResearchProvider = {
 
 Then in `.env.local` (or your host's env var settings): `COMPANY_RESEARCH_PROVIDER_MODULE=your-custom-provider-package`.
 
-## Running locally with Ollama and Qwen (v3 commitment — validation in progress)
+## Running locally with Ollama and Qwen (experimental)
 
-Goal for v3: run the whole pipeline on your own machine with an open-weight Qwen model served by [Ollama](https://ollama.com), so resume text never leaves it. No code change is needed to try this today — Ollama exposes an OpenAI-compatible API, which the existing `qwen` provider already speaks. What's still open is quality and speed validation on consumer hardware (target: a ~8B-class model on a 16GB Apple Silicon Mac), so treat local mode as experimental until that's done and the expected response times are documented here.
+The v3 goal is to run the whole pipeline on your own machine with an open-weight Qwen model served by [Ollama](https://ollama.com), so resume text never leaves it. No code change is needed to try this today — Ollama exposes an OpenAI-compatible API, which the existing `qwen` provider already speaks. What's still open is quality and speed validation on consumer hardware (target: a ~8B-class model on a 16GB Apple Silicon Mac), so treat local mode as experimental until that's done and the expected response times are documented here.
 
 1. Install Ollama and pull a model:
 

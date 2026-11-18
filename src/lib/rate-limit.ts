@@ -15,7 +15,7 @@ function startOfTodayUTC(): Date {
 // Shared pool of DAILY_ACTION_LIMIT actions per user per UTC day, across all
 // action types (ats_score + jd_match together, not each). Check-then-insert
 // against an append-only log table — the resulting race under concurrent
-// requests is an accepted v1-scale tradeoff (see requirements.md 8.2).
+// requests is an accepted tradeoff at current scale (see docs/requirements.md 8.2).
 export async function checkAndConsumeAction(
   userId: string,
   actionType: ActionType,

@@ -17,7 +17,7 @@ CV BUTLER is an open-source, AI-powered career assistant providing ATS scoring, 
 3. **Provider-Agnostic LLM Interface (v1: cloud default, v3: local):** 
    - All LLM initializations must use LangChain provider wrappers configured via environment variables, so switching providers is a `.env` change, not a code change.
    - **v1 default is Claude (Anthropic)**, with Qwen, OpenAI, DeepSeek, and Gemini available as alternative cloud providers via the same `LLM_PROVIDER` env-var switch. This is deliberate: local Ollama inference on typical consumer hardware (e.g., 16GB Apple Silicon) is too slow for a fast dev/iteration loop, and smaller local models need their own output-quality validation pass, not because local support has been dropped.
-   - **Local Ollama endpoints (`http://localhost:11434`) become the default in v3** (moved one phase later from the original v2 plan), once validated against realistic consumer hardware and a right-sized model (see requirements.md Section 2).
+   - **Local Ollama endpoints (`http://localhost:11434`) become the default in v3** (moved one phase later from the original v2 plan), once validated against realistic consumer hardware and a right-sized model (see docs/requirements.md Section 2).
 4. **Environment Management:** 
    - Manage dependencies exclusively via `npm` / `pnpm`.
 5. **Routing & Access Control:** 

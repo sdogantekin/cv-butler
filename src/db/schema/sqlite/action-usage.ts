@@ -3,8 +3,8 @@ import { users } from "./auth";
 
 // Append-only log: one row per consumed action. The daily quota is a COUNT(*)
 // query over this table (see src/lib/rate-limit.ts), not an upsert counter.
-// Check-then-insert has an accepted race under concurrent requests at v1 scale
-// (see requirements.md 8.2) — revisit with a transactional counter in v2.
+// Check-then-insert has an accepted race under concurrent requests at current scale
+// (see docs/requirements.md 8.2) — a transactional counter is planned but still open.
 export const actionUsage = sqliteTable(
   "action_usage",
   {

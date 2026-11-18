@@ -28,9 +28,6 @@ npm-debug.log*
 # Design references
 design-refs/
 
-# Private product spec — kept local only
-requirements.md
-
 # Claude Design sync — staged scripts, build output, and machine state
 # (config.json, NOTES.md, conventions.md, previews/, overrides/ ARE committed)
 .ds-sync/
