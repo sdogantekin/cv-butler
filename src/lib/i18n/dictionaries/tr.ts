@@ -160,7 +160,7 @@ export const tr: Dictionary = {
         {
           question: "Özgeçmiş verilerime ne oluyor?",
           answer:
-            "Açık kaynaklı olduğu için verilerinizi işleyen kod herkese açık ve denetlenebilir, ayrıca kendi sunucunuzda kendi örneğinizi barındırabilirsiniz. Ollama üzerinden yerel bir modelle her şeyi tamamen kendi bilgisayarınızda da çalıştırabilirsiniz (deneysel; kurulum rehberi için README'ye bakın). Mülakat hazırlığı ayrıca isteğe bağlı olarak şirket hakkında ve, eğer verirseniz, mülakatçınızın adı hakkında web araması yapabilir.",
+            "Açık kaynaklı olduğu için verilerinizi işleyen kod herkese açık ve denetlenebilir, ayrıca kendi sunucunuzda kendi örneğinizi barındırabilirsiniz. Ollama üzerinden yerel bir modelle her şeyi tamamen kendi bilgisayarınızda da çalıştırabilirsiniz (kurulum rehberi için README'ye bakın). Mülakat hazırlığı ayrıca isteğe bağlı olarak şirket hakkında ve, eğer verirseniz, mülakatçınızın adı hakkında web araması yapabilir.",
         },
         {
           question: "Denemek için bir şey kurmam gerekiyor mu?",

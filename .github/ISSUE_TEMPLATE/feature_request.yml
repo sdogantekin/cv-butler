@@ -20,4 +20,4 @@ body:
   - type: markdown
     attributes:
       value: |
-        The project roadmap is in [docs/requirements.md](../blob/main/docs/requirements.md). Ideas that fit a planned phase are easiest to take on.
+        The project roadmap is in [REQUIREMENTS.md](../blob/main/REQUIREMENTS.md). Ideas that fit a planned phase are easiest to take on.

@@ -4,7 +4,7 @@ Thanks for your interest. CV Butler is a small open-source project, and issues, 
 
 ## Before you start
 
-- Read the [README](README.md) for how the app and its LangGraph workflows are structured, and [docs/requirements.md](docs/requirements.md) for scope and phasing. A change that fits a planned phase (see the status table) is much easier to accept than one that doesn't.
+- Read the [README](README.md) for how the app and its LangGraph workflows are structured, and [REQUIREMENTS.md](REQUIREMENTS.md) for scope and phasing. A change that fits a planned phase (see the status table) is much easier to accept than one that doesn't.
 - For anything larger than a small fix, open an issue first so we can agree on the approach.
 
 ## Setup

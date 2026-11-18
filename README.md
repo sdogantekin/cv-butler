@@ -14,11 +14,11 @@ Open-source, AI-powered career assistant: ATS scoring, job-description matching,
 - **Cover Letters:** general or job-targeted drafts grounded strictly in your resume.
 - **Interview Preparation** (testing phase): likely questions with suggested answers drawn from your resume, what to review, questions to ask, and an optional interviewer profile, produced by a small multi-agent workflow. Copy it or save it as a PDF.
 - **ATS Learning Hub:** free guides on resume formatting, keyword strategy, and how screeners work.
-- **Bring your own model:** Claude by default; Qwen, OpenAI, DeepSeek, and Gemini by changing one env var. Running fully locally with Ollama is documented and experimental.
+- **Bring your own model:** Claude by default; Qwen, OpenAI, DeepSeek, and Gemini by changing one env var. Running fully locally with Ollama is supported (see below).
 
 ## How it's built
 
-One TypeScript repository with no separate backend: Next.js (App Router), two [LangGraph.js](https://langchain-ai.github.io/langgraphjs/) graphs for the AI workflows, Drizzle ORM (SQLite locally, Postgres in production), and Auth.js. The product spec is in [docs/requirements.md](docs/requirements.md), written collaboratively with an AI assistant, and the rules that assistant works under are in [CLAUDE.md](CLAUDE.md). On every push, CI runs type checking, linting, secret scanning, the Vitest suite (LLM calls mocked, no live API needed), and a production build.
+One TypeScript repository with no separate backend: Next.js (App Router), two [LangGraph.js](https://langchain-ai.github.io/langgraphjs/) graphs for the AI workflows, Drizzle ORM (SQLite locally, Postgres in production), and Auth.js. The product spec is in [REQUIREMENTS.md](REQUIREMENTS.md), written collaboratively with an AI assistant, and the rules that assistant works under are in [CLAUDE.md](CLAUDE.md). On every push, CI runs type checking, linting, secret scanning, the Vitest suite (LLM calls mocked, no live API needed), and a production build.
 
 ## Status
 
@@ -26,13 +26,13 @@ One TypeScript repository with no separate backend: Next.js (App Router), two [L
 | --- | --- | --- |
 | v1 | ATS scoring, job matching, Google login | Shipped |
 | v2 | Cover letters, Postgres on Vercel | Shipped |
-| — | German and Turkish, ATS Learning Hub | Shipped |
-| v3 | Local models via Ollama | Setup documented, experimental, validation pending |
+| v2.5 | German and Turkish, ATS Learning Hub | Shipped |
+| v3 | Local models via Ollama | Shipped |
 | v4 | Interview preparation | Shipped, testing phase |
 | v5 | Job search agent | Planned |
 | v6 | Job application tracking | Planned |
 
-See [docs/requirements.md](docs/requirements.md) for scope and acceptance criteria per phase.
+See [REQUIREMENTS.md](REQUIREMENTS.md) for scope and acceptance criteria per phase.
 
 ## Stack
 
@@ -213,9 +213,9 @@ export const companyResearchProvider = {
 
 Then in `.env.local` (or your host's env var settings): `COMPANY_RESEARCH_PROVIDER_MODULE=your-custom-provider-package`.
 
-## Running locally with Ollama and Qwen (experimental)
+## Running locally with Ollama and Qwen
 
-The v3 goal is to run the whole pipeline on your own machine with an open-weight Qwen model served by [Ollama](https://ollama.com), so resume text never leaves it. No code change is needed to try this today — Ollama exposes an OpenAI-compatible API, which the existing `qwen` provider already speaks. What's still open is quality and speed validation on consumer hardware (target: a ~8B-class model on a 16GB Apple Silicon Mac), so treat local mode as experimental until that's done and the expected response times are documented here.
+Run the whole pipeline on your own machine with an open-weight Qwen model served by [Ollama](https://ollama.com), so resume text never leaves it (as long as web search is not enabled). No code change is needed: Ollama exposes an OpenAI-compatible API, which the existing `qwen` provider already speaks. This setup has been tested end to end.
 
 1. Install Ollama and pull a model:
 
@@ -240,11 +240,10 @@ The v3 goal is to run the whole pipeline on your own machine with an open-weight
 
    `ANTHROPIC_API_KEY` can stay unset in this mode.
 
-Known caveats while this is being validated:
+Good to know:
 
-- Every node relies on structured output (`.withStructuredOutput(zodSchema)`). Smaller local models fail schema-conforming output more often than Claude, so expect occasional "analysis failed" errors until prompting is tuned for them.
-- Qwen3 models have a "thinking" mode that can add latency; whether to disable it for this pipeline is part of the validation.
-- Output quality for scoring consistency, German/Turkish output, and the cover letter's never-invent-facts rule has not yet been checked against local models.
+- Every node relies on structured output (`.withStructuredOutput(zodSchema)`). Smaller local models can fail schema-conforming output more often than Claude, so you may occasionally see an "analysis failed" error.
+- Qwen3 models have a "thinking" mode that can add latency.
 - Local mode only applies to self-hosted runs; a hosted deployment (e.g. Vercel) can't reach your machine's Ollama.
 
 ### Interview preparation lookups

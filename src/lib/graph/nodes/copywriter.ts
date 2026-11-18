@@ -10,7 +10,7 @@ const CopywriterLlmOutputSchema = z.object({
 });
 
 // Condensed from github.com/blader/humanizer (MIT licensed) — adapted into
-// the prompt itself per CLAUDE.md/docs/requirements.md 6.4, not taken as a
+// the prompt itself per CLAUDE.md/REQUIREMENTS.md 6.4, not taken as a
 // runtime dependency (the skill is built for interactive rewrite sessions,
 // not a callable generation step). Trimmed to the patterns that matter when
 // generating a short letter from scratch; rewrite-specific ones (curly

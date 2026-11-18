@@ -159,7 +159,7 @@ export const en = {
         {
           question: "What happens to my resume data?",
           answer:
-            "Being open source, the code handling your data is public and auditable, and you can self-host your own instance. You can also run it entirely on your own machine with a local model through Ollama (experimental; see the setup guide in the README). Interview preparation can also run an optional web search on the company and on an interviewer's name if you provide one.",
+            "Being open source, the code handling your data is public and auditable, and you can self-host your own instance. You can also run it entirely on your own machine with a local model through Ollama (see the setup guide in the README). Interview preparation can also run an optional web search on the company and on an interviewer's name if you provide one.",
         },
         {
           question: "Do I need to install anything to try it?",

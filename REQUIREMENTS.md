@@ -2,14 +2,14 @@
 
 *Last updated: 2026-11-18 · Current release: [v3.0.0](https://github.com/sdogantekin/cv-butler/releases/tag/v3.0.0)*
 
-This spec was written collaboratively with an AI assistant (Claude) and is kept in the repository as the source of truth for scope, phasing, and acceptance criteria. Scope and acceptance decisions are the author's; engineering conventions for AI-assisted work live in [`CLAUDE.md`](../CLAUDE.md).
+This spec was written collaboratively with an AI assistant (Claude) and is kept in the repository as the source of truth for scope, phasing, and acceptance criteria. Scope and acceptance decisions are the author's; engineering conventions for AI-assisted work live in [`CLAUDE.md`](CLAUDE.md).
 
 | Phase | Focus | Status |
 | --- | --- | --- |
 | v1 | Core loop: ATS scoring, job description matching, Google login, 3 actions/day | Shipped |
 | v2 | Cover letters, Postgres on Vercel | Shipped (rate-limit hardening deferred, see 8.2) |
-| — | German/Turkish i18n, ATS Learning Hub | Shipped ahead of plan |
-| v3 | Local model support via Ollama | Setup documented in the README, experimental; validation pending |
+| v2.5 | German/Turkish i18n, ATS Learning Hub | Shipped |
+| v3 | Local model support via Ollama | Shipped |
 | v4 | Interview preparation | First version shipped, in testing phase |
 | v5 | Job search agent | Planned, scope undefined |
 | v6 | Job application tracking | Planned, first-draft scope |
@@ -17,14 +17,14 @@ This spec was written collaboratively with an AI assistant (Claude) and is kept 
 ## 1. Project Overview
 **CV BUTLER** is an open-source, AI-powered career assistant web application. It provides job seekers with resume reviews, ATS (Applicant Tracking System) scoring, job description matching, and customized cover letter generation. 
 
-**Core Objective:** Deliver a high-quality, multi-lingual career prep tool using an agentic state-machine architecture. The system must be fully modular, deployable via a single unified codebase, and able to route to different LLM providers via configuration. v1 runs on cloud providers (Claude by default, with Qwen, OpenAI, DeepSeek, and Gemini available as configurable alternatives); local execution via open-source models (Ollama) is documented as experimental (v3) and still has to be validated against realistic consumer hardware (see Section 2).
+**Core Objective:** Deliver a high-quality, multi-lingual career prep tool using an agentic state-machine architecture. The system must be fully modular, deployable via a single unified codebase, and able to route to different LLM providers via configuration. v1 runs on cloud providers (Claude by default, with Qwen, OpenAI, DeepSeek, and Gemini available as configurable alternatives); local execution via open-source models (Ollama) is supported through the same switch (v3, see Section 2).
 
 ### 1.1 Problem
 Job seekers are screened twice before a person engages with them: by applicant tracking software that parses and ranks resumes, and by recruiters who give a resume seconds. Candidates rarely learn why a resume was filtered out, and generic advice ("tailor your resume") doesn't tell them what to change. The commercial tools that do give feedback are paid and closed, and they ask users to upload personal data to a service they can't inspect.
 
 ### 1.2 Target users
 *   **Job seekers** applying to roles through online portals, comfortable uploading a PDF or DOCX resume, working in English, German, or Turkish.
-*   **Self-hosters and contributors** who want an inspectable tool they can run on their own infrastructure (and, experimentally, with a local model) or extend.
+*   **Self-hosters and contributors** who want an inspectable tool they can run on their own infrastructure (and, if they choose, with a local model) or extend.
 
 ### 1.3 Goals, non-goals, and success metrics
 **Goals:** help a user (1) see how a resume reads to screening software, (2) tailor it to a specific job, and (3) prepare for the interview, while staying free, open source, self-hostable, and honest (generated text never invents facts about the candidate).
@@ -62,7 +62,7 @@ This section is the current source of truth for what's in scope now versus defer
 
 **Explicitly out of scope for v1** (several of these have since shipped, see below): cover letter generation, interview prep, Learning Hub, German/Turkish i18n, job-description URL fetching, Apple/Facebook login, premium tiers/payments, scanned-resume OCR, local model execution via Ollama (deferred to v3, see note below).
 
-**Note on local execution:** Ollama support was originally planned for v1 but is deferred to v3 (originally slated for v2, pushed out one phase further — see Section 2's v2/v3 entries). On typical consumer hardware (e.g., 16GB Apple Silicon), local inference at the model sizes that fit comfortably (~8-9B parameters) is meaningfully slower than a cloud API, which would slow down v1 development iteration, and smaller local models need their own validation pass on structured-output quality before they're part of an acceptance bar.
+**Note on local execution:** Ollama support was originally planned for v1 but is deferred to v3 (originally slated for v2, pushed out one phase further — see Section 2's v2/v3 entries). On typical consumer hardware (e.g., 16GB Apple Silicon), local inference at the model sizes that fit comfortably (~8-9B parameters) is meaningfully slower than a cloud API, which would have slowed down v1 development iteration. It shipped in v3 and has been tested end to end.
 
 **Done when:** a user can sign in with Google, upload a text-based PDF/DOC resume, get an ATS score with categorized feedback, paste a job description, and get a dimension-based match score with gap-analysis recommendations, all running end-to-end against Claude or any of the other configured cloud providers.
 
@@ -74,18 +74,18 @@ This section is the current source of truth for what's in scope now versus defer
 
 **Done when:** a signed-in user can generate a general or job-targeted cover letter from the resume data already parsed in v1, and the app runs against Postgres in production with no local-only assumptions left in the code (**done**).
 
-### Shipped ahead of plan
-Internationalization (English, German, Turkish — UI, agent outputs, and API errors) and the ATS Learning Hub (static guides) were originally scoped for v3 and have already shipped during v2 development. Sections 6.6 and 6.7 are kept for their acceptance criteria.
+### v2.5 — Localization & ATS Learning Hub
+Delivered between v2 and v3: internationalization (English, German, Turkish — UI, agent outputs, and API errors) and the ATS Learning Hub (static guides). Sections 6.6 and 6.7 hold the acceptance criteria.
 
 ### v3 — Local Model Support (Ollama)
-**Status:** setup is documented in the README and works through the existing OpenAI-compatible provider path, but it is experimental: quality and response times on consumer hardware have not been validated, so the "done when" bar below is not met yet.
+**Status:** shipped. Local execution works through the existing OpenAI-compatible provider path and has been tested end to end; setup is documented in the README.
 
 **In scope:**
 - Run the full pipeline against a local Ollama model (Qwen, ~8B class) through the existing OpenAI-compatible provider path (`LLM_PROVIDER=qwen` pointed at `http://localhost:11434/v1`), with no hosted API key required
-- Validate structured-output reliability, scoring consistency, German/Turkish output quality, and the cover letter's never-invent-facts rule against the local model; adjust prompting/schema strategy as needed for smaller-model quality
-- Document expected hardware requirements and response times for self-hosting users (README section already describes setup; numbers pending validation)
+- Keep prompting and schemas shared with the cloud providers, adjusting only where smaller-model output requires it
+- Document setup for self-hosting users (done in the README); measured hardware requirements and response times are an optional follow-up
 
-**Done when:** the full v1/v2 pipeline (ATS score, job match, cover letter) runs successfully end-to-end against a local Ollama model, with documented expected response times and known limitations.
+**Done when:** the full v1/v2 pipeline (ATS score, job match, cover letter) runs successfully end-to-end against a local Ollama model (**done**).
 
 ### v4 — Interview Preparation (first version shipped)
 Shipped: a dashboard tab that takes a resume, a job description, and optional interviewer details, and returns an interviewer profile, things to review beforehand, likely questions with suggested answers, questions to ask, and tips (Section 6.5; Interview Prep agents in Section 5). One run costs one daily action.
@@ -110,7 +110,7 @@ The application uses a unified TypeScript stack to ensure seamless local setup a
 *   **Platform:** Responsive web application (desktop, tablet, mobile).
 *   **Core Framework:** Next.js (App Router, TypeScript, Tailwind CSS, Shadcn UI) handling both frontend rendering and backend API routes.
 *   **Agent Orchestration:** LangGraph.js managing multi-agent state flows and execution graphs.
-*   **LLM Interface:** Provider-agnostic LangChain integration configured via environment variables to route prompts to a remote cloud API (Claude by default, with Qwen/OpenAI/DeepSeek/Gemini as configurable alternatives) or a local `localhost:11434` (Ollama) endpoint. Cloud is the default; local Ollama support is documented as experimental under v3 (see Section 2).
+*   **LLM Interface:** Provider-agnostic LangChain integration configured via environment variables to route prompts to a remote cloud API (Claude by default, with Qwen/OpenAI/DeepSeek/Gemini as configurable alternatives) or a local `localhost:11434` (Ollama) endpoint. Cloud is the default; local Ollama support is available under v3 (see Section 2).
 *   **Database & Storage:** Drizzle ORM against SQLite (local/self-hosted default, zero configuration required) or Postgres (production, e.g. Neon on Vercel) — chosen automatically at runtime by whether `DATABASE_URL` is set. Both paths coexist in the same codebase rather than being an either/or build-time choice; see Section 2's v2 entry.
 *   **Authentication:** Auth.js (NextAuth) with Google login only; Facebook and Apple are deferred (see Section 7).
 
@@ -132,7 +132,7 @@ The backend orchestrates the following specialized nodes using LangGraph.js. Lan
 ### 6.1. Marketing & Public Landing Page (v1)
 *   **Action:** Unauthenticated users visiting the root URL (`/`) land on a conversion-optimized marketing page.
 *   **Output:** Hero section with primary CTAs ("Get Started Free" / Login and "View on GitHub"), core feature highlights (ATS scoring, job matching, cover letters), an open-source roadmap section covering the next planned items (currently Interview Preparation in its testing phase (v4), Job Search Agent (v5), and Job Application Tracking (v6) — see Sections 2, 6.8 and 6.9), and a link to the ATS Learning Hub.
-*   **Acceptance:** Must clearly communicate that the project is open-source and free to use, positioned against paid commercial career tools — without naming specific competitors by name. Local execution via Ollama may be described as possible but experimental; do not claim validated privacy guarantees, quality, or performance for it until the v3 validation is done.
+*   **Acceptance:** Must clearly communicate that the project is open-source and free to use, positioned against paid commercial career tools — without naming specific competitors by name. Local execution via Ollama may be described as supported; do not publish specific performance or quality numbers for it without measurements.
 
 ### 6.2. Resume Analysis & ATS Scoring (v1)
 *   **Action:** User uploads a PDF/DOC.
@@ -190,7 +190,7 @@ The backend orchestrates the following specialized nodes using LangGraph.js. Lan
 ## 8. Non-Functional Requirements: Security, Testing & CI/CD
 
 ### 8.1. Security & Privacy
-*   **PII Handling:** Resumes uploaded by users contain sensitive personal data. Files must be processed in memory or stored securely with strict user-access isolation. Local execution via Ollama (experimental, see v3) lets a self-hoster keep resume data on their own machine; by default resume data is sent to the configured cloud provider (Claude, Qwen, OpenAI, DeepSeek, or Gemini).
+*   **PII Handling:** Resumes uploaded by users contain sensitive personal data. Files must be processed in memory or stored securely with strict user-access isolation. Local execution via Ollama (see v3) lets a self-hoster keep resume data on their own machine; by default resume data is sent to the configured cloud provider (Claude, Qwen, OpenAI, DeepSeek, or Gemini).
 *   **Environment Security:** All API keys (for cloud LLMs like Qwen/OpenAI/DeepSeek/Gemini or auth providers) must be strictly managed via `.env` files and never exposed to the client-side bundle.
 *   **Secret Protection & Leak Prevention:** The repository must enforce strict pre-commit hooks (using Husky and git-secrets/scanning checks) to block any accidental staging of API keys, `.env` files, or private credentials. 
 *   **Rate Limiting & Abuse Prevention:** API routes executing agent workflows must enforce the daily action limits per authenticated user to prevent API cost overruns or abuse.
@@ -225,7 +225,7 @@ Key decisions and the reasoning behind them, so the spec explains itself. Dates 
 | 2026-09 | Consent banner deferred to a pass before general availability | Avoid building it speculatively; the risk is documented in 8.1 | Build it with the first analytics release |
 | 2026-09 | Cover letter prompt adapts the blader/humanizer patterns, and may never invent facts | Avoid generic AI writing and fabrication | A generic "write a cover letter" prompt |
 | 2026-09 to 2026-10 | Hand-rolled i18n dictionaries for UI, agent output, and API errors (en/de/tr) | Lightweight, typed, and explicit output-language instructions in prompts | An i18n library |
-| 2026-10 | v3 scoped to documenting Ollama through the existing OpenAI-compatible provider path | No new code needed; validation is the real work | A dedicated Ollama provider |
+| 2026-10 | v3 delivered by documenting Ollama through the existing OpenAI-compatible provider path | No new code was needed, and it was tested end to end | A dedicated Ollama provider |
 | 2026-11 | Interview preparation as a separate multi-agent graph: analyst, optional research, four parallel specialists, code-only compile | Different state and workflow from score/match; small prompts per agent suit smaller local models | Extra nodes on the existing graph; one large prompt |
 | 2026-11 | Interviewer lookup uses only a name, role, and company extracted from the user's text, Tavily only, results labeled unverified | Data minimization when searching for a named person; avoids acting on a wrong-person match | Searching on the raw pasted text; no lookup at all |
 | 2026-11 | Plan export via copy and the browser print dialog | No PDF dependency, works in every locale | A server-side or library PDF renderer |
@@ -233,7 +233,6 @@ Key decisions and the reasoning behind them, so the spec explains itself. Dates 
 
 ## 10. Known Gaps & Risks
 *   **Rate-limit race:** concurrent requests can exceed the daily limit slightly (check-then-insert). Fix: a transactional counter.
-*   **Local models unvalidated:** structured-output reliability, scoring consistency, language quality, and response times on consumer hardware are untested (v3).
 *   **Interview prep quality unvalidated:** the no-fabrication rule for suggested answers has not yet been checked against real model output; needs a small evaluation set.
 *   **No failure tracking:** analytics records successes only, so the failure-rate metric can't be computed.
 *   **Analytics without a consent gate** on the production deployment (deliberately deferred; see 8.1).

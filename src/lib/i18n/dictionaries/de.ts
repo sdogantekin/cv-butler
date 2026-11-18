@@ -160,7 +160,7 @@ export const de: Dictionary = {
         {
           question: "Was passiert mit meinen Lebenslaufdaten?",
           answer:
-            "Da der Code Open Source ist, ist der Code, der Ihre Daten verarbeitet, öffentlich einsehbar und überprüfbar, und Sie können Ihre eigene Instanz selbst hosten. Sie können CV Butler auch vollständig auf Ihrem eigenen Rechner mit einem lokalen Modell über Ollama betreiben (experimentell, siehe die Einrichtungsanleitung im README). Die Interviewvorbereitung kann außerdem optional eine Websuche zum Unternehmen und, falls Sie einen angeben, zum Namen Ihres Interviewers durchführen.",
+            "Da der Code Open Source ist, ist der Code, der Ihre Daten verarbeitet, öffentlich einsehbar und überprüfbar, und Sie können Ihre eigene Instanz selbst hosten. Sie können CV Butler auch vollständig auf Ihrem eigenen Rechner mit einem lokalen Modell über Ollama betreiben (siehe die Einrichtungsanleitung im README). Die Interviewvorbereitung kann außerdem optional eine Websuche zum Unternehmen und, falls Sie einen angeben, zum Namen Ihres Interviewers durchführen.",
         },
         {
           question: "Muss ich etwas installieren, um es auszuprobieren?",
